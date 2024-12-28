@@ -16,6 +16,7 @@
 #include "PostCutCode/AnalysisBase.h"
 #include "PostCutCode/AnalysisZHvvJJ.h"
 #include "PostCutCode/AnalysisZHAllHad.h"
+#include "PostCutCode/AnalysisWWCR.h"
 #include "PostCutCode/AnalysisSelfCouplingTest.h"
 #include "PostCutCode/MetadataContainer.h"
 
@@ -53,13 +54,16 @@ int main(int argc, char** argv)
     {
         analysis =  std::make_shared<AnalysisSelfCouplingTest>();
     }
+    else if(opts["analType"] == "WWCR") 
+    {
+        analysis =  std::make_shared<AnalysisWWCR>();
+    }
     else
     {
         std::cout<<"Anal Type not recognized"<<std::endl;
         std::cout<<"Input analType: "<<opts["analType"]<<std::endl;
         exit(1);
     }
-
 
     analysis->initialize();
     analysis->run();
@@ -85,7 +89,7 @@ bool cmdline(int argc, char** argv, map<TString,std::string>& opts)
     opts["processName"]         = "qqH";
     opts["analType"]            = "ZHAllHad";
     opts["SOWJSONfile"]         = "../source/PostCutCode/data/FCCee_procDict_winter2023_IDEA.json";
-    opts["CustomSOWJSONfile"]   = "../source/PostCutCode/data/SoWcustom_ZHall.json";
+    opts["CustomSOWJSONfile"]   = "../source/PostCutCode/data/SumOfWeightsCustom.json";
 
 
 

@@ -270,6 +270,9 @@ void AnalysisZHAllHad::run()
         // Just to store how many events were run over
         countingHist->Fill(1);
         NEventsInt++;
+        // Add some basic selection        
+        if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
+        NjetCut++;
 
         double mjj_H = -1;
         double mjj_Z = -1;
@@ -324,9 +327,6 @@ void AnalysisZHAllHad::run()
         NokFlav++;
         // std::cout<<"Nan toss away!"<<std::endl;
 
-        // Add some basic selection        
-        if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
-        NjetCut++;
         //numebr of electrons and muons cut! 2!
         // reject events with leptons with > 20 GeV leptons
         if(event_nmu() > 2.) continue;
@@ -341,10 +341,10 @@ void AnalysisZHAllHad::run()
         if (vis_theta()<= 0.15 || vis_theta()>=3.0 ) continue; //typo! rerun!
         NkineCut++;
         // change the cuts! update! 
-        if (d_12()<=15000. || d_12()>=58000.) continue;//missing!
-        if ((d_23()<=400.) || (d_23()>=18000.))continue;
+        // if (d_12()<=15000. || d_12()>=58000.) continue;//missing!
+        // if ((d_23()<=400.) || (d_23()>=18000.))continue;
         NdCutd123++;
-        if ((d_34()<=100.) || (d_34()>=6000.))continue;
+        // if ((d_34()<=100.) || (d_34()>=6000.))continue;
         NdCutd34++; 
         std::vector<TLorentzVector> LVjets;    
         for (size_t lv = 0; lv < 4; ++lv) {
@@ -623,6 +623,9 @@ void AnalysisZHAllHad::run()
         Zflav = flav_Z;
         ChiH = pow((mjj_H-H_mass), 2);
         ChiZ = pow((mjj_Z-Z_mass), 2);
+        d12 = d_12();
+        d23 = d_23();
+        d34 = d_34();
         mc_weight = norm_weight;
         my_tree->Fill();
         // if (flav_H == 3 || flav_Z == 4 ||flav_Z == -1 || flav_H == -1 ) continue;

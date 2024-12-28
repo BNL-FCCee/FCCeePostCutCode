@@ -38,6 +38,9 @@ class AnalysisZHAllHad: public AnalysisBase
       double ChiH;
       double ChiZ;
       double mc_weight;
+      float d12;
+      float d23;
+      float d34;
 
 
 };

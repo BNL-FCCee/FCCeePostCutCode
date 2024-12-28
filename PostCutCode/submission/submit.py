@@ -10,7 +10,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--inputFolder",                default = "/Users/haider/FCC/data/ntuples/zh_vvjj/", type = str,      help = "Path to folder with all the input folder")
 parser.add_argument("--outputFolder",               default = "/Users/haider/FCC/PostCutCode/run/root-files/", type = str,      help = "Path to folder with all the output")
 parser.add_argument("--doZHvvJJ",                   default = False, action='store_true',   help = "Run jobs for ZHvvjj analysis") 
-parser.add_argument("--doZHAllHad",                  default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
+parser.add_argument("--doZHAllHad",                 default = False, action='store_true',   help = "Run jobs for ZHAllHad analysis") 
+parser.add_argument("--doWWCR",                     default = False, action='store_true',   help = "Run jobs for WW CR analysis") 
 
 ## Batch options
 parser.add_argument("--mergeFile",                  default = 20,    type=int,              help = "Number of files to merge into one job")
@@ -49,6 +50,13 @@ if args.doZHvvJJ:
     {"folderName" : "wzp6_ee_nunuH_Htautau_ecm240", "processName" : "Htautau"},
     {"folderName" : "wzp6_ee_qqH_ecm240",           "processName" : "qqH"},
     ]
+elif args.doWWCR: 
+    submissionJobList = [
+    {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
+    {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
+    {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"} 
+    ]
+
 elif args.doZHAllHad:
     submissionJobList = [
     {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
@@ -249,6 +257,8 @@ def _getRunCommand(exePath, currJob):
         cmd += ' --analType ZHvvJJ'
     elif(args.doZHAllHad):
         cmd += ' --analType ZHAllHad'
+    elif(args.doWWCR):
+        cmd += ' --analType WWCR'
     else:
         print("Dont know what type of job you are running. doXXXX not supported for run Command")
         exit(1)
