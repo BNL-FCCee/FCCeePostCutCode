@@ -175,11 +175,39 @@ void AnalysisZHAllHad6J::run()
     // float W_mass = 80.377;
 
     std::vector<std::string> flavourCategory {"B", "C", "S","Q", "G"};
-    std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl"};
+    // std::vector<std::string> fitCategory {"LowHss","MidHss","HiHss","LowbbHbb","LowccHbb","LowssHbb","LowqqHbb","LowbbHcc","LowccHcc","LowssHcc","LowqqHcc","LowbbHgg","LowccHgg","LowssHgg","LowqqHgg","MidbbHbb","MidccHbb","MidssHbb","MidqqHbb","MidbbHcc","MidccHcc","MidssHcc","MidqqHcc","MidbbHgg","MidccHgg","MidssHgg","MidqqHgg","HibbHbb","HiccHbb","HissHbb","HiqqHbb","HibbHcc","HiccHcc","HissHcc","HiqqHcc","HibbHgg","HiccHgg","HissHgg","HiqqHgg","Incl"};
     std::vector<std::string> cutFlowMap {"NoCut","NoNaNFlavScore","njet=6","leptonCut","visMCut","visECut","KinematicsCut","d12Cut", "d23Cut","d34Cut","d45Cut","d56Cut","mZ1Cut","mZ2Cut","mZstarCut","mHCut","Fit" };
-    std::vector<std::string> fitCategorySimple  {"LowHbb","LowHcc","LowHss","LowHgg","MidHbb","MidHcc","MidHss","MidHgg","HiHbb","HiHcc", "HiHss","HiHgg"};
+    // std::vector<std::string> fitCategorySimple  {"LowZbb","LowZcc","LowZss","LowZgg","MidZbb","MidZcc","MidZss","MidZgg","HiZbb","HiZcc", "HiZss","HiZgg"};
+    std::vector<std::string> fitCategorySimple  {"LowMZ","MidMZ","HiMZ"};
+    std::vector<std::string> fitCategory  {     "LowMZHiZbb","LowMZHiZcc","LowMZHiZss","LowMZHiZgg",
+                                                "HiMZHiZbb","HiMZHiZcc","HiMZHiZss","HiMZHiZgg",
+                                                "MidMZHiZbb","MidMZHiZcc", "MidMZHiZss","MidMZHiZgg"};
 
-    
+
+
+    auto obsHist_mZ = m_histContainer->getObsHistinFitCategory(fitCategorySimple, 40, 0, 1500);
+    auto obsHist = m_histContainer->getObsHistinFitCategory(fitCategory, 40, 110, 150, 30, 70, 100); //to be filled with MH,mZ2
+
+    auto lomZ_obsHist = obsHist_mZ["LowMZ"];
+    auto himZ_obsHist = obsHist_mZ["HiMZ"];
+    auto midmZ_obsHist = obsHist_mZ["MidMZ"];
+
+    auto LowMZHiZbb_obsHist = obsHist["LowMZHiZbb"];
+    auto LowMZHiZcc_obsHist = obsHist["LowMZHiZcc"];
+    auto LowMZHiZss_obsHist = obsHist["LowMZHiZss"];
+    auto LowMZHiZgg_obsHist = obsHist["LowMZHiZgg"];
+
+    auto HiMZHiZbb_obsHist = obsHist["HiMZHiZbb"];
+    auto HiMZHiZcc_obsHist = obsHist["HiMZHiZcc"];
+    auto HiMZHiZss_obsHist = obsHist["HiMZHiZss"];
+    auto HiMZHiZgg_obsHist = obsHist["HiMZHiZgg"];
+
+    auto MidMZHiZbb_obsHist = obsHist["MidMZHiZbb"];
+    auto MidMZHiZcc_obsHist = obsHist["MidMZHiZcc"];
+    auto MidMZHiZss_obsHist = obsHist["MidMZHiZss"];
+    auto MidMZHiZgg_obsHist = obsHist["MidMZHiZgg"];
+
+
     // Get the histograms
 
     auto countingHist = m_histContainer->getCountingHist();
@@ -220,10 +248,40 @@ void AnalysisZHAllHad6J::run()
     my_tree->Branch("b_d34",&v_d34);
     my_tree->Branch("b_d45",&v_d45);
     my_tree->Branch("b_d56",&v_d56);
-    my_tree->Branch("b_vis_E",&vis_E);
-    my_tree->Branch("b_vis_M",&vis_M);
-
+    my_tree->Branch("b_vis_E",&v_vis_E);
+    my_tree->Branch("b_vis_M",&v_vis_M);
     my_tree->Branch("b_w",&mc_weight);
+
+    // my_tree->Branch("b_Jet0_px",&Jet0_px);
+    // my_tree->Branch("b_Jet0_py",&Jet0_py);
+    // my_tree->Branch("b_Jet0_pz",&Jet0_pz);
+    // my_tree->Branch("b_Jet0_E",&Jet0_E);
+
+    // my_tree->Branch("b_Jet1_px",&Jet1_px);
+    // my_tree->Branch("b_Jet1_py",&Jet1_py);
+    // my_tree->Branch("b_Jet1_pz",&Jet1_pz);
+    // my_tree->Branch("b_Jet1_E",&Jet1_E);
+
+    // my_tree->Branch("b_Jet2_px",&Jet2_px);
+    // my_tree->Branch("b_Jet2_py",&Jet2_py);
+    // my_tree->Branch("b_Jet2_pz",&Jet2_pz);
+    // my_tree->Branch("b_Jet2_E",&Jet2_E);
+
+    // my_tree->Branch("b_Jet3_px",&Jet3_px);
+    // my_tree->Branch("b_Jet3_py",&Jet3_py);
+    // my_tree->Branch("b_Jet3_pz",&Jet3_pz);
+    // my_tree->Branch("b_Jet3_E",&Jet3_E);
+
+    // my_tree->Branch("b_Jet4_px",&Jet4_px);
+    // my_tree->Branch("b_Jet4_py",&Jet4_py);
+    // my_tree->Branch("b_Jet4_pz",&Jet4_pz);
+    // my_tree->Branch("b_Jet4_E",&Jet4_E);
+
+    // my_tree->Branch("b_Jet5_px",&Jet5_px);
+    // my_tree->Branch("b_Jet5_py",&Jet5_py);
+    // my_tree->Branch("b_Jet5_pz",&Jet5_pz);
+    // my_tree->Branch("b_Jet5_E",&Jet5_E);
+
 
     // assuming you have vectors as input (should also save option to run w/o vectors)
     //New Tagger
@@ -239,12 +297,15 @@ void AnalysisZHAllHad6J::run()
     
   
     // corrected momentum
-    varMember<ROOT::VecOps::RVec<float>> jet_px {tree, "jet_px_corr"};
+    // varMember<ROOT::VecOps::RVec<float>> jet_px {tree, "jet_px_corr"};    
+    // varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "jet_py_corr"}; 
+    // varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "jet_pz_corr"};
+    // varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "jet_e_corr"}; 
 
-    
-    varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "jet_py_corr"}; 
-    varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "jet_pz_corr"};
-    varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "jet_e_corr"}; 
+    varMember<ROOT::VecOps::RVec<float>> jet_px {tree, "recojet_px"};    
+    varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "recojet_py"}; 
+    varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "recojet_pz"};
+    varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "recojet_e"}; 
 
     varMember<int> event_njet {tree, "event_njet"};
     varMember<ulong> event_nmu {tree, "event_nmu"};
@@ -313,11 +374,39 @@ void AnalysisZHAllHad6J::run()
         std::vector<float> j4_flav {recojet_isB.at(4), recojet_isC.at(4), recojet_isS.at(4), recojet_isU.at(4),recojet_isD.at(4), recojet_isG.at(4), recojet_isTAU.at(4)};
         std::vector<float> j5_flav {recojet_isB.at(5), recojet_isC.at(5), recojet_isS.at(5), recojet_isU.at(5),recojet_isD.at(5), recojet_isG.at(5), recojet_isTAU.at(5)};
         
-        v_d12 = d_12();
-        v_d23 = d_23();
-        v_d34 = d_34();
-        v_d45 = d_45();
-        v_d56 = d_56();
+        v_d12 = d_12(); v_d23 = d_23(); v_d34 = d_34(); v_d45 = d_45(); v_d56 = d_56();
+        v_vis_E = vis_E(); v_vis_M = vis_M();
+
+        std::vector<TLorentzVector> LVjets;
+        for (size_t lv = 0; lv < jet_px.size(); ++lv) {
+            TLorentzVector LVjet;
+            LVjet.SetPxPyPzE(jet_px.at(lv), jet_py.at(lv), jet_pz.at(lv), jet_e.at(lv));
+            LVjets.push_back(LVjet);
+        }
+
+        JetObject jet0;
+        JetObject jet1;
+        JetObject jet2;
+        JetObject jet3;
+        JetObject jet4;
+        JetObject jet5;
+
+        jet0.jet4Vector = LVjets[0]; jet1.jet4Vector = LVjets[1]; jet2.jet4Vector = LVjets[2]; jet3.jet4Vector = LVjets[3]; jet4.jet4Vector = LVjets[4]; jet5.jet4Vector = LVjets[5];
+
+        // for (int i=0; i<6; i++){
+        //     std::cout << "PASS 1" << std::endl;
+        //     std::cout << "Jet" << i << " Px: " << LVjets[i].Px() << std::endl;
+        //     std::cout << "Jet" << i << " Py: " << LVjets[i].Py() << std::endl;
+        //     std::cout << "Jet" << i << " Pz: " << LVjets[i].Pz() << std::endl;
+        //     std::cout << "Jet" << i << " E: " << LVjets[i].E() << std::endl;            
+        // }
+
+        // Jet0_px=jet0.jet4Vector.Px(); Jet0_py=jet0.jet4Vector.Py(); Jet0_pz=jet0.jet4Vector.Pz(); Jet0_E=jet0.jet4Vector.E();
+        // Jet1_px=jet1.jet4Vector.Px(); Jet1_py=jet1.jet4Vector.Py(); Jet1_pz=jet1.jet4Vector.Pz(); Jet1_E=jet1.jet4Vector.E();
+        // Jet2_px=jet2.jet4Vector.Px(); Jet2_py=jet2.jet4Vector.Py(); Jet2_pz=jet2.jet4Vector.Pz(); Jet2_E=jet2.jet4Vector.E();
+        // Jet3_px=jet3.jet4Vector.Px(); Jet3_py=jet3.jet4Vector.Py(); Jet3_pz=jet3.jet4Vector.Pz(); Jet3_E=jet3.jet4Vector.E();
+        // Jet4_px=jet4.jet4Vector.Px(); Jet4_py=jet4.jet4Vector.Py(); Jet4_pz=jet4.jet4Vector.Pz(); Jet4_E=jet4.jet4Vector.E();
+        // Jet5_px=jet5.jet4Vector.Px(); Jet5_py=jet5.jet4Vector.Py(); Jet5_pz=jet5.jet4Vector.Pz(); Jet5_E=jet5.jet4Vector.E();
 
 
         for (float j0_f : j0_flav) {
@@ -355,8 +444,9 @@ void AnalysisZHAllHad6J::run()
             }
         }
         
+        
+
         NokFlav++;
-        // std::cout<<"Nan toss away!"<<std::endl;
 
         // Add some basic selection        
         if(event_njet() != 6) continue; //Require EXACTLY 6 jet! This SHOULD be the case!
@@ -377,48 +467,25 @@ void AnalysisZHAllHad6J::run()
         if (vis_theta()<= 0.15 || vis_theta()>=3.0 ) continue; //typo! rerun!
         NkineCut++;
         // change the cuts! update!
-        if (d_12()<=1500. || d_12()>=58000.) continue;//missing!
+        // if (d_12()<=1500. || d_12()>=58000.) continue;//missing!
 
         NdCutd12++;
-        if ((d_23()<=400.) || (d_23()>=18000.))continue;
+        // if ((d_23()<=400.) || (d_23()>=18000.))continue;
         // if (d_23()>3600) continue;
         NdCutd23++;
         // if (d_34()>529) continue;
-        if ((d_34()<=100.) || (d_34()>=6000.))continue;
+        // if ((d_34()<=100.) || (d_34()>=6000.))continue;
         NdCutd34++;
         // if (d_45()>225) continue;
         NdCutd45++;
-        // if (d_56()>100) continue;
+        if (d_56()100) continue;
         NdCutd56++;
 
-        
 
-        std::vector<TLorentzVector> LVjets;  
-        // std::cout<< "jet_px.size() " << jet_px.size() << std::endl;
-        // // Print all elements of jet_px
-        // for (size_t i = 0; i < jet_px.size(); i++) {
-        //     std::cout << "jet_px[" << i << "] = " << jet_px.at(i) << std::endl;
-        // }
+        // 'cumulative':['b_DeltaR_HZ1Zstar_Z2 < 5','b_mZ2_jj > 85','b_d56 < 450','b_d12 > 11000','b_d23 < 17000','b_d34 < 4500','b_d45 < 1600','b_mZstar_jj>5']
 
-        for (size_t lv = 0; lv < jet_px.size(); ++lv) {
-            // TLorentzVector LVjet(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
-            TLorentzVector LVjet;
-            // LVjet.SetPxPyPzE(jet_px.getVal(lv), jet_py.getVal(lv), jet_pz.getVal(lv), jet_e.getVal(lv));
-            LVjet.SetPxPyPzE(jet_px.at(lv), jet_py.at(lv), jet_pz.at(lv), jet_e.at(lv));
-            LVjets.push_back(LVjet);
-        }
-        JetObject jet0;
-        JetObject jet1;
-        JetObject jet2;
-        JetObject jet3;
-        JetObject jet4;
-        JetObject jet5;
-        jet0.jet4Vector = LVjets[0];
-        jet1.jet4Vector = LVjets[1];
-        jet2.jet4Vector = LVjets[2];
-        jet3.jet4Vector = LVjets[3];
-        jet4.jet4Vector = LVjets[4];
-        jet5.jet4Vector = LVjets[5];
+    
+
         jet0.jet_flav_scores = j0_flav;
         jet1.jet_flav_scores = j1_flav;
         jet2.jet_flav_scores = j2_flav;
@@ -498,9 +565,8 @@ void AnalysisZHAllHad6J::run()
         Z2MassCut++;
         if(Zstar_HZZ.Z_combined.M() > 16.) continue;
         ZstarMassCut++;
-        if(H_ZZ.H_combined.M() < 83. || H_ZZ.H_combined.M() > 150.) continue;
+        if(H_ZZ.H_combined.M() < 110. || H_ZZ.H_combined.M() > 140.) continue;
         HMassCut++;
-        if (Z2_HZZ.max_jet_flav_score_idx < 3 || Z2_HZZ.max_jet_flav_score_idx > 4 ) continue;
 
         mH_ZZ= H_ZZ.H_combined.M();
         mZ1_jj = Z1_HZZ.Z_combined.M();
@@ -520,6 +586,69 @@ void AnalysisZHAllHad6J::run()
         // if(DeltaR_HZZ_Z2 < 3.1) continue;
         mc_weight = norm_weight;
         Nfit++;
+
+        // std::vector<float> j0_flav {recojet_isB.at(0), recojet_isC.at(0), recojet_isS.at(0), recojet_isU.at(0),recojet_isD.at(0), recojet_isG.at(0), recojet_isTAU.at(0)};
+    // auto MidMZLowZbb_obsHist = obsHist["MidMZHigZbb"];
+    // auto MidMZLowZcc_obsHist = obsHist["MidMZLowZcc"];
+    // auto MidMZLowZss_obsHist = obsHist["MidMZLowZss"];
+    // auto MidMZLowZgg_obsHist = obsHist["MidMZLowZgg"];
+
+    // auto MidMZMidZbb_obsHist = obsHist["MidMZMidZbb"];
+    // auto MidMZMidZcc_obsHist = obsHist["MidMZMidZcc"];
+    // auto MidMZMidZss_obsHist = obsHist["MidMZMidZss"];
+    // auto MidMZMidZgg_obsHist = obsHist["MidMZMidZgg"];
+
+    // auto MidMZHiZbb_obsHist = obsHist["MidMZHiZbb"];
+    // auto MidMZHiZcc_obsHist = obsHist["MidMZHiZcc"];
+    // auto MidMZHiZss_obsHist = obsHist["MidMZHiZss"];
+    // auto MidMZHiZgg_obsHist = obsHist["MidMZHiZgg"];
+        if(mZ1_jj < 85){
+            lomZ_obsHist->Fill(d_56());
+            if (Z1_j1FlavorIdx == 0 ){
+                LowMZHiZbb_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 1 ){
+                LowMZHiZcc_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 2 ){
+                LowMZHiZss_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 5 ){
+                LowMZHiZgg_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+        }
+        if(mZ1_jj >=85 && mZ1_jj < 95){
+            midmZ_obsHist->Fill(d_56());
+            if (Z1_j1FlavorIdx == 0 ){
+                MidMZHiZbb_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 1 ){
+                MidMZHiZcc_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 2 ){
+                MidMZHiZss_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 5 ){
+                MidMZHiZgg_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+
+        }
+        if(mZ1_jj >= 95){
+            himZ_obsHist->Fill(d_56());
+            if (Z1_j1FlavorIdx == 0 ){
+                HiMZHiZbb_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 1 ){
+                HiMZHiZcc_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 2 ){
+                HiMZHiZss_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+            else if (Z1_j1FlavorIdx == 5 ){
+                HiMZHiZgg_obsHist->Fill(mH_ZZ,mZ2_jj);
+            }
+        }        
+
         my_tree->Fill();
         // break;
     }

@@ -11,5 +11,5 @@ alias ccleanbuild='cd ../build && rm -rf * && cmake ../source && make && cd ../r
 
 
 # this is an auto-generated setup script
-export PATH=${PATH}:/usatlas/u/ivelisce/FCC/CharmCut/source/wscanner/build/
-export wscanner_data=/usatlas/u/ivelisce/FCC/CharmCut/source/wscanner/data/
+export PATH=${PATH}:/afs/cern.ch/work/p/pusharma/public/FCC_studies/ZH_6Jets_FullHadronic/PostCutCode/build
+export wscanner_data=/afs/cern.ch/work/p/pusharma/public/FCC_studies/ZH_6Jets_FullHadronic/PostCutCode/source/wscanner/data

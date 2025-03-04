@@ -1,0 +1,11 @@
+{
+    "category": ["LowMZHiZbb","LowMZHiZcc","LowMZHiZss","LowMZHiZgg", "HiMZHiZbb","HiMZHiZcc","HiMZHiZss","HiMZHiZgg","MidMZHiZbb","MidMZHiZcc", "MidMZHiZss","MidMZHiZgg"],    
+    "process":["WW","ZHqqHZZ_qqqq","ZZ", "Zqq","HZa","HZZ","Hbb","Hcc","Hss","HWW", "Htautau","Hgg","nunuH"],
+    "processHeldConstant":["HZa"],
+    "xRebinFactor":1,
+    "yRebinFactor":1,
+    "lumi": 5000000.0,
+    "minYieldBinCut": 0.000000001,
+    "relErrorThreshold":0.1,
+    "categoryToAddStatError": []
+}

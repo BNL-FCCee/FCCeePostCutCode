@@ -57,8 +57,33 @@ class AnalysisZHAllHad6J: public AnalysisBase
       double v_d34;
       double v_d45;
       double v_d56;
-      double vis_E;
-      double vis_M;
+      double v_vis_E;
+      double v_vis_M;
+      // double Jet0_E;
+      // double Jet0_px;
+      // double Jet0_py;
+      // double Jet0_pz;
+      // double Jet1_E;
+      // double Jet1_px;
+      // double Jet1_py;
+      // double Jet1_pz;
+      // double Jet2_E;
+      // double Jet2_px;
+      // double Jet2_py;
+      // double Jet2_pz;
+      // double Jet3_E;
+      // double Jet3_px;
+      // double Jet3_py;
+      // double Jet3_pz;
+      // double Jet4_E;
+      // double Jet4_px;
+      // double Jet4_py;
+      // double Jet4_pz;
+      // double Jet5_E;
+      // double Jet5_px;
+      // double Jet5_py;
+      // double Jet5_pz;
+      
 };
 
 
