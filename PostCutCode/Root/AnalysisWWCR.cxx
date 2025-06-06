@@ -31,7 +31,7 @@ void AnalysisWWCR::run()
     // Connect branches to trees
     auto tree = treeCont->getTree();
     varMember<int> event_njet {tree, "event_njet"};
-    varMember<float>  truth_Wp_HS_e {tree, "truth_Wp_HS_e"};
+    varMember<ROOT::VecOps::RVec<float>>  truth_Wp_HS_e {tree, "truth_Wp_HS_e"};
 
     // Loop over the trees here
     for(int i = 0; i < nEntries; i++)
@@ -46,7 +46,7 @@ void AnalysisWWCR::run()
         if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
         if (m_debug) std::cout<<"HAS 4 JETS EXACTLY!"<<std::endl;
        
-        truth_W_e->Fill(truth_Wp_HS_e());
+        truth_W_e->Fill(truth_Wp_HS_e.at(0));
     }
 
 
