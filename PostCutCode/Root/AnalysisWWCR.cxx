@@ -52,6 +52,11 @@ void AnalysisWWCR::run()
     int NEvents = 0;
     int NjetCut = 0;
     int eventNum = 1;
+    // int n_c = 0, n_s = 0, n_l = 0;
+    // int n_c = 0;
+    // int n_s = 0;
+    // int n_l = 0;
+    int nFlavScore = 0; 
 
     // Main event loop 
     for(int i = 0; i < nEntries; i++)
@@ -61,13 +66,13 @@ void AnalysisWWCR::run()
         countingHist->Fill(1);
         NEvents++;
 
-        // if (m_debug) std::cout<<"IN WW CR!"<<std::endl;
         if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
 
-        if(event_njet() != 4) continue; //Require EXACTLY 4 jet! This SHOULD be the case!
-        // if (m_debug) std::cout<<"HAS 4 JETS EXACTLY!"<<std::endl;
+        // Adds the requirement that an event has 4 jets
+        if(event_njet() != 4) continue;
         NjetCut++;
 
+        // Old section (copy into if statement)
         bool flage_toss = false;
         if (recojet_isB.size() == 0){
             flage_toss = true;
@@ -124,20 +129,74 @@ void AnalysisWWCR::run()
         for (const auto& [jetIdx, flavVec] : jetFlavScores) {
             std::cout << "Jet " << jetIdx << " flavor scores:\n";
             for (size_t i = 0; i < flavVec.size(); ++i) {
-                std::cout << "  " << flavLabels[i] << ": " << std::fixed << std::setprecision(6) << flavVec[i] << "\n";
+                std::cout << "  " << flavLabels[i] << ": ";
+                if (std::abs(flavVec[i]) < 1e-6) {
+                    std::cout << std::scientific << std::setprecision(2) << flavVec[i];
+                } else {
+                    std::cout << std::fixed << std::setprecision(6) << flavVec[i];
+                }
+                std::cout << "\n";
             }
             std::cout << std::endl;
         }
 
         eventNum++;
 
-        // for (const auto& [jetIdx, flavVec] : jetFlavScores) {
-        //     std::cout << "Jet " << jetIdx << " flavor scores: ";
-        //     for (float score : flavVec) {
-        //         std::cout << score << " ";
-        //     }
-        //     std::cout << std::endl;
+        // Get the max flavor scores
+        auto j0_MaxScoreIt = std::max_element(j0_flav.begin(), j0_flav.end());
+        auto j1_MaxScoreIt = std::max_element(j1_flav.begin(), j1_flav.end());
+        auto j2_MaxScoreIt = std::max_element(j2_flav.begin(), j2_flav.end());
+        auto j3_MaxScoreIt = std::max_element(j3_flav.begin(), j3_flav.end());
+
+        int j0_maxScoreIdx = std::distance(j0_flav.begin(), j0_MaxScoreIt);
+        int j1_maxScoreIdx = std::distance(j1_flav.begin(), j1_MaxScoreIt);
+        int j2_maxScoreIdx = std::distance(j2_flav.begin(), j2_MaxScoreIt);
+        int j3_maxScoreIdx = std::distance(j3_flav.begin(), j3_MaxScoreIt);
+
+        std::cout << "Jet 0: " << flavLabels[j0_maxScoreIdx] << " = " << *j0_MaxScoreIt << "\n";
+        std::cout << "Jet 1: " << flavLabels[j1_maxScoreIdx] << " = " << *j1_MaxScoreIt << "\n";
+        std::cout << "Jet 2: " << flavLabels[j2_maxScoreIdx] << " = " << *j2_MaxScoreIt << "\n";
+        std::cout << "Jet 3: " << flavLabels[j3_maxScoreIdx] << " = " << *j3_MaxScoreIt << "\n";
+
+        std::cout << "      " << std::endl;
+
+        std::array<int, 4> maxScoreIdx {j0_maxScoreIdx,j1_maxScoreIdx,j2_maxScoreIdx,j3_maxScoreIdx};
+        if (m_debug) {
+            std::cout << "maxScoreIdx: ";
+                for (float ScoreIdx : maxScoreIdx) { // change back to float if need be
+                    std::cout << ScoreIdx << " ";
+                }
+                std::cout << std::endl;
+        }     
+
+        std::map<int,std::vector<int>> jetFlavMaxScore;
+        for (std::size_t i = 0; i < maxScoreIdx.size(); ++i){
+            jetFlavMaxScore[maxScoreIdx[i]].push_back(i);
+        }
+
+        int n_c = 0;
+        int n_s = 0;
+        int n_l = 0;
+
+        bool has_invalid_flavor = false;
+
+        for (int i = 0; i < 4; ++i) {
+            if (maxScoreIdx[i] == 1) n_c++; // c-tag
+            else if (maxScoreIdx[i] == 2) n_s++; // s-tag
+            else if (maxScoreIdx[i] == 3) n_l++; // light-tag
+        }
+
+        // if (m_debug) {
+        //     std::cout << "n_c: " << n_c << ", n_s: " << n_s << ", n_l: " << n_l << std::endl;
         // }
+
+        if (has_invalid_flavor) continue;
+
+        if (!(n_c == 1 && n_s == 1 && n_l == 2)) continue;
+
+        nFlavScore++; // Add this as a 3 bin in cutflow
+
+        
 
         // Fill the histograms
         truth_W_e->Fill(truth_Wp_HS_e.at(0));
@@ -150,10 +209,10 @@ void AnalysisWWCR::run()
     std::cout << "-------------------- Outputs --------------------" << std::endl;
     std::cout << "Number of events: " << NEvents << std::endl;
     std::cout << "Number of events w/ 4 jets: " << NjetCut << std::endl;
+    std::cout << "Number of events with 1 c-tag, 1 s-tag, and 2 light-tag jets: " << nFlavScore << std::endl;
 
     std::cout << "      " << std::endl;
-    std::cout << "-------------------- Tagger Scores --------------------" << std::endl;
-    std::cout << "i made a change (6)" << std::endl;
+    std::cout << "Let there be data!" << std::endl;
 
     // end of macro
 }
