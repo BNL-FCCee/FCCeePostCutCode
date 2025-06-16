@@ -5,6 +5,11 @@
 #include <TFile.h>
 #include <fstream>
 #include <TRandom.h>
+#include "TLorentzVector.h"
+
+#include "TH1F.h"
+#include "TCanvas.h"
+
 
 using namespace std;
 
@@ -20,12 +25,12 @@ AnalysisWWCR::~AnalysisWWCR()
 void AnalysisWWCR::run()
 { 
 
-    std::vector<std::string> cutFlowMap {"All Events", "Has 4 Jets"};
+    std::vector<std::string> cutFlowMap {"All Events", "Has 4 Jets", "Events have a c, s, and 2 l tagged jets"};
 
     // Get the histograms
     auto countingHist = m_histContainer->getCountingHist();
-    auto truth_W_e =  m_histContainer->get1DHist("truth_W_e", 100, 0, 200);
-    auto cutFlowHist = m_histContainer->get1DHist("cutFlowHist", cutFlowMap.size(), 0, 2, cutFlowMap);
+    // auto truth_W_e =  m_histContainer->get1DHist("truth_W_e", 100, 0, 200);
+    auto cutFlowHist = m_histContainer->get1DHist("cutFlowHist", cutFlowMap.size(), 0, 3, cutFlowMap);
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
  
@@ -37,7 +42,7 @@ void AnalysisWWCR::run()
 
     // calls the branch_name (var_type branch {tree, "branch_name"};)
     varMember<int> event_njet {tree, "event_njet"};
-    varMember<ROOT::VecOps::RVec<float>>  truth_Wp_HS_e {tree, "truth_Wp_HS_e"};
+    // varMember<ROOT::VecOps::RVec<float>>  truth_Wp_HS_e {tree, "truth_Wp_HS_e"};
 
     // reconstructed jets (for flavor tagger score)
     varMember<ROOT::VecOps::RVec<float>> recojet_isB {tree, "recojet_isB"};
@@ -48,14 +53,24 @@ void AnalysisWWCR::run()
     varMember<ROOT::VecOps::RVec<float>> recojet_isG {tree, "recojet_isG"};
     varMember<ROOT::VecOps::RVec<float>> recojet_isTAU {tree, "recojet_isTAU"};
 
+    // Mass of W boson
+    // float W_mass = 80.3692;
+
+    // momentum
+    varMember<ROOT::VecOps::RVec<float>> jet_px {tree, "recojet_px"};
+    varMember<ROOT::VecOps::RVec<float>> jet_py {tree, "recojet_py"};
+    varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "recojet_pz"};
+    varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "recojet_e"};
+
+    // TFile* outFile_WWCR = new TFile("test.root", "Recreate");
+
+    TH1F *h_W1_mass = new TH1F("h_W1_mass", "W1 Mass", 50, 0, 150);
+    TH1F *h_W2_mass = new TH1F("h_W2_mass", "W2 Mass", 50, 0, 150);
+
     // Increment for CutFlow
     int NEvents = 0;
     int NjetCut = 0;
     int eventNum = 1;
-    // int n_c = 0, n_s = 0, n_l = 0;
-    // int n_c = 0;
-    // int n_s = 0;
-    // int n_l = 0;
     int nFlavScore = 0; 
 
     // Main event loop 
@@ -167,7 +182,9 @@ void AnalysisWWCR::run()
                     std::cout << ScoreIdx << " ";
                 }
                 std::cout << std::endl;
-        }     
+        }   
+
+        std::cout << "      " << std::endl;  
 
         std::map<int,std::vector<int>> jetFlavMaxScore;
         for (std::size_t i = 0; i < maxScoreIdx.size(); ++i){
@@ -186,33 +203,98 @@ void AnalysisWWCR::run()
             else if (maxScoreIdx[i] == 3) n_l++; // light-tag
         }
 
-        // if (m_debug) {
-        //     std::cout << "n_c: " << n_c << ", n_s: " << n_s << ", n_l: " << n_l << std::endl;
-        // }
-
         if (has_invalid_flavor) continue;
 
         if (!(n_c == 1 && n_s == 1 && n_l == 2)) continue;
 
-        nFlavScore++; // Add this as a 3 bin in cutflow
+        nFlavScore++; // Add this as a 3rd bin in cutflow
 
-        
+        // Start Pairing the jets in W1 and W2
+        int cJet = -1;
+        int sJet = -1;
+        std::vector<int> lJets;
+
+        for (int i = 0; i < 4; ++i) {
+            if (maxScoreIdx[i] == 1) cJet = i;
+            else if (maxScoreIdx[i] == 2) sJet = i;
+            else if (maxScoreIdx[i] == 3) lJets.push_back(i); 
+        }
+
+        if (cJet == -1 || sJet == -1 || lJets.size() != 2) {
+            std::cerr << "Error: Incorrect number of flavored jets for pairing!" << std::endl;
+            continue;
+        }
+
+        // W pair 1: c + s
+        std::pair<int, int> W1_pair = {cJet, sJet};
+
+        // W pair 2: l + l
+        std::pair<int, int> W2_pair = {lJets[0], lJets[1]};
+
+        // Optional: print the pairs
+        std::cout << "W1 pair: Jet " << W1_pair.first << " (c), Jet " << W1_pair.second << " (s)" << std::endl;
+        std::cout << "W2 pair: Jet " << W2_pair.first << " (l), Jet " << W2_pair.second << " (l)" << std::endl;
+        std::cout << "      " << std::endl;
+
+        // calculate the mass 
+        TLorentzVector cTag_Jet, sTag_Jet, lTag_Jet_0, lTag_Jet_1;
+
+        cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_py.at(cJet), jet_e.at(cJet));
+        sTag_Jet.SetPxPyPzE(jet_px.at(sJet), jet_py.at(sJet), jet_py.at(sJet), jet_e.at(sJet));
+
+        lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_py.at(lJets[0]), jet_e.at(lJets[0]));
+        lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_py.at(lJets[1]), jet_e.at(lJets[1]));
+
+        TLorentzVector W1 = cTag_Jet + sTag_Jet;
+        TLorentzVector W2 = lTag_Jet_0 + lTag_Jet_1;
+
+        h_W1_mass->Fill(W1.M());
+        h_W2_mass->Fill(W2.M());
+
+        std::cout << "W1 mass: " << W1.M() << " GeV" << std::endl;
+        std::cout << "W2 mass: " << W2.M() << " GeV" << std::endl;
+
+        std::cout << "  " << std::endl;
+
+
 
         // Fill the histograms
-        truth_W_e->Fill(truth_Wp_HS_e.at(0));
+        // truth_W_e->Fill(truth_Wp_HS_e.at(0));
 
         cutFlowHist->SetBinContent(1, NEvents);
         cutFlowHist->SetBinContent(2, NjetCut);
+        cutFlowHist->SetBinContent(3, nFlavScore);
     }
 
     std::cout << "      " << std::endl;
     std::cout << "-------------------- Outputs --------------------" << std::endl;
     std::cout << "Number of events: " << NEvents << std::endl;
     std::cout << "Number of events w/ 4 jets: " << NjetCut << std::endl;
-    std::cout << "Number of events with 1 c-tag, 1 s-tag, and 2 light-tag jets: " << nFlavScore << std::endl;
+    std::cout << "Number of events with 1 c-tagged, 1 s-tagged, and 2 light-tagged jets: " << nFlavScore << std::endl;
 
     std::cout << "      " << std::endl;
     std::cout << "Let there be data!" << std::endl;
+
+    // // Plot the histograms and save them to "test.root"
+    // TCanvas* c_Wmass = new TCanvas("c_Wmass", "W Boson Masses", 1000, 500);
+    // c_Wmass->Divide(1, 1);
+
+    // // Draw W1 mass
+    // c_Wmass->cd(1);
+    // h_W1_mass->SetLineColor(kBlue);
+    // h_W1_mass->Draw();
+
+    // h_W2_mass->SetLineColor(kRed);
+    // h_W2_mass->Draw("same");
+
+    // outFile_WWCR->cd();
+
+    // c_Wmass->Write;
+
+    // outFile_WWCR->Write();
+    // outFile_WWCR->Close();
+
+
 
     // end of macro
 }
