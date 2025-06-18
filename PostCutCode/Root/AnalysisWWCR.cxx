@@ -33,10 +33,11 @@ void AnalysisWWCR::run()
     auto cutFlowHist = m_histContainer->get1DHist("cutFlowHist", cutFlowMap.size(), 0, 5, cutFlowMap);
     auto h_W1_mass = m_histContainer->get1DHist("h_W1_mass", 300, 0, 150);
     auto h_W2_mass = m_histContainer->get1DHist("h_W2_mass", 300, 0, 150);
+    auto h_chi2 = m_histContainer->get1DHist("h_chi2", 300, 0, 150);
 
-    auto h_W1_truth_mass = m_histContainer->get1DHist("h_W1_truth_mass", 300, 0, 150);
-    auto h_W2_truth_mass = m_histContainer->get1DHist("h_W2_truth_mass", 300, 0, 150);
-    auto h_chi2_truth = m_histContainer->get1DHist("h_chi2_truth", 300, 0, 150);
+    // auto h_W1_truth_mass = m_histContainer->get1DHist("h_W1_truth_mass", 300, 0, 150);
+    // auto h_W2_truth_mass = m_histContainer->get1DHist("h_W2_truth_mass", 300, 0, 150);
+    // auto h_chi2_truth = m_histContainer->get1DHist("h_chi2_truth", 300, 0, 150);
     // auto h_W2_truth_mass = m_histContainer->get1DHist("h_W2_truth_mass", 300, 0, 150);
 
     // Get the trees
@@ -85,8 +86,8 @@ void AnalysisWWCR::run()
     int eventNum = 1;
     int nFlavScore = 0; 
 
-    int NEvents_truth = 0;
-    int nFlavScore_truth = 0; 
+    // int NEvents_truth = 0;
+    // int nFlavScore_truth = 0; 
 
     const int maxPrint = 10;
     int nPrinted = 0;
@@ -122,7 +123,6 @@ void AnalysisWWCR::run()
 
         NEvents_truth++;
 
-        // Reconstructed jets (simulated "experimental" data)
         bool flage_toss = false;
         if (recojet_isB.size() == 0){
             flage_toss = true;
@@ -168,13 +168,13 @@ void AnalysisWWCR::run()
 
         NokFlav++;
 
-        // cut on the number of electrons
-        if (event_nmu() > 2.) continue;
-        if (event_nel() > 2.) continue;
-        if (muons_p() > 20.) continue;
-        if (elecrons_p() > 20.) continue;
+        // // cut on the number of electrons
+        // if (event_nmu() > 2.) continue;
+        // if (event_nel() > 2.) continue;
+        // if (muons_p() > 20.) continue;
+        // if (elecrons_p() > 20.) continue;
 
-        NleptonCut++;
+        // NleptonCut++;
 
         std::map<int,std::vector<float>> jetFlavScores;
         jetFlavScores[0] = j0_flav;
@@ -213,96 +213,110 @@ void AnalysisWWCR::run()
 
         eventNum++;
 
-        // ************* THIS CALCULATES THE MASS WITH THE TRUTH JETS *************
-        // Pair the truth jets
-        int nTruth_c = 0;
-        int nTruth_s = 0;
-        int nTruth_u = 0;
-        int nTruth_d = 0;
+        // ************* THIS CALCULATES THE MASS WITH THE RECONSTRUCTED JETS *************
+        // Get the max flavor scores
+        auto j0_MaxScoreIt = std::max_element(j0_flav.begin(), j0_flav.end());
+        auto j1_MaxScoreIt = std::max_element(j1_flav.begin(), j1_flav.end());
+        auto j2_MaxScoreIt = std::max_element(j2_flav.begin(), j2_flav.end());
+        auto j3_MaxScoreIt = std::max_element(j3_flav.begin(), j3_flav.end());
 
-        bool truth_has_invalid_flavor = false;
+        int j0_maxScoreIdx = std::distance(j0_flav.begin(), j0_MaxScoreIt);
+        int j1_maxScoreIdx = std::distance(j1_flav.begin(), j1_MaxScoreIt);
+        int j2_maxScoreIdx = std::distance(j2_flav.begin(), j2_MaxScoreIt);
+        int j3_maxScoreIdx = std::distance(j3_flav.begin(), j3_MaxScoreIt);
 
-        for (int i = 0; i < 4; ++i) {
-            int flav = jet_truth->at(i);
+        if (do_debug && nPrinted < maxPrint) {
+            std::cout << "Jet 0: " << flavLabels[j0_maxScoreIdx] << " = " << *j0_MaxScoreIt << "\n";
+            std::cout << "Jet 1: " << flavLabels[j1_maxScoreIdx] << " = " << *j1_MaxScoreIt << "\n";
+            std::cout << "Jet 2: " << flavLabels[j2_maxScoreIdx] << " = " << *j2_MaxScoreIt << "\n";
+            std::cout << "Jet 3: " << flavLabels[j3_maxScoreIdx] << " = " << *j3_MaxScoreIt << "\n";
+            std::cout << "      " << std::endl;
+        }
 
-            // PDG flavor codes for quarks and anti-quarks:
-            if (flav == 4 || flav == -4) nTruth_c++;
-            else if (flav == 3 || flav == -3) nTruth_s++;
-            else if (flav == 2 || flav == -2) nTruth_u++;
-            else if (flav == 1 || flav == -1) nTruth_d++;
-            else {
-                truth_has_invalid_flavor = true;
-                break;  // stop counting if invalid flavor found
+       std::array<int, 4> maxScoreIdx {j0_maxScoreIdx,j1_maxScoreIdx,j2_maxScoreIdx,j3_maxScoreIdx};
+
+       if (nPrinted < maxPrint) {
+            std::cout << "maxScoreIdx: ";
+            for (int ScoreIdx : maxScoreIdx) {
+                std::cout << ScoreIdx << " ";
             }
+            std::cout << std::endl;
+            std::cout << "      " << std::endl;
         }
 
-        if (truth_has_invalid_flavor) continue;
+        std::map<int,std::vector<int>> jetFlavMaxScore;
+        for (std::size_t i = 0; i < maxScoreIdx.size(); ++i){
+            jetFlavMaxScore[maxScoreIdx[i]].push_back(i);
+        }
 
-        if (!(nTruth_c == 1 && nTruth_s == 1 && nTruth_u == 1 && nTruth_d == 1)) continue;
+        int n_c = 0;
+        int n_s = 0;
+        int n_l = 0;
 
-        nFlavScore_truth++;
-
-        int cJet_truth = -1;
-        int sJet_truth = -1;
-        int uJet_truth = -1;
-        int dJet_truth = -1;
+        bool has_invalid_flavor = false;
 
         for (int i = 0; i < 4; ++i) {
-            int flav = jet_truth->at(i);
-
-            if (flav == 4 || flav == -4) cJet_truth = i;
-            else if (flav == 3 || flav == -3) sJet_truth = i;
-            else if (flav == 2 || flav == -2) uJet_truth = i;
-            else if (flav == 1 || flav == -1) dJet_truth = i;
+            if (maxScoreIdx[i] == 1) n_c++; // c-tag
+            else if (maxScoreIdx[i] == 2) n_s++; // s-tag
+            else if (maxScoreIdx[i] == 3) n_l++; // light-tag
         }
 
-        if (cJet_truth == -1 || sJet_truth == -1 || uJet_truth == -1 || dJet_truth == -1) {
+        if (has_invalid_flavor) continue;
+
+        if (!(n_c == 1 && n_s == 1 && n_l == 2)) continue;
+
+        nFlavScore++; // Add this as a 3rd bin in cutflow
+
+        // Start Pairing the jets in W1 and W2
+        int cJet = -1;
+        int sJet = -1;
+        std::vector<int> lJets;
+
+        for (int i = 0; i < 4; ++i) {
+            if (maxScoreIdx[i] == 1) cJet = i;
+            else if (maxScoreIdx[i] == 2) sJet = i;
+            else if (maxScoreIdx[i] == 3) lJets.push_back(i); 
+        }
+
+        if (cJet == -1 || sJet == -1 || lJets.size() != 2) {
             std::cerr << "Error: Incorrect number of flavored jets for pairing!" << std::endl;
             continue;
         }
 
         // W pair 1: c + s
-        std::pair<int, int> W1_pair_truth = {cJet_truth, sJet_truth};
+        std::pair<int, int> W1_pair = {cJet, sJet};
 
-        // W pair 2: u + d
-        std::pair<int, int> W2_pair_truth = {uJet_truth, dJet_truth};
+        // W pair 2: l + l
+        std::pair<int, int> W2_pair = {lJets[0], lJets[1]};
 
         if (do_debug && nPrinted < maxPrint) {
-            std::cout << "W1 pair: Jet " << W1_pair_truth.first << " (c), Jet " << W1_pair_truth.second << " (s)" << std::endl;
-            std::cout << "W2 pair: Jet " << W2_pair_truth.first << " (u), Jet " << W2_pair_truth.second << " (d)" << std::endl;
+            std::cout << "W1 pair: Jet " << W1_pair.first << " (c), Jet " << W1_pair.second << " (s)" << std::endl;
+            std::cout << "W2 pair: Jet " << W2_pair.first << " (l), Jet " << W2_pair.second << " (l)" << std::endl;
             std::cout << "      " << std::endl;
         }
 
         // calculate the mass 
-        TLorentzVector cTag_truthJet, sTag_truthJet, uTag_truthJet, dTag_truthJet;
+        TLorentzVector cTag_Jet, sTag_Jet, lTag_Jet_0, lTag_Jet_1;
 
-        cTag_truthJet.SetPxPyPzE(jet_px.at(cJet_truth), jet_py.at(cJet_truth), jet_py.at(cJet_truth), jet_e.at(cJet_truth));
-        sTag_truthJet.SetPxPyPzE(jet_px.at(sJet_truth), jet_py.at(sJet_truth), jet_py.at(sJet_truth), jet_e.at(sJet_truth));
-        uTag_truthJet.SetPxPyPzE(jet_px.at(uJet_truth), jet_py.at(uJet_truth), jet_py.at(uJet_truth), jet_e.at(uJet_truth));
-        dTag_truthJet.SetPxPyPzE(jet_px.at(dJet_truth), jet_py.at(dJet_truth), jet_py.at(dJet_truth), jet_e.at(dJet_truth));
+        cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_py.at(cJet), jet_e.at(cJet));
+        sTag_Jet.SetPxPyPzE(jet_px.at(sJet), jet_py.at(sJet), jet_py.at(sJet), jet_e.at(sJet));
 
-
-        // TLorentzVector W1_truth = cTag_truthJet + sTag_truthJet;
-        // TLorentzVector W2_truth = uTag_truthJet + dTag_truthJet;
-
-        // h_W1_truth_mass->Fill(W1_truth.M());
-        // h_W2_truth_mass->Fill(W2_truth.M());
-
-        // if (do_debug && nPrinted < maxPrint) {
-        //     std::cout << "W1 mass: " << W1_truth.M() << " GeV" << std::endl;
-        //     std::cout << "W2 mass: " << W2_truth.M() << " GeV" << std::endl;
-        //     std::cout << "  " << std::endl;
-        // }
+        lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_py.at(lJets[0]), jet_e.at(lJets[0]));
+        lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_py.at(lJets[1]), jet_e.at(lJets[1]));
 
         // ************* THIS CALCULATES THE MASS WITH THE TRUTH JETS USING THE CHI^2 METHOD *************
+
         const double m_W_true = 80.379;
-        const double sigma_W = 10.0;
+        // const double sigma_W = 10.0; <-- should this be the mass of W in the chi^2 calculations
 
-        TLorentzVector W1_option1 = cTag_truthJet + sTag_truthJet;
-        TLorentzVector W2_option1 = uTag_truthJet + dTag_truthJet;
+        TLorentzVector W1_option1 = cTag_Jet + sTag_Jet;
+        TLorentzVector W2_option1 = lTag_Jet_0 + lTag_Jet_1;
 
-        TLorentzVector W1_option2 = cTag_truthJet + dTag_truthJet;
-        TLorentzVector W2_option2 = uTag_truthJet + sTag_truthJet;
+        TLorentzVector W1_option2 = cTag_Jet + lTag_Jet_0;
+        TLorentzVector W2_option2 = sTag_Jet + lTag_Jet_1;
+
+        TLorentzVector W1_option3 = cTag_Jet + lTag_Jet_1;
+        TLorentzVector W2_option3 = sTag_Jet + lTag_Jet_0;
 
         // double chi2_option1 = 
         //     (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2));
@@ -311,129 +325,231 @@ void AnalysisWWCR::run()
         //     (pow(W1_option2.M() - m_W_true, 2) + pow(W2_option2.M() - m_W_true, 2));
 
         double chi2_option1 = 
-            (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2)) / (sigma_W * sigma_W);
+            (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2)) / (m_W_true);
 
         double chi2_option2 = 
-            (pow(W1_option2.M() - m_W_true, 2) + pow(W2_option2.M() - m_W_true, 2)) / (sigma_W * sigma_W);
+            (pow(W1_option2.M() - m_W_true, 2) + pow(W2_option2.M() - m_W_true, 2)) / (m_W_true);
+
+        double chi2_option3 = 
+            (pow(W1_option3.M() - m_W_true, 2) + pow(W2_option3.M() - m_W_true, 2)) / (m_W_true);
+
+        // double chi2_option1 = 
+        //     (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2)) / (sigma_W * sigma_W);
+
+        // double chi2_option2 = 
+        //     (pow(W1_option2.M() - m_W_true, 2) + pow(W2_option2.M() - m_W_true, 2)) / (sigma_W * sigma_W);
 
         if (chi2_option1 <= chi2_option2) {
             // Option 1 is chosen
-            h_W1_truth_mass->Fill(W1_option1.M());
-            h_W2_truth_mass->Fill(W2_option1.M());
-            h_chi2_truth->Fill(chi2_option1);
+            h_W1_mass->Fill(W1_option1.M());
+            h_W2_mass->Fill(W2_option1.M());
+            h_chi2->Fill(chi2_option1);
+        } else if (chi2_option2 <= chi2_option3) {
+            // Option 2 is chosen
+            h_W1_mass->Fill(W1_option2.M());
+            h_W2_mass->Fill(W2_option2.M());
+            h_chi2->Fill(chi2_option2);
         } else {
             // Option 2 is chosen
-            h_W1_truth_mass->Fill(W1_option2.M());
-            h_W2_truth_mass->Fill(W2_option2.M());
-            h_chi2_truth->Fill(chi2_option2);
+            h_W1_mass->Fill(W1_option3.M());
+            h_W2_mass->Fill(W2_option3.M());
+            h_chi2->Fill(chi2_option3);
         }
 
+        // TLorentzVector W1 = cTag_Jet + sTag_Jet;
+        // TLorentzVector W2 = lTag_Jet_0 + lTag_Jet_1;
+
+        // h_W1_mass->Fill(W1.M());
+        // h_W2_mass->Fill(W2.M());
+
+        // if (do_debug && nPrinted < maxPrint) {
+        //     std::cout << "W1 mass: " << W1.M() << " GeV" << std::endl;
+        //     std::cout << "W2 mass: " << W2.M() << " GeV" << std::endl;
+        //     std::cout << "  " << std::endl;
+        // }
 
 
 
+        // // **************************** THIS CALCULATES THE MASS WITH THE TRUTH JETS ****************************
+        // // Pair the truth jets
+        // int nTruth_c = 0;
+        // int nTruth_s = 0;
+        // int nTruth_u = 0;
+        // int nTruth_d = 0;
 
-        // ************* THIS CALCULATES THE MASS WITH THE RECONSTRUCTED JETS *************
-        // Get the max flavor scores
-    //     auto j0_MaxScoreIt = std::max_element(j0_flav.begin(), j0_flav.end());
-    //     auto j1_MaxScoreIt = std::max_element(j1_flav.begin(), j1_flav.end());
-    //     auto j2_MaxScoreIt = std::max_element(j2_flav.begin(), j2_flav.end());
-    //     auto j3_MaxScoreIt = std::max_element(j3_flav.begin(), j3_flav.end());
+        // bool truth_has_invalid_flavor = false;
 
-    //     int j0_maxScoreIdx = std::distance(j0_flav.begin(), j0_MaxScoreIt);
-    //     int j1_maxScoreIdx = std::distance(j1_flav.begin(), j1_MaxScoreIt);
-    //     int j2_maxScoreIdx = std::distance(j2_flav.begin(), j2_MaxScoreIt);
-    //     int j3_maxScoreIdx = std::distance(j3_flav.begin(), j3_MaxScoreIt);
+        // for (int i = 0; i < 4; ++i) {
+        //     int flav = jet_truth->at(i);
 
-    //     if (do_debug && nPrinted < maxPrint) {
-    //         std::cout << "Jet 0: " << flavLabels[j0_maxScoreIdx] << " = " << *j0_MaxScoreIt << "\n";
-    //         std::cout << "Jet 1: " << flavLabels[j1_maxScoreIdx] << " = " << *j1_MaxScoreIt << "\n";
-    //         std::cout << "Jet 2: " << flavLabels[j2_maxScoreIdx] << " = " << *j2_MaxScoreIt << "\n";
-    //         std::cout << "Jet 3: " << flavLabels[j3_maxScoreIdx] << " = " << *j3_MaxScoreIt << "\n";
-    //         std::cout << "      " << std::endl;
-    //     }
+        //     // PDG flavor codes for quarks and anti-quarks:
+        //     if (flav == 4 || flav == -4) nTruth_c++;
+        //     else if (flav == 3 || flav == -3) nTruth_s++;
+        //     else if (flav == 2 || flav == -2) nTruth_u++;
+        //     else if (flav == 1 || flav == -1) nTruth_d++;
+        //     else {
+        //         truth_has_invalid_flavor = true;
+        //         break;  // stop counting if invalid flavor found
+        //     }
+        // }
 
-    //    std::array<int, 4> maxScoreIdx {j0_maxScoreIdx,j1_maxScoreIdx,j2_maxScoreIdx,j3_maxScoreIdx};
+        // if (truth_has_invalid_flavor) continue;
 
-    //    if (nPrinted < maxPrint) {
-    //         std::cout << "maxScoreIdx: ";
-    //         for (int ScoreIdx : maxScoreIdx) {
-    //             std::cout << ScoreIdx << " ";
-    //         }
-    //         std::cout << std::endl;
-    //         std::cout << "      " << std::endl;
-    //     }
+        // if (!(nTruth_c == 1 && nTruth_s == 1 && nTruth_u == 1 && nTruth_d == 1)) continue;
 
-    //     std::map<int,std::vector<int>> jetFlavMaxScore;
-    //     for (std::size_t i = 0; i < maxScoreIdx.size(); ++i){
-    //         jetFlavMaxScore[maxScoreIdx[i]].push_back(i);
-    //     }
+        // nFlavScore_truth++;
 
-    //     int n_c = 0;
-    //     int n_s = 0;
-    //     int n_l = 0;
+        // int cJet_truth = -1;
+        // int sJet_truth = -1;
+        // int uJet_truth = -1;
+        // int dJet_truth = -1;
 
-    //     bool has_invalid_flavor = false;
+        // for (int i = 0; i < 4; ++i) {
+        //     int flav = jet_truth->at(i);
 
-    //     for (int i = 0; i < 4; ++i) {
-    //         if (maxScoreIdx[i] == 1) n_c++; // c-tag
-    //         else if (maxScoreIdx[i] == 2) n_s++; // s-tag
-    //         else if (maxScoreIdx[i] == 3) n_l++; // light-tag
-    //     }
+        //     if (flav == 4 || flav == -4) cJet_truth = i;
+        //     else if (flav == 3 || flav == -3) sJet_truth = i;
+        //     else if (flav == 2 || flav == -2) uJet_truth = i;
+        //     else if (flav == 1 || flav == -1) dJet_truth = i;
+        // }
 
-    //     if (has_invalid_flavor) continue;
+        // if (cJet_truth == -1 || sJet_truth == -1 || uJet_truth == -1 || dJet_truth == -1) {
+        //     std::cerr << "Error: Incorrect number of flavored jets for pairing!" << std::endl;
+        //     continue;
+        // }
 
-    //     if (!(n_c == 1 && n_s == 1 && n_l == 2)) continue;
+        // // ************* LOOKS AT EVENTS WITH THE PAIRS (U, D, S, C) AND (U, D, C, C) *************
 
-    //     nFlavScore++; // Add this as a 3rd bin in cutflow
+        // // if (!((nTruth_c == 1 && nTruth_s == 1 && nTruth_u == 1 && nTruth_d == 1) ||
+        // // (nTruth_c == 2 && nTruth_u == 1 && nTruth_d == 1)))
+        // // continue;
 
-    //     // Start Pairing the jets in W1 and W2
-    //     int cJet = -1;
-    //     int sJet = -1;
-    //     std::vector<int> lJets;
+        // // nFlavScore_truth++;
 
-    //     for (int i = 0; i < 4; ++i) {
-    //         if (maxScoreIdx[i] == 1) cJet = i;
-    //         else if (maxScoreIdx[i] == 2) sJet = i;
-    //         else if (maxScoreIdx[i] == 3) lJets.push_back(i); 
-    //     }
+        // // int cJet1_truth = -1;
+        // // int cJet2_truth = -1;
+        // // int sJet_truth = -1;
+        // // int uJet_truth = -1;
+        // // int dJet_truth = -1;
 
-    //     if (cJet == -1 || sJet == -1 || lJets.size() != 2) {
-    //         std::cerr << "Error: Incorrect number of flavored jets for pairing!" << std::endl;
-    //         continue;
-    //     }
+        // // int c_count = 0;
 
-    //     // W pair 1: c + s
-    //     std::pair<int, int> W1_pair = {cJet, sJet};
+        // // for (int i = 0; i < 4; ++i) {
+        // //     int flav = jet_truth->at(i);
 
-    //     // W pair 2: l + l
-    //     std::pair<int, int> W2_pair = {lJets[0], lJets[1]};
+        // //     if (flav == 4 || flav == -4) {
+        // //         if (c_count == 0) cJet1_truth = i;
+        // //         else if (c_count == 1) cJet2_truth = i;
+        // //         c_count++;
+        // //     }
+        // //     else if (flav == 3 || flav == -3) sJet_truth = i;
+        // //     else if (flav == 2 || flav == -2) uJet_truth = i;
+        // //     else if (flav == 1 || flav == -1) dJet_truth = i;
+        // // }
 
-    //     if (do_debug && nPrinted < maxPrint) {
-    //         std::cout << "W1 pair: Jet " << W1_pair.first << " (c), Jet " << W1_pair.second << " (s)" << std::endl;
-    //         std::cout << "W2 pair: Jet " << W2_pair.first << " (l), Jet " << W2_pair.second << " (l)" << std::endl;
-    //         std::cout << "      " << std::endl;
-    //     }
+        // // if (!(
+        // //         (c_count == 1 && sJet_truth != -1 && uJet_truth != -1 && dJet_truth != -1)  // case 1
+        // //         ||
+        // //         (c_count == 2 && uJet_truth != -1 && dJet_truth != -1) // case 2
+        // //     )) 
+        // // {
+        // //     std::cerr << "Error: Incorrect number of flavored jets for pairing!" << std::endl;
+        // //     continue;
+        // // }
 
-    //     // calculate the mass 
-    //     TLorentzVector cTag_Jet, sTag_Jet, lTag_Jet_0, lTag_Jet_1;
+        // // ************************************ END OF EDITS ************************************
 
-    //     cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_py.at(cJet), jet_e.at(cJet));
-    //     sTag_Jet.SetPxPyPzE(jet_px.at(sJet), jet_py.at(sJet), jet_py.at(sJet), jet_e.at(sJet));
 
-    //     lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_py.at(lJets[0]), jet_e.at(lJets[0]));
-    //     lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_py.at(lJets[1]), jet_e.at(lJets[1]));
+        // // W pair 1: c + s
+        // std::pair<int, int> W1_pair_truth = {cJet_truth, sJet_truth};
 
-    //     TLorentzVector W1 = cTag_Jet + sTag_Jet;
-    //     TLorentzVector W2 = lTag_Jet_0 + lTag_Jet_1;
+        // // W pair 2: u + d
+        // std::pair<int, int> W2_pair_truth = {uJet_truth, dJet_truth};
 
-    //     h_W1_mass->Fill(W1.M());
-    //     h_W2_mass->Fill(W2.M());
+        // if (do_debug && nPrinted < maxPrint) {
+        //     std::cout << "W1 pair: Jet " << W1_pair_truth.first << " (c), Jet " << W1_pair_truth.second << " (s)" << std::endl;
+        //     std::cout << "W2 pair: Jet " << W2_pair_truth.first << " (u), Jet " << W2_pair_truth.second << " (d)" << std::endl;
+        //     std::cout << "      " << std::endl;
+        // }
 
-    //     if (do_debug && nPrinted < maxPrint) {
-    //         std::cout << "W1 mass: " << W1.M() << " GeV" << std::endl;
-    //         std::cout << "W2 mass: " << W2.M() << " GeV" << std::endl;
-    //         std::cout << "  " << std::endl;
-    //     }
+        // // calculate the mass 
+        // TLorentzVector cTag_truthJet, sTag_truthJet, uTag_truthJet, dTag_truthJet;
+
+        // cTag_truthJet.SetPxPyPzE(jet_px.at(cJet_truth), jet_py.at(cJet_truth), jet_py.at(cJet_truth), jet_e.at(cJet_truth));
+        // sTag_truthJet.SetPxPyPzE(jet_px.at(sJet_truth), jet_py.at(sJet_truth), jet_py.at(sJet_truth), jet_e.at(sJet_truth));
+        // uTag_truthJet.SetPxPyPzE(jet_px.at(uJet_truth), jet_py.at(uJet_truth), jet_py.at(uJet_truth), jet_e.at(uJet_truth));
+        // dTag_truthJet.SetPxPyPzE(jet_px.at(dJet_truth), jet_py.at(dJet_truth), jet_py.at(dJet_truth), jet_e.at(dJet_truth));
+
+
+        // // TLorentzVector W1_truth = cTag_truthJet + sTag_truthJet;
+        // // TLorentzVector W2_truth = uTag_truthJet + dTag_truthJet;
+
+        // // h_W1_truth_mass->Fill(W1_truth.M());
+        // // h_W2_truth_mass->Fill(W2_truth.M());
+
+        // // if (do_debug && nPrinted < maxPrint) {
+        // //     std::cout << "W1 mass: " << W1_truth.M() << " GeV" << std::endl;
+        // //     std::cout << "W2 mass: " << W2_truth.M() << " GeV" << std::endl;
+        // //     std::cout << "  " << std::endl;
+        // // }
+
+
+        // // ************* THIS CALCULATES THE MASS WITH THE TRUTH JETS USING THE CHI^2 METHOD *************
+
+        // const double m_W_true = 80.379;
+        // // const double sigma_W = 10.0; <-- should this be the mass of W in the chi^2 calculations
+
+        // TLorentzVector W1_option1 = cTag_truthJet + sTag_truthJet;
+        // TLorentzVector W2_option1 = uTag_truthJet + dTag_truthJet;
+
+        // TLorentzVector W1_option2 = cTag_truthJet + dTag_truthJet;
+        // TLorentzVector W2_option2 = uTag_truthJet + sTag_truthJet;
+
+        // TLorentzVector W1_option3 = cTag_truthJet + uTag_truthJet;
+        // TLorentzVector W2_option3 = sTag_truthJet + dTag_truthJet;
+
+        // // double chi2_option1 = 
+        // //     (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2));
+
+        // // double chi2_option2 = 
+        // //     (pow(W1_option2.M() - m_W_true, 2) + pow(W2_option2.M() - m_W_true, 2));
+
+        // double chi2_option1 = 
+        //     (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2)) / (m_W_true);
+
+        // double chi2_option2 = 
+        //     (pow(W1_option2.M() - m_W_true, 2) + pow(W2_option2.M() - m_W_true, 2)) / (m_W_true);
+
+        // double chi2_option3 = 
+        //     (pow(W1_option3.M() - m_W_true, 2) + pow(W2_option3.M() - m_W_true, 2)) / (m_W_true);
+
+        // // double chi2_option1 = 
+        // //     (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2)) / (sigma_W * sigma_W);
+
+        // // double chi2_option2 = 
+        // //     (pow(W1_option2.M() - m_W_true, 2) + pow(W2_option2.M() - m_W_true, 2)) / (sigma_W * sigma_W);
+
+        // if (chi2_option1 <= chi2_option2) {
+        //     // Option 1 is chosen
+        //     h_W1_truth_mass->Fill(W1_option1.M());
+        //     h_W2_truth_mass->Fill(W2_option1.M());
+        //     h_chi2_truth->Fill(chi2_option1);
+        // } else if (chi2_option2 <= chi2_option3) {
+        //     // Option 2 is chosen
+        //     h_W1_truth_mass->Fill(W1_option2.M());
+        //     h_W2_truth_mass->Fill(W2_option2.M());
+        //     h_chi2_truth->Fill(chi2_option2);
+        // } else {
+        //     // Option 2 is chosen
+        //     h_W1_truth_mass->Fill(W1_option3.M());
+        //     h_W2_truth_mass->Fill(W2_option3.M());
+        //     h_chi2_truth->Fill(chi2_option3);
+        // }
+
+        // // ************************************ END OF EDITS ************************************
+
+
+
 
         // Fill the histograms
         // truth_W_e->Fill(truth_Wp_HS_e.at(0));
@@ -443,7 +559,7 @@ void AnalysisWWCR::run()
         cutFlowHist->SetBinContent(2, NokFlav);
         cutFlowHist->SetBinContent(3, NjetCut);
         cutFlowHist->SetBinContent(4, NleptonCut);
-        // cutFlowHist->SetBinContent(5, nFlavScore);
+        cutFlowHist->SetBinContent(5, nFlavScore);
     }
 
     std::cout << "      " << std::endl;
@@ -451,11 +567,11 @@ void AnalysisWWCR::run()
     std::cout << "Number of events: " << NEvents << std::endl;
     std::cout << "Number of events w/ 4 jets: " << NjetCut << std::endl;
     std::cout << "Number of Leptons Cut: " << NleptonCut << std::endl;
-    std::cout << "Number of events with 1 c-tagged, 1 s-tagged, and 2 light-tagged jets (commented out): " << nFlavScore << std::endl;
+    std::cout << "Number of events with 1 c-tagged, 1 s-tagged, and 2 light-tagged jets: " << nFlavScore << std::endl;
     std::cout << "      " << std::endl;
-    std::cout << "----------------- Truth Events ------------------" << std::endl;
-    std::cout << "Number of truth events: " << NEvents_truth << std::endl;
-    std::cout << "Number of truth events with 1 c-tagged, 1 s-tagged, and 2 light-tagged jets: " << nFlavScore_truth << std::endl;
+    // std::cout << "----------------- Truth Events ------------------" << std::endl;
+    // std::cout << "Number of truth events: " << NEvents_truth << std::endl;
+    // std::cout << "Number of truth events with 1 c-tagged, 1 s-tagged, and 2 light-tagged jets: " << nFlavScore_truth << std::endl;
 
     std::cout << "      " << std::endl;
     std::cout << "Let there be data!" << std::endl;
