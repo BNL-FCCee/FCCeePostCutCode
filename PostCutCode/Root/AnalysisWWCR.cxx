@@ -21,6 +21,27 @@ AnalysisWWCR::AnalysisWWCR():
 AnalysisWWCR::~AnalysisWWCR()
 {}
 
+struct QuarkCounter {
+        int n_c = 0;
+        int n_s = 0;
+        int n_u = 0;
+        int n_d = 0;
+    };
+
+QuarkCounter countQuarks(const ROOT::VecOps::RVec<int>* jet_truth) {
+    QuarkCounter counter;
+
+    for (size_t i = 0; i < jet_truth->size(); ++i) {
+        int pdg_code = std::abs(jet_truth->at(i));
+
+        if (pdg_code == 4) counter.n_c++;
+        if (pdg_code == 3) counter.n_s++;
+        if (pdg_code == 2) counter.n_u++;
+        if (pdg_code == 1) counter.n_d++;
+    }
+    return counter;
+}
+
 void AnalysisWWCR::run()
 { 
 
@@ -32,6 +53,19 @@ void AnalysisWWCR::run()
     auto h_W1_mass = m_histContainer->get1DHist("h_W1_mass", 300, 0, 150);
     auto h_W2_mass = m_histContainer->get1DHist("h_W2_mass", 300, 0, 150);
     auto h_chi2 = m_histContainer->get1DHist("h_chi2", 300, 0, 150);
+
+    auto cJet_pt = m_histContainer->get1DHist("cJet_pt", 300, 0, 150);
+    auto lJet0_pt = m_histContainer->get1DHist("lJet0_pt", 300, 0, 150);
+    auto lJet1_pt = m_histContainer->get1DHist("lJet1_pt", 300, 0, 150);
+    auto lJet2_pt = m_histContainer->get1DHist("lJet2_pt", 300, 0, 150);
+
+    auto cJet_p = m_histContainer->get1DHist("cJet_p", 300, 0, 150);
+    auto lJet0_p = m_histContainer->get1DHist("lJet0_p", 300, 0, 150);
+    auto lJet1_p = m_histContainer->get1DHist("lJet1_p", 300, 0, 150);
+    auto lJet2_p = m_histContainer->get1DHist("lJet2_p", 300, 0, 150);
+
+    auto h_W1_p = m_histContainer->get1DHist("h_W1_p", 300, 0, 150);
+    auto h_W2_p = m_histContainer->get1DHist("h_W2_p", 300, 0, 150);
 
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
@@ -74,6 +108,9 @@ void AnalysisWWCR::run()
     varMember<ROOT::VecOps::RVec<float>> jet_pz {tree, "jet_pz_corr"};
     varMember<ROOT::VecOps::RVec<float>> jet_e {tree, "jet_e_corr"};
 
+    ROOT::VecOps::RVec<int>* Wm_jet_truth = truth_Wm_Daugthers_pdg();
+    ROOT::VecOps::RVec<int>* Wp_jet_truth = truth_Wp_Daugthers_pdg();
+
     // Increment for CutFlow
     int NEvents = 0;
     int NokFlav = 0;
@@ -84,9 +121,6 @@ void AnalysisWWCR::run()
     int NdCutd123 = 0;
     int NdCutd34 = 0;
     int NdecayCuts = 0;
-
-    // int NEvents_truth = 0;
-    // int nFlavScore_truth = 0; 
 
     const int maxPrint = 50;
     int nPrinted = 0;
@@ -101,9 +135,6 @@ void AnalysisWWCR::run()
         NEvents++;
 
         if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
-
-        ROOT::VecOps::RVec<int>* Wm_jet_truth = truth_Wm_Daugthers_pdg();
-        ROOT::VecOps::RVec<int>* Wp_jet_truth = truth_Wp_Daugthers_pdg();
 
         if (do_debug && nPrinted < maxPrint) {
             std::cout << "========== Event " << eventNum << " ==========\n";
@@ -125,49 +156,14 @@ void AnalysisWWCR::run()
 
         eventNum++;
 
-        int nTruth_c_W1 = 0, nTruth_s_W1 = 0, nTruth_u_W1 = 0, nTruth_d_W1 = 0;
-        int nTruth_cbar_W1 = 0, nTruth_sbar_W1 = 0, nTruth_ubar_W1 = 0, nTruth_dbar_W1 = 0;
+        QuarkCounter W1_quarks = countQuarks(Wm_jet_truth);
+        QuarkCounter W2_quarks = countQuarks(Wp_jet_truth);
 
-        for (size_t i = 0; i < Wm_jet_truth->size(); ++i) {
-            int pdg_code = Wm_jet_truth->at(i);
+        bool W1_is_cs = ( (W1_quarks.n_c == 1 && W1_quarks.n_s == 1) );
+        bool W1_is_ud = ( (W1_quarks.n_u == 1 && W1_quarks.n_d == 1) );
 
-            if (pdg_code == 4) nTruth_c_W1++;
-            if (pdg_code == 3) nTruth_s_W1++;
-            if (pdg_code == 2) nTruth_u_W1++;
-            if (pdg_code == 1) nTruth_d_W1++;
-
-            if (pdg_code == -4) nTruth_cbar_W1++;
-            if (pdg_code == -3) nTruth_sbar_W1++;
-            if (pdg_code == -2) nTruth_ubar_W1++;
-            if (pdg_code == -1) nTruth_dbar_W1++;
-        }
-
-        // if (!((nTruth_c == 1 && nTruth_sbar == 1) || (nTruth_cbar == 1 && nTruth_s == 1))) continue;
-
-        int nTruth_c_W2 = 0, nTruth_s_W2 = 0, nTruth_u_W2 = 0, nTruth_d_W2 = 0;
-        int nTruth_cbar_W2 = 0, nTruth_sbar_W2 = 0, nTruth_ubar_W2 = 0, nTruth_dbar_W2 = 0;
-
-        for (size_t i = 0; i < Wp_jet_truth->size(); ++i) {
-            int pdg_code = Wp_jet_truth->at(i);
-
-            if (pdg_code == 4) nTruth_c_W2++;
-            if (pdg_code == 3) nTruth_s_W2++;
-            if (pdg_code == 2) nTruth_u_W2++;
-            if (pdg_code == 1) nTruth_d_W2++;
-
-            if (pdg_code == -4) nTruth_cbar_W2++;
-            if (pdg_code == -3) nTruth_sbar_W2++;
-            if (pdg_code == -2) nTruth_ubar_W2++;
-            if (pdg_code == -1) nTruth_dbar_W2++;
-        }
-
-        // if (!((nTruth_u == 1 && nTruth_dbar == 1) || (nTruth_ubar == 1 && nTruth_d == 1))) continue;
-
-        bool W1_is_cs = ( (nTruth_c_W1 == 1 && nTruth_sbar_W1 == 1) || (nTruth_cbar_W1 == 1 && nTruth_s_W1 == 1) );
-        bool W1_is_ud = ( (nTruth_u_W1 == 1 && nTruth_dbar_W1 == 1) || (nTruth_ubar_W1 == 1 && nTruth_d_W1 == 1) );
-
-        bool W2_is_cs = ( (nTruth_c_W2 == 1 && nTruth_sbar_W2 == 1) || (nTruth_cbar_W2 == 1 && nTruth_s_W2 == 1) );
-        bool W2_is_ud = ( (nTruth_u_W2 == 1 && nTruth_dbar_W2 == 1) || (nTruth_ubar_W2 == 1 && nTruth_d_W2 == 1) );
+        bool W2_is_cs = ( (W2_quarks.n_c == 1 && W2_quarks.n_s == 1) );
+        bool W2_is_ud = ( (W2_quarks.n_u == 1 && W2_quarks.n_d == 1) );
 
         if (! ( 
             (W1_is_cs && W2_is_ud) || 
@@ -243,11 +239,11 @@ void AnalysisWWCR::run()
 
         NleptonCut++;
 
-        if (d_12()<=15000. || d_12()>=58000.) continue;//missing!
-        if ((d_23()<=400.) || (d_23()>=18000.))continue;
-        NdCutd123++;
-        if ((d_34()<=100.) || (d_34()>=6000.))continue;
-        NdCutd34++; 
+        // if (d_12()<=15000. || d_12()>=58000.) continue;//missing!
+        // if ((d_23()<=400.) || (d_23()>=18000.))continue;
+        // NdCutd123++;
+        // if ((d_34()<=100.) || (d_34()>=6000.))continue;
+        // NdCutd34++; 
 
         std::map<int,std::vector<float>> jetFlavScores;
         jetFlavScores[0] = j0_flav;
@@ -361,9 +357,11 @@ void AnalysisWWCR::run()
         }
 
         // W pair 1: c + s
+        // std::pair<int, int> W1_pair = {cJet, sJet};
         std::pair<int, int> W1_pair = {cJet, lJets[0]};
 
         // W pair 2: l + l
+        // std::pair<int, int> W2_pair = {lJets[0], lJets[1]};
         std::pair<int, int> W2_pair = {lJets[1], lJets[2]};
 
         if (do_debug && nPrinted < maxPrint) {
@@ -376,13 +374,13 @@ void AnalysisWWCR::run()
         // TLorentzVector cTag_Jet, sTag_Jet, lTag_Jet_0, lTag_Jet_1;
         TLorentzVector cTag_Jet, lTag_Jet_0, lTag_Jet_1, lTag_Jet_2;
 
-        cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_py.at(cJet), jet_e.at(cJet));
-        lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_py.at(lJets[0]), jet_e.at(lJets[0]));
-        // sTag_Jet.SetPxPyPzE(jet_px.at(sJet), jet_py.at(sJet), jet_py.at(sJet), jet_e.at(sJet));
+        cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_pz.at(cJet), jet_e.at(cJet));
+        lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_pz.at(lJets[0]), jet_e.at(lJets[0]));
+        // sTag_Jet.SetPxPyPzE(jet_px.at(sJet), jet_py.at(sJet), jet_pz.at(sJet), jet_e.at(sJet));
 
-        // lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_py.at(lJets[0]), jet_e.at(lJets[0]));
-        lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_py.at(lJets[1]), jet_e.at(lJets[1]));
-        lTag_Jet_2.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_py.at(lJets[2]), jet_e.at(lJets[2]));
+        // lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_pz.at(lJets[0]), jet_e.at(lJets[0]));
+        lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_pz.at(lJets[1]), jet_e.at(lJets[1]));
+        lTag_Jet_2.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_pz.at(lJets[2]), jet_e.at(lJets[2]));
 
         // ************* THIS CALCULATES THE MASS WITH THE TRUTH JETS USING THE CHI^2 METHOD *************
 
@@ -429,6 +427,36 @@ void AnalysisWWCR::run()
             h_chi2->Fill(chi2_option3);
         }
 
+        // if (chi2_option1 <= chi2_option2 && chi2_option1 <= chi2_option3) {
+        //     h_W1_pt->Fill(W1_option1.Pt());
+        //     h_W2_pt->Fill(W2_option1.Pt());
+        //     // h_chi2_pt->Fill(chi2_option1);
+        // } else if (chi2_option2 <= chi2_option1 && chi2_option2 <= chi2_option3) {
+        //     h_W1_pt->Fill(W1_option2.Pt());
+        //     h_W2_pt->Fill(W2_option2.Pt());
+        //     // h_chi2_pt->Fill(chi2_option2);
+        // } else {
+        //     h_W1_pt->Fill(W1_option3.Pt());
+        //     h_W2_pt->Fill(W2_option3.Pt());
+        //     // h_chi2_pt->Fill(chi2_option3);
+        // }
+
+        // h_W1_pt->Fill(W1_option1.Pt());
+        // h_W2_pt->Fill(W2_option1.Pt());
+
+        cJet_pt->Fill(cTag_Jet.Pt());
+        lJet0_pt->Fill(lTag_Jet_0.Pt());
+        lJet1_pt->Fill(lTag_Jet_1.Pt());
+        lJet2_pt->Fill(lTag_Jet_2.Pt());
+
+        cJet_p->Fill(cTag_Jet.P());
+        lJet0_p->Fill(lTag_Jet_0.P());
+        lJet1_p->Fill(lTag_Jet_1.P());
+        lJet2_p->Fill(lTag_Jet_2.P());
+
+        h_W1_p->Fill(W1_option1.P());
+        h_W2_p->Fill(W2_option1.P());
+
 
         // cutflow histograms
         cutFlowHist->SetBinContent(1, NEvents);
@@ -451,7 +479,7 @@ void AnalysisWWCR::run()
 
 
 
-    // // Main event loop 
+    // Main event loop 
     // for(int i = 0; i < nEntries; i++)
     // {
     //     treeCont->getEntry(i);
@@ -678,13 +706,13 @@ void AnalysisWWCR::run()
     //     // TLorentzVector cTag_Jet, sTag_Jet, lTag_Jet_0, lTag_Jet_1;
     //     TLorentzVector cTag_Jet, lTag_Jet_0, lTag_Jet_1, lTag_Jet_2;
 
-    //     cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_py.at(cJet), jet_e.at(cJet));
-    //     lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_py.at(lJets[0]), jet_e.at(lJets[0]));
+    //     cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_pz.at(cJet), jet_e.at(cJet));
+    //     lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_pz.at(lJets[0]), jet_e.at(lJets[0]));
     //     // sTag_Jet.SetPxPyPzE(jet_px.at(sJet), jet_py.at(sJet), jet_py.at(sJet), jet_e.at(sJet));
 
     //     // lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_py.at(lJets[0]), jet_e.at(lJets[0]));
-    //     lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_py.at(lJets[1]), jet_e.at(lJets[1]));
-    //     lTag_Jet_2.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_py.at(lJets[2]), jet_e.at(lJets[2]));
+    //     lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_pz.at(lJets[1]), jet_e.at(lJets[1]));
+    //     lTag_Jet_2.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_pz.at(lJets[2]), jet_e.at(lJets[2]));
 
     //     // ************* THIS CALCULATES THE MASS WITH THE TRUTH JETS USING THE CHI^2 METHOD *************
 
