@@ -9,6 +9,7 @@
 
 #include "TH1F.h"
 #include "TCanvas.h"
+#include "TLegend.h"
 #include <set>
 
 
@@ -130,15 +131,12 @@ void AnalysisWWCR::run()
     auto h_W1_e = m_histContainer->get1DHist("h_W1_e", 300, 0, 150);
     auto h_W2_e = m_histContainer->get1DHist("h_W2_e", 300, 0, 150);
 
-    auto h_cos_phi_c_s = m_histContainer->get1DHist("h_cos_phi_c_s", 150, -1, 1);
+    auto h_cos_phi_c_l0 = m_histContainer->get1DHist("h_cos_phi_c_l0", 150, -1, 1);
     auto h_cos_phi_l1_l2 = m_histContainer->get1DHist("h_cos_phi_l1_l2", 150, -1, 1);
-    // auto h_cos_phi_c_l1 = m_histContainer->get1DHist("h_cos_phi_c_l1", 300, -1, 1);  
-    // auto h_cos_phi_c_l2 = m_histContainer->get1DHist("h_cos_phi_c_l2", 300, -1, 1); 
-    // auto h_cos_phi_s_l1 = m_histContainer->get1DHist("h_cos_phi_s_l1", 300, -1, 1);  
-    // auto h_cos_phi_s_l2 = m_histContainer->get1DHist("h_cos_phi_s_l2", 300, -1, 1);
-
-    // auto h_W1_cos_phi_l1_l2 = m_histContainer->get1DHist("h_W1_cos_phi_l1_l2", 150, -1, 1); 
-    // auto h_W2_cos_phi_l1_l2 = m_histContainer->get1DHist("h_W2_cos_phi_l1_l2", 150, -1, 1); 
+    auto h_cos_phi_c_l1 = m_histContainer->get1DHist("h_cos_phi_c_l1", 300, -1, 1);  
+    auto h_cos_phi_c_l2 = m_histContainer->get1DHist("h_cos_phi_c_l2", 300, -1, 1); 
+    auto h_cos_phi_s_l1 = m_histContainer->get1DHist("h_cos_phi_s_l1", 300, -1, 1);  
+    auto h_cos_phi_s_l2 = m_histContainer->get1DHist("h_cos_phi_s_l2", 300, -1, 1);
 
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
@@ -489,7 +487,7 @@ void AnalysisWWCR::run()
             std::cout << "      " << std::endl;
         }
 
-        // calculate the mass 
+        // ************************** CALCULATIONS FOR MASS AND SUCH BEGIN HERE ************************** 
         TLorentzVector cTag_Jet, lTag_Jet_0, lTag_Jet_1, lTag_Jet_2;
 
         cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_pz.at(cJet), jet_e.at(cJet));
@@ -498,8 +496,6 @@ void AnalysisWWCR::run()
         lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_pz.at(lJets[1]), jet_e.at(lJets[1]));
         lTag_Jet_2.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_pz.at(lJets[2]), jet_e.at(lJets[2]));
         
-
-        // ************************** CALCULATIONS FOR MASS AND SUCH BEGIN HERE **************************
         const double m_W_true = 80.379;
 
         TLorentzVector W1_option1 = cTag_Jet + lTag_Jet_0;
@@ -519,6 +515,9 @@ void AnalysisWWCR::run()
 
         double chi2_option3 = 
             (pow(W1_option3.M() - m_W_true, 2) + pow(W2_option3.M() - m_W_true, 2)) / (m_W_true);
+
+        // for the cos(phi) angle
+        TLorentzVector W1_j1, W1_j2, W2_j1, W2_j2;
 
         if (chi2_option1 <= chi2_option2 && chi2_option1 <= chi2_option3) {
             h_W1_mass->Fill(W1_option1.M());
@@ -541,8 +540,11 @@ void AnalysisWWCR::run()
             h_lJet1_p->Fill(lTag_Jet_1.P());
             h_lJet2_p->Fill(lTag_Jet_2.P());
 
-            CosPhi_Angle(cTag_Jet, lTag_Jet_0, h_cos_phi_c_s);
-            CosPhi_Angle(lTag_Jet_1, lTag_Jet_2, h_cos_phi_l1_l2);
+            W1_j1 = cTag_Jet; 
+            W1_j2 = lTag_Jet_0;
+
+            W2_j1 = lTag_Jet_1;   
+            W2_j2 = lTag_Jet_2;
 
         } else if (chi2_option2 <= chi2_option1 && chi2_option2 <= chi2_option3) {
             h_W1_mass->Fill(W1_option2.M());
@@ -565,8 +567,11 @@ void AnalysisWWCR::run()
             h_lJet1_p->Fill(lTag_Jet_1.P());
             h_lJet2_p->Fill(lTag_Jet_2.P());
 
-            CosPhi_Angle(cTag_Jet, lTag_Jet_0, h_cos_phi_c_s);
-            CosPhi_Angle(lTag_Jet_1, lTag_Jet_2, h_cos_phi_l1_l2);
+            W1_j1 = cTag_Jet; 
+            W1_j2 = lTag_Jet_1;
+
+            W2_j1 = lTag_Jet_0;   
+            W2_j2 = lTag_Jet_2;
 
         } else {
             h_W1_mass->Fill(W1_option3.M());
@@ -589,8 +594,11 @@ void AnalysisWWCR::run()
             h_lJet1_p->Fill(lTag_Jet_1.P());
             h_lJet2_p->Fill(lTag_Jet_2.P());
 
-            CosPhi_Angle(cTag_Jet, lTag_Jet_0, h_cos_phi_c_s);
-            CosPhi_Angle(lTag_Jet_1, lTag_Jet_2, h_cos_phi_l1_l2);
+            W1_j1 = cTag_Jet; 
+            W1_j2 = lTag_Jet_2;
+
+            W2_j1 = lTag_Jet_1;   
+            W2_j2 = lTag_Jet_0;
         }
 
         // Reco_wPair result = Chi2_wMass(cTag_Jet, lTag_Jet_0, lTag_Jet_1, lTag_Jet_2);
@@ -615,15 +623,12 @@ void AnalysisWWCR::run()
         // h_lJet2_p->Fill(lTag_Jet_2.P());
 
         // ************************* CHANGE // COMMENT OUT WHEN RUNNING WITH DIFFERENT WW DECAY OPTIONS *******************************
-        // CosPhi_Angle(cTag_Jet, lTag_Jet_0, h_cos_phi_c_s);
-        // CosPhi_Angle(lTag_Jet_1, lTag_Jet_2, h_cos_phi_l1_l2);
-        // CosPhi_Angle(cTag_Jet, lTag_Jet_1, h_cos_phi_c_l1);
-        // CosPhi_Angle(cTag_Jet, lTag_Jet_2, h_cos_phi_c_l2);
-        // CosPhi_Angle(lTag_Jet_0, lTag_Jet_1, h_cos_phi_s_l1);
-        // CosPhi_Angle(lTag_Jet_0, lTag_Jet_2, h_cos_phi_s_l2);
-
-        // CosPhi_Angle(lTag_Jet_1, lTag_Jet_2, h_W1_cos_phi_l1_l2);
-        // CosPhi_Angle(lTag_Jet_1, lTag_Jet_2, h_W2_cos_phi_l1_l2);
+        CosPhi_Angle(W1_j1, W1_j2, h_cos_phi_c_l0);
+        CosPhi_Angle(W2_j1, W2_j2, h_cos_phi_l1_l2);
+        CosPhi_Angle(W1_j1, W2_j1, h_cos_phi_c_l1);
+        CosPhi_Angle(W1_j1, W2_j2, h_cos_phi_c_l2);
+        CosPhi_Angle(W1_j2, W2_j1, h_cos_phi_s_l1);
+        CosPhi_Angle(W1_j2, W2_j2, h_cos_phi_s_l2);
 
         // cutflow histograms
         cutFlowHist->SetBinContent(1, NEvents);
@@ -634,8 +639,178 @@ void AnalysisWWCR::run()
         cutFlowHist->SetBinContent(6, NdCutd123);
         cutFlowHist->SetBinContent(7, NdCutd34);
         cutFlowHist->SetBinContent(8, nFlavScore);
-       
+
     }
+
+    // *************************** COMPARATIVE MASS PLOTS ***************************
+    TCanvas* c_W1_W2_mass = new TCanvas("c_W1_W2_mass", "Truth Histograms", 1800, 900);
+    c_W1_W2_mass->Divide(2, 1);
+
+    c_W1_W2_mass->cd(1);
+    h_W1_truth_mass->Draw();
+    h_W1_truth_mass->SetLineColor(kBlue);
+    h_W1_truth_mass->GetXaxis()->SetTitle("GeV");
+
+    h_W1_mass->Draw("same");
+    h_W1_mass->SetLineColor(kRed);
+
+    TLegend *legend_w1_mass = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w1_mass->SetTextSize(0.04);
+    legend_w1_mass->SetBorderSize(0);
+    legend_w1_mass->SetFillStyle(0); // Transparent background
+
+    legend_w1_mass->AddEntry(h_W1_truth_mass, "w1_truth_mass", "l");
+    legend_w1_mass->AddEntry(h_W1_mass, "w1_mass", "l");
+    legend_w1_mass->Draw();
+
+    c_W1_W2_mass->cd(2);
+    h_W2_truth_mass->Draw();
+    h_W2_truth_mass->SetLineColor(kBlue);
+    h_W2_truth_mass->GetXaxis()->SetTitle("GeV");
+
+    h_W2_mass->Draw("same");
+    h_W2_mass->SetLineColor(kRed);
+
+    TLegend *legend_w2_mass = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w2_mass->SetTextSize(0.04);
+    legend_w2_mass->SetBorderSize(0);
+    legend_w2_mass->SetFillStyle(0); // Transparent background
+
+    legend_w2_mass->AddEntry(h_W2_truth_mass, "w2_truth_mass", "l");
+    legend_w2_mass->AddEntry(h_W2_mass, "w2_mass", "l");
+    legend_w2_mass->Draw();
+
+    c_W1_W2_mass->Update();
+    c_W1_W2_mass->SaveAs("/usatlas/u/kleibensperger/FCCeePostCutCode/run/w1_w2_masses.png");
+
+
+    // *************************** COMPARATIVE MOMENTA PLOTS ***************************
+    TCanvas* c_W1_W2_p = new TCanvas("c_W1_W2_p", "Truth Histograms", 1800, 900);
+    c_W1_W2_p->Divide(2, 1);
+
+    c_W1_W2_p->cd(1);
+    h_W1_truth_p->Draw();
+    h_W1_truth_p->SetLineColor(kBlue);
+    h_W1_truth_p->GetXaxis()->SetTitle("GeV");
+
+    h_W1_p->Draw("same");
+    h_W1_p->SetLineColor(kRed);
+
+    TLegend *legend_w1_p = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w1_p->SetTextSize(0.04);
+    legend_w1_p->SetBorderSize(0);
+    legend_w1_p->SetFillStyle(0); // Transparent background
+
+    legend_w1_p->AddEntry(h_W1_truth_p, "w1_truth_p", "l");
+    legend_w1_p->AddEntry(h_W1_p, "w1_p", "l");
+    legend_w1_p->Draw();
+
+    c_W1_W2_p->cd(2);
+    h_W2_truth_p->Draw();
+    h_W2_truth_p->SetLineColor(kBlue);
+    h_W2_truth_p->GetXaxis()->SetTitle("GeV");
+
+    h_W2_p->Draw("same");
+    h_W2_p->SetLineColor(kRed);
+
+    TLegend *legend_w2_p = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w2_p->SetTextSize(0.04);
+    legend_w2_p->SetBorderSize(0);
+    legend_w2_p->SetFillStyle(0); // Transparent background
+
+    legend_w2_p->AddEntry(h_W2_truth_p, "w2_truth_p", "l");
+    legend_w2_p->AddEntry(h_W2_p, "w2_p", "l");
+    legend_w2_p->Draw();
+
+    c_W1_W2_p->Update();
+    c_W1_W2_p->SaveAs("/usatlas/u/kleibensperger/FCCeePostCutCode/run/w1_w2_p.png");
+
+
+    // *************************** COMPARATIVE ENERGY PLOTS ***************************
+    TCanvas* c_W1_W2_e = new TCanvas("c_W1_W2_e", "Truth Histograms", 1800, 900);
+    c_W1_W2_e->Divide(2, 1);
+
+    c_W1_W2_e->cd(1);
+    h_W1_truth_e->Draw();
+    h_W1_truth_e->SetLineColor(kBlue);
+    h_W1_truth_e->GetXaxis()->SetTitle("GeV");
+
+    h_W1_e->Draw("same");
+    h_W1_e->SetLineColor(kRed);
+
+    TLegend *legend_w1_e = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w1_e->SetTextSize(0.04);
+    legend_w1_e->SetBorderSize(0);
+    legend_w1_e->SetFillStyle(0); // Transparent background
+
+    legend_w1_e->AddEntry(h_W1_truth_e, "w1_truth_e", "l");
+    legend_w1_e->AddEntry(h_W1_e, "w1_e", "l");
+    legend_w1_e->Draw();
+
+    c_W1_W2_e->cd(2);
+    h_W2_truth_e->Draw();
+    h_W2_truth_e->SetLineColor(kBlue);
+    h_W2_truth_e->GetXaxis()->SetTitle("GeV");
+
+    h_W2_e->Draw("same");
+    h_W2_e->SetLineColor(kRed);
+
+    TLegend *legend_w2_e = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w2_e->SetTextSize(0.04);
+    legend_w2_e->SetBorderSize(0);
+    legend_w2_e->SetFillStyle(0); // Transparent background
+
+    legend_w2_e->AddEntry(h_W2_truth_e, "w2_truth_e", "l");
+    legend_w2_e->AddEntry(h_W2_e, "w2_e", "l");
+    legend_w2_e->Draw();
+
+    c_W1_W2_e->Update();
+    c_W1_W2_e->SaveAs("/usatlas/u/kleibensperger/FCCeePostCutCode/run/w1_w2_e.png");
+
+
+    // *************************** COMPARATIVE ANGULAR DISTRIBUTIONS PLOTS ***************************
+    TCanvas* c_angular_dist = new TCanvas("c_angular_dist", "Truth Histograms", 1800, 900);
+    c_angular_dist->Divide(2, 1);
+
+    c_angular_dist->cd(1);
+    h_cos_phi_truth_cs->Draw();
+    h_cos_phi_truth_cs->SetLineColor(kBlue);
+    h_cos_phi_truth_cs->GetXaxis()->SetTitle("cos(#phi)");
+
+    h_cos_phi_c_l0->Draw("same");
+    h_cos_phi_c_l0->SetLineColor(kRed);
+
+    TLegend *legend_w1_cos_phi = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w1_cos_phi->SetTextSize(0.04);
+    legend_w1_cos_phi->SetBorderSize(0);
+    legend_w1_cos_phi->SetFillStyle(0); // Transparent background
+
+    legend_w1_cos_phi->AddEntry(h_cos_phi_truth_cs, "truth cos_phi_cs", "l");
+    legend_w1_cos_phi->AddEntry(h_cos_phi_c_l0, "truth cos_phi_c_l0", "l");
+    legend_w1_cos_phi->Draw();
+
+    c_angular_dist->cd(2);
+    h_cos_phi_truth_ud->Draw();
+    h_cos_phi_truth_ud->SetLineColor(kBlue);
+    h_cos_phi_truth_ud->GetXaxis()->SetTitle("cos(#phi)");
+
+    h_cos_phi_l1_l2->Draw("same");
+    h_cos_phi_l1_l2->SetLineColor(kRed);
+
+    TLegend *legend_w2_cos_phi = new TLegend(0.6, 0.7, 0.8, 0.8);
+    legend_w2_cos_phi->SetTextSize(0.04);
+    legend_w2_cos_phi->SetBorderSize(0);
+    legend_w2_cos_phi->SetFillStyle(0); // Transparent background
+
+    legend_w2_cos_phi->AddEntry(h_cos_phi_truth_ud, "truth cos_phi_ud", "l");
+    legend_w2_cos_phi->AddEntry(h_cos_phi_l1_l2, "truth cos_phi_l1_l2", "l");
+    legend_w2_cos_phi->Draw();
+
+    c_angular_dist->Update();
+    c_angular_dist->SaveAs("/usatlas/u/kleibensperger/FCCeePostCutCode/run/w1_w2_angular_dist.png");
+
+
+    
 
     std::cout << "      " << std::endl;
     std::cout << "-------------------- Outputs --------------------" << std::endl;
@@ -650,7 +825,43 @@ void AnalysisWWCR::run()
     std::cout << "Let there be data ;)" << std::endl;
 
 
+    
+
+    std::cout << "      " << std::endl;
+    std::cout << "-------------------- Outputs --------------------" << std::endl;
+    std::cout << "Number of events: " << NEvents << std::endl;
+    std::cout << "Number of events passing W decay cuts: " << NdecayCuts << std::endl;
+    std::cout << "Number of events w/ 4 jets: " << NjetCut << std::endl;
+    std::cout << "Number of Leptons Cut: " << NleptonCut << std::endl;
+    std::cout << "Number of events with 1 c-tagged, 1 s-tagged, and 2 light-tagged jets: " << nFlavScore << std::endl;
+    std::cout << "      " << std::endl;
+
+    std::cout << "      " << std::endl;
+    std::cout << "Let there be data ;)" << std::endl;
+
     // end of macro
 }
+
+// void finalize() {
+//     auto h_W1_truth_mass = HistContainer->get1DHist("h_W1_truth_mass");
+//     auto h_W2_truth_mass = HistContainer->get1DHist("h_W2_truth_mass");
+    
+//     // Create canvas
+//     TCanvas* c_truth = new TCanvas("c_truth", "Truth Histograms", 1200, 800);
+//     c_truth->Divide(3, 2);
+
+//     c_truth->cd(1);
+//     h_W1_truth_mass->Draw();
+
+//     c_truth->cd(2);
+//     h_W2_truth_mass->Draw();
+
+//     // ... draw other histograms on c_truth ...
+
+//     // Save canvas into the output ROOT file
+//     c_truth->Write();
+
+//     // Similarly for other canvases
+// }
 
 
