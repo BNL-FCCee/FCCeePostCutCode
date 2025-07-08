@@ -44,15 +44,16 @@ QuarkCounter countQuarks(const ROOT::VecOps::RVec<int>* jet_truth) {
     return counter;
 }
 
-void CosPhi_Angle(const TLorentzVector& jet1, const TLorentzVector& jet2, TH1F* hist_cosphi, TH1F* hist_eec) {
-    double phi = jet1.Angle(jet2.Vect());
+void CosPhi_Angle(const TLorentzVector& jet1, const TLorentzVector& jet2, TH1F* hist_phi, TH1F* hist_cosphi, TH1F* hist_eec) {
+    // double phi = jet1.Angle(jet2.Vect());
+    double phi = jet1.Phi() - jet2.Phi();
+    // double phi = TVector2::Phi_mpi_pi(jet1.Phi() - jet2.Phi()); // ensures that everything is from [-pi, pi]??
     double cos_phi = cos(phi);
 
-    // double ee_correlator = 0.5 * (1 - cos_phi);
-    double ee_correlator = 1 - cos_phi;
+    double ee_correlator = 0.5 * (1 - cos_phi);
+    // double ee_correlator = 1 - cos_phi;
 
-    // hist_eec->Scale(1.0 / hist_eec->GetEntries());
-
+    hist_phi->Fill(phi);
     hist_cosphi->Fill(cos_phi);
     hist_eec->Fill(ee_correlator);
 }
@@ -75,6 +76,9 @@ void AnalysisWWCR::run()
 
     auto h_W1_truth_e = m_histContainer->get1DHist("h_W1_truth_e", 300, 0, 150);
     auto h_W2_truth_e = m_histContainer->get1DHist("h_W2_truth_e", 300, 0, 150);
+
+    auto h_phi_truth_cs = m_histContainer->get1DHist("h_phi_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_phi_truth_ud = m_histContainer->get1DHist("h_phi_truth_ud", 150, -TMath::Pi(), TMath::Pi());
 
     auto h_cos_phi_truth_cs = m_histContainer->get1DHist("h_cos_phi_truth_cs", 150, -1, 1);
     auto h_cos_phi_truth_ud = m_histContainer->get1DHist("h_cos_phi_truth_ud", 150, -1, 1);
@@ -103,12 +107,15 @@ void AnalysisWWCR::run()
     auto h_W1_e = m_histContainer->get1DHist("h_W1_e", 300, 0, 150);
     auto h_W2_e = m_histContainer->get1DHist("h_W2_e", 300, 0, 150);
 
+    auto h_phi_c_l0 = m_histContainer->get1DHist("h_phi_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_phi_l1_l2 = m_histContainer->get1DHist("h_phi_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
+
     auto h_cos_phi_c_l0 = m_histContainer->get1DHist("h_cos_phi_c_l0", 150, -1, 1);
     auto h_cos_phi_l1_l2 = m_histContainer->get1DHist("h_cos_phi_l1_l2", 150, -1, 1);
-    auto h_cos_phi_c_l1 = m_histContainer->get1DHist("h_cos_phi_c_l1", 300, -1, 1);  
-    auto h_cos_phi_c_l2 = m_histContainer->get1DHist("h_cos_phi_c_l2", 300, -1, 1); 
-    auto h_cos_phi_s_l1 = m_histContainer->get1DHist("h_cos_phi_s_l1", 300, -1, 1);  
-    auto h_cos_phi_s_l2 = m_histContainer->get1DHist("h_cos_phi_s_l2", 300, -1, 1);
+    // auto h_cos_phi_c_l1 = m_histContainer->get1DHist("h_cos_phi_c_l1", 300, -1, 1);  
+    // auto h_cos_phi_c_l2 = m_histContainer->get1DHist("h_cos_phi_c_l2", 300, -1, 1); 
+    // auto h_cos_phi_s_l1 = m_histContainer->get1DHist("h_cos_phi_s_l1", 300, -1, 1);  
+    // auto h_cos_phi_s_l2 = m_histContainer->get1DHist("h_cos_phi_s_l2", 300, -1, 1);
 
     auto h_eec_c_l0 = m_histContainer->get1DHist("h_eec_c_l0", 150, -1, 1);
     auto h_eec_l1_l2 = m_histContainer->get1DHist("h_eec_l1_l2", 150, -1, 1);
@@ -449,8 +456,8 @@ void AnalysisWWCR::run()
             h_W1_truth_e->Fill(W1_truthJet.E());
             h_W2_truth_e->Fill(W2_truthJet.E());
 
-            CosPhi_Angle(W1_jet1, W1_jet2, h_cos_phi_truth_cs, h_eec_truth_cs);
-            CosPhi_Angle(W2_jet1, W2_jet2, h_cos_phi_truth_ud, h_eec_truth_ud);
+            CosPhi_Angle(W1_jet1, W1_jet2, h_phi_truth_cs, h_cos_phi_truth_cs, h_eec_truth_cs);
+            CosPhi_Angle(W2_jet1, W2_jet2, h_phi_truth_ud, h_cos_phi_truth_ud, h_eec_truth_ud);
 
             double counts_eec_truth_cs = h_eec_truth_cs->Integral();
             double counts_eec_truth_ud = h_eec_truth_ud->Integral();
@@ -584,17 +591,17 @@ void AnalysisWWCR::run()
         // CosPhi_Angle(W1_j2, W2_j1, h_cos_phi_s_l1);
         // CosPhi_Angle(W1_j2, W2_j2, h_cos_phi_s_l2);
 
-        CosPhi_Angle(W1_j1, W1_j2, h_cos_phi_c_l0, h_eec_c_l0);
-        CosPhi_Angle(W2_j1, W2_j2, h_cos_phi_l1_l2, h_eec_l1_l2);
+        CosPhi_Angle(W1_j1, W1_j2, h_phi_c_l0, h_cos_phi_c_l0, h_eec_c_l0);
+        CosPhi_Angle(W2_j1, W2_j2, h_phi_l1_l2, h_cos_phi_l1_l2, h_eec_l1_l2);
 
-        double counts_eec_c_l0 = h_eec_c_l0->Integral();
-        double counts_eec_l1_l2 = h_eec_l1_l2->Integral();
+        // double counts_eec_c_l0 = h_eec_c_l0->Integral();
+        // double counts_eec_l1_l2 = h_eec_l1_l2->Integral();
 
-        if (counts_eec_c_l0 > 0)
-            h_eec_c_l0->Scale(1.0 / (counts_eec_c_l0 * h_eec_c_l0->GetXaxis()->GetBinWidth(1)));
+        // if (counts_eec_c_l0 > 0)
+        //     h_eec_c_l0->Scale(1.0 / (counts_eec_c_l0 * h_eec_c_l0->GetXaxis()->GetBinWidth(1)));
 
-        if (counts_eec_l1_l2 > 0)
-            h_eec_l1_l2->Scale(1.0 / (counts_eec_l1_l2 * h_eec_l1_l2->GetXaxis()->GetBinWidth(1)));
+        // if (counts_eec_l1_l2 > 0)
+        //     h_eec_l1_l2->Scale(1.0 / (counts_eec_l1_l2 * h_eec_l1_l2->GetXaxis()->GetBinWidth(1)));
 
         // h_eec_c_l0->Scale(1.0/counts_eec_c_l0);
         // h_eec_l1_l2->Scale(1.0/counts_eec_l1_l2);
