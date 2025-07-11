@@ -44,22 +44,31 @@ QuarkCounter countQuarks(const ROOT::VecOps::RVec<int>* jet_truth) {
     return counter;
 }
 
-void CosPhi_Angle(const TLorentzVector& jet1, const TLorentzVector& jet2, TH1F* hist_phi, TH1F* hist_cosphi, TH1F* hist_eec) {
-    // double phi = jet1.Angle(jet2.Vect());
-    double phi = jet1.Phi() - jet2.Phi();
-    // double phi = TVector2::Phi_mpi_pi(jet1.Phi() - jet2.Phi()); // ensures that everything is from [-pi, pi]??
-    double cos_phi = cos(phi);
+enum DecayType {cs = 0, ud, us, ub, cd, cb};
+std::vector<std::pair<DecayType, DecayType>> allowedDecayPairs = {
+    {cs, ud}
+    // {cs, cs}, {cs, ud}, {ud, cs}, {ud, ud} // Leave empty to allow all
+};
+
+void CosPhi_Angle(const TLorentzVector& jet1, const TLorentzVector& jet2, TH1F* hist_theta, TH1F *hist_delta_theta, TH1F* hist_delta_eta, TH1F* hist_delta_phi, TH1F* hist_cosphi, TH1F* hist_eec) {
+    double theta = jet1.Angle(jet2.Vect());
+    double delta_theta = jet1.Theta() - jet2.Theta();
+    
+    double delta_eta = jet1.Eta() - jet2.Eta();
+    double delta_phi = jet1.Phi() - jet2.Phi();
+    double cos_phi = cos(delta_phi);
 
     double ee_correlator = 0.5 * (1 - cos_phi);
-    // double ee_correlator = 1 - cos_phi;
 
-    hist_phi->Fill(phi);
+    hist_theta->Fill(theta);
+    hist_delta_theta->Fill(delta_theta);
+    hist_delta_eta->Fill(delta_eta);
+    hist_delta_phi->Fill(delta_phi);
     hist_cosphi->Fill(cos_phi);
     hist_eec->Fill(ee_correlator);
 }
 
-void AnalysisWWCR::run()
-{ 
+void AnalysisWWCR::run() { 
 
     std::vector<std::string> cutFlowMap {"All Events", "DecayCuts", "NoNaNFlavScore", "Has 4 Jets", "leptonCut", "d123Cut", "d34Cut", "Events have a c, s, and 2 l tagged jets"};
 
@@ -77,8 +86,17 @@ void AnalysisWWCR::run()
     auto h_W1_truth_e = m_histContainer->get1DHist("h_W1_truth_e", 300, 0, 150);
     auto h_W2_truth_e = m_histContainer->get1DHist("h_W2_truth_e", 300, 0, 150);
 
-    auto h_phi_truth_cs = m_histContainer->get1DHist("h_phi_truth_cs", 150, -TMath::Pi(), TMath::Pi());
-    auto h_phi_truth_ud = m_histContainer->get1DHist("h_phi_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+    auto h_theta_truth_cs = m_histContainer->get1DHist("h_theta_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_theta_truth_ud = m_histContainer->get1DHist("h_theta_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+
+    auto h_delta_theta_truth_cs = m_histContainer->get1DHist("h_delta_theta_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_delta_theta_truth_ud = m_histContainer->get1DHist("h_delta_theta_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+
+    auto h_delta_eta_truth_cs = m_histContainer->get1DHist("h_delta_eta_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_delta_eta_truth_ud = m_histContainer->get1DHist("h_delta_eta_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+
+    auto h_delta_phi_truth_cs = m_histContainer->get1DHist("h_delta_phi_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_delta_phi_truth_ud = m_histContainer->get1DHist("h_delta_phi_truth_ud", 150, -TMath::Pi(), TMath::Pi());
 
     auto h_cos_phi_truth_cs = m_histContainer->get1DHist("h_cos_phi_truth_cs", 150, -1, 1);
     auto h_cos_phi_truth_ud = m_histContainer->get1DHist("h_cos_phi_truth_ud", 150, -1, 1);
@@ -107,15 +125,20 @@ void AnalysisWWCR::run()
     auto h_W1_e = m_histContainer->get1DHist("h_W1_e", 300, 0, 150);
     auto h_W2_e = m_histContainer->get1DHist("h_W2_e", 300, 0, 150);
 
-    auto h_phi_c_l0 = m_histContainer->get1DHist("h_phi_c_l0", 150, -TMath::Pi(), TMath::Pi());
-    auto h_phi_l1_l2 = m_histContainer->get1DHist("h_phi_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
+    auto h_theta_c_l0 = m_histContainer->get1DHist("h_theta_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_theta_l1_l2 = m_histContainer->get1DHist("h_theta_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
+
+    auto h_delta_theta_c_l0 = m_histContainer->get1DHist("h_delta_theta_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_delta_theta_l1_l2 = m_histContainer->get1DHist("h_delta_theta_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
+
+    auto h_delta_eta_c_l0 = m_histContainer->get1DHist("h_delta_eta_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_delta_eta_l1_l2 = m_histContainer->get1DHist("h_delta_eta_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
+
+    auto h_delta_phi_c_l0 = m_histContainer->get1DHist("h_delta_phi_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_delta_phi_l1_l2 = m_histContainer->get1DHist("h_delta_phi_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
 
     auto h_cos_phi_c_l0 = m_histContainer->get1DHist("h_cos_phi_c_l0", 150, -1, 1);
     auto h_cos_phi_l1_l2 = m_histContainer->get1DHist("h_cos_phi_l1_l2", 150, -1, 1);
-    // auto h_cos_phi_c_l1 = m_histContainer->get1DHist("h_cos_phi_c_l1", 300, -1, 1);  
-    // auto h_cos_phi_c_l2 = m_histContainer->get1DHist("h_cos_phi_c_l2", 300, -1, 1); 
-    // auto h_cos_phi_s_l1 = m_histContainer->get1DHist("h_cos_phi_s_l1", 300, -1, 1);  
-    // auto h_cos_phi_s_l2 = m_histContainer->get1DHist("h_cos_phi_s_l2", 300, -1, 1);
 
     auto h_eec_c_l0 = m_histContainer->get1DHist("h_eec_c_l0", 150, -1, 1);
     auto h_eec_l1_l2 = m_histContainer->get1DHist("h_eec_l1_l2", 150, -1, 1);
@@ -171,6 +194,14 @@ void AnalysisWWCR::run()
     varMember<ROOT::VecOps::RVec<float>> truth_Wp_theta {tree, "truth_Wp_Daugthers_theta"};
     varMember<ROOT::VecOps::RVec<float>> truth_Wp_phi {tree, "truth_Wp_Daugthers_phi"};
 
+    // Jet Substructure Information (from the anti_kt algorithm)
+    varMember<ROOT::VecOps::RVec<float>> jetconstituents_kt4 {tree, "jetconstituents_kt4"};
+    varMember<ROOT::VecOps::RVec<float>> jetconstituents_kt4_PID {tree, "jetconstituents_kt4_PID"};
+    varMember<ROOT::VecOps::RVec<float>> jetconstituents_kt4_charge {tree, "jetconstituents_kt4_charge"};
+    varMember<ROOT::VecOps::RVec<float>> jetconstituents_kt4_e {tree, "jetconstituents_kt4_e"};
+    varMember<ROOT::VecOps::RVec<float>> jetconstituents_kt4_p {tree, "jetconstituents_kt4_p"};
+    varMember<ROOT::VecOps::RVec<float>> jetconstituents_kt4_phi {tree, "jetconstituents_kt4_phi"};
+    varMember<ROOT::VecOps::RVec<float>> jetconstituents_kt4_theta {tree, "jetconstituents_kt4_theta"};
 
     // Increment for CutFlow
     int NEvents = 0;
@@ -221,18 +252,41 @@ void AnalysisWWCR::run()
         QuarkCounter W2_quarks = countQuarks(Wp_jet_truth);
 
         bool W1_is_cs = ( (W1_quarks.n_c == 1 && W1_quarks.n_s == 1) );
-        // bool W1_is_ud = ( (W1_quarks.n_u == 1 && W1_quarks.n_d == 1) );
+        bool W1_is_ud = ( (W1_quarks.n_u == 1 && W1_quarks.n_d == 1) );
+        bool W1_is_us = ( (W1_quarks.n_u == 1 && W1_quarks.n_s == 1) );
+        bool W1_is_ub = ( (W1_quarks.n_u == 1 && W1_quarks.n_b == 1) );
+        bool W1_is_cd = ( (W1_quarks.n_c == 1 && W1_quarks.n_d == 1) );
+        bool W1_is_cb = ( (W1_quarks.n_c == 1 && W1_quarks.n_b == 1) );
 
-        // bool W2_is_cs = ( (W2_quarks.n_c == 1 && W2_quarks.n_s == 1) );
+        bool W2_is_cs = ( (W2_quarks.n_c == 1 && W2_quarks.n_s == 1) );
         bool W2_is_ud = ( (W2_quarks.n_u == 1 && W2_quarks.n_d == 1) );
+        bool W2_is_us = ( (W2_quarks.n_u == 1 && W2_quarks.n_s == 1) );
+        bool W2_is_ub = ( (W2_quarks.n_u == 1 && W2_quarks.n_b == 1) );
+        bool W2_is_cd = ( (W2_quarks.n_c == 1 && W2_quarks.n_d == 1) );
+        bool W2_is_cb = ( (W2_quarks.n_c == 1 && W2_quarks.n_b == 1) );
 
-        if (! ( 
-            (W1_is_cs && W2_is_ud) 
-            // (W1_is_ud && W2_is_ud)
-            // (W1_is_cs && W2_is_cs)
-        )) continue;
+        int W1_decay_idx = -1, W2_decay_idx = -1;
+        bool W1_decay_types[] = {W1_is_cs, W1_is_ud, W1_is_us, W1_is_ub, W1_is_cd, W1_is_cb};
+        bool W2_decay_types[] = {W2_is_cs, W2_is_ud, W2_is_us, W2_is_ub, W2_is_cd, W2_is_cb};
+        for (int i = 0; i < 6; ++i) {
+            if (W1_decay_types[i]) W1_decay_idx = i;
+            if (W2_decay_types[i]) W2_decay_idx = i;
+        }
+
+        if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
 
         NdecayCuts++;
+
+        // if (! ( 
+        //    (W1_is_cs && W2_is_cs) || (W1_is_cs && W2_is_ud) || (W1_is_cs && W2_is_us) || (W1_is_cs && W2_is_ub) || (W1_is_cs && W2_is_cd) || (W1_is_cs && W2_is_cb) ||
+        //    (W1_is_ud && W2_is_cs) || (W1_is_ud && W2_is_ud) || (W1_is_ud && W2_is_us) || (W1_is_ud && W2_is_ub) || (W1_is_ud && W2_is_cd) || (W1_is_ud && W2_is_cb) ||
+        //    (W1_is_us && W2_is_cs) || (W1_is_us && W2_is_ud) || (W1_is_us && W2_is_us) || (W1_is_us && W2_is_ub) || (W1_is_us && W2_is_cd) || (W1_is_us && W2_is_cb) ||
+        //    (W1_is_ub && W2_is_cs) || (W1_is_ub && W2_is_ud) || (W1_is_ub && W2_is_us) || (W1_is_ub && W2_is_ub) || (W1_is_ub && W2_is_cd) || (W1_is_ub && W2_is_cb) ||
+        //    (W1_is_cd && W2_is_cs) || (W1_is_cd && W2_is_ud) || (W1_is_cd && W2_is_us) || (W1_is_cd && W2_is_ub) || (W1_is_cd && W2_is_cd) || (W1_is_cd && W2_is_cb) ||
+        //    (W1_is_cb && W2_is_cs) || (W1_is_cb && W2_is_ud) || (W1_is_cb && W2_is_us) || (W1_is_cb && W2_is_ub) || (W1_is_cb && W2_is_cd) || (W1_is_cb && W2_is_cb)
+        // )) continue;
+
+        // NdecayCuts++;
     
         // Adds the requirement that an event has 4 jets
         if(event_njet() != 4) continue;
@@ -456,8 +510,8 @@ void AnalysisWWCR::run()
             h_W1_truth_e->Fill(W1_truthJet.E());
             h_W2_truth_e->Fill(W2_truthJet.E());
 
-            CosPhi_Angle(W1_jet1, W1_jet2, h_phi_truth_cs, h_cos_phi_truth_cs, h_eec_truth_cs);
-            CosPhi_Angle(W2_jet1, W2_jet2, h_phi_truth_ud, h_cos_phi_truth_ud, h_eec_truth_ud);
+            CosPhi_Angle(W1_jet1, W1_jet2, h_theta_truth_cs, h_delta_theta_truth_cs, h_delta_eta_truth_cs, h_delta_phi_truth_cs, h_cos_phi_truth_cs, h_eec_truth_cs);
+            CosPhi_Angle(W2_jet1, W2_jet2, h_theta_truth_ud, h_delta_theta_truth_ud, h_delta_eta_truth_ud, h_delta_phi_truth_ud, h_cos_phi_truth_ud, h_eec_truth_ud);
 
             double counts_eec_truth_cs = h_eec_truth_cs->Integral();
             double counts_eec_truth_ud = h_eec_truth_ud->Integral();
@@ -584,29 +638,8 @@ void AnalysisWWCR::run()
         }
 
         // ************************* CHANGE // COMMENT OUT WHEN RUNNING WITH DIFFERENT WW DECAY OPTIONS *******************************
-        // CosPhi_Angle(W1_j1, W1_j2, h_cos_phi_c_l0);
-        // CosPhi_Angle(W2_j1, W2_j2, h_cos_phi_l1_l2);
-        // CosPhi_Angle(W1_j1, W2_j1, h_cos_phi_c_l1);
-        // CosPhi_Angle(W1_j1, W2_j2, h_cos_phi_c_l2);
-        // CosPhi_Angle(W1_j2, W2_j1, h_cos_phi_s_l1);
-        // CosPhi_Angle(W1_j2, W2_j2, h_cos_phi_s_l2);
-
-        CosPhi_Angle(W1_j1, W1_j2, h_phi_c_l0, h_cos_phi_c_l0, h_eec_c_l0);
-        CosPhi_Angle(W2_j1, W2_j2, h_phi_l1_l2, h_cos_phi_l1_l2, h_eec_l1_l2);
-
-        // double counts_eec_c_l0 = h_eec_c_l0->Integral();
-        // double counts_eec_l1_l2 = h_eec_l1_l2->Integral();
-
-        // if (counts_eec_c_l0 > 0)
-        //     h_eec_c_l0->Scale(1.0 / (counts_eec_c_l0 * h_eec_c_l0->GetXaxis()->GetBinWidth(1)));
-
-        // if (counts_eec_l1_l2 > 0)
-        //     h_eec_l1_l2->Scale(1.0 / (counts_eec_l1_l2 * h_eec_l1_l2->GetXaxis()->GetBinWidth(1)));
-
-        // h_eec_c_l0->Scale(1.0/counts_eec_c_l0);
-        // h_eec_l1_l2->Scale(1.0/counts_eec_l1_l2);
-
-        
+        CosPhi_Angle(W1_j1, W1_j2, h_theta_c_l0, h_delta_theta_c_l0, h_delta_eta_c_l0, h_delta_phi_c_l0, h_cos_phi_c_l0, h_eec_c_l0);
+        CosPhi_Angle(W2_j1, W2_j2, h_theta_l1_l2, h_delta_theta_l1_l2, h_delta_eta_l1_l2, h_delta_phi_l1_l2, h_cos_phi_l1_l2, h_eec_l1_l2);   
 
         // cutflow histograms
         cutFlowHist->SetBinContent(1, NEvents);
@@ -630,7 +663,7 @@ void AnalysisWWCR::run()
     std::cout << "      " << std::endl;
 
     std::cout << "      " << std::endl;
-    std::cout << "Let there be data ;)" << std::endl;
+    std::cout << "Let there be data :)" << std::endl;
 
     // end of macro
 }
