@@ -433,26 +433,29 @@ void AnalysisWWCR::run() {
         // ****************************** CALCULATIONS USING JET CONSTITUENTS ******************************
         std::vector<TLorentzVector> jetConstituents; // flattens the overall vector and allows us to open it up
 
-        df = df.Define()
+        for (int i = 0; i < jetconstituents_kt4_p.size(); i++) {
+            for (int j = 0; j < jetconstituents_kt4_p.size(); ++j) {
 
-        // for (int i = 0; i < jetconstituents_kt4_p.size(); i++) {
-        //     for (int j = 0; j < jetconstituents_kt4_p.size(); ++j) {
+                float p = jetconstituents_kt4_p.at(i).at(j);
+                float theta = jetconstituents_kt4_theta.at(i).at(j);
+                float phi = jetconstituents_kt4_phi.at(i).at(j);
+                float e = jetconstituents_kt4_e.at(i).at(j);
 
-        //         float p = jetconstituents_kt4_p[i][j];
-        //         float theta = jetconstituents_kt4_theta[i][j];
-        //         float phi = jetconstituents_kt4_phi[i][j];
-        //         float e = jetconstituents_kt4_e[i][j];
+                // float p = jetconstituents_kt4_p[i][j];
+                // float theta = jetconstituents_kt4_theta[i][j];
+                // float phi = jetconstituents_kt4_phi[i][j];
+                // float e = jetconstituents_kt4_e[i][j];
 
-        //         float px = p * sin(theta) * cos(phi);
-        //         float py = p * sin(theta) * sin(phi);
-        //         float pz = p * cos(theta);
+                float px = p * sin(theta) * cos(phi);
+                float py = p * sin(theta) * sin(phi);
+                float pz = p * cos(theta);
 
-        //         TLorentzVector vec;
-        //         vec.SetPxPyPzE(px, py, pz, e);
+                TLorentzVector vec;
+                vec.SetPxPyPzE(px, py, pz, e);
 
-        //         jetConstituents.push_back(vec); // if needed for individual constituents
-        //     }
-        // }
+                jetConstituents.push_back(vec); // if needed for individual constituents
+            }
+        }
 
 
 
