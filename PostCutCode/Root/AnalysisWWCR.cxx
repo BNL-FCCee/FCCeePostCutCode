@@ -213,26 +213,10 @@ void AnalysisWWCR::run() {
     varMember<ROOT::VecOps::RVec<float>> truth_Wp_phi {tree, "truth_Wp_Daugthers_phi"};
 
     // Jet Constituents
-    // std::vector<std::vector<float>> jetconstituents_kt4_e;;
-    // std::vector<std::vector<float>> jetconstituents_kt4_p;
-    // std::vector<std::vector<float>> jetconstituents_kt4_phi;
-    // std::vector<std::vector<float>> jetconstituents_kt4_theta;
-
-    std::vector<std::vector<float>> *jetconstituents_kt4_e = nullptr;
-    std::vector<std::vector<float>> *jetconstituents_kt4_p = nullptr;
-    std::vector<std::vector<float>> *jetconstituents_kt4_phi = nullptr;
-    std::vector<std::vector<float>> *jetconstituents_kt4_theta = nullptr;
-
-    tree->SetBranchAddress("jetconstituents_kt4_p", &jetconstituents_kt4_p);
-    tree->SetBranchAddress("jetconstituents_kt4_e", &jetconstituents_kt4_e);
-    tree->SetBranchAddress("jetconstituents_kt4_theta", &jetconstituents_kt4_theta);
-    tree->SetBranchAddress("jetconstituents_kt4_phi", &jetconstituents_kt4_phi);
-
-    std::cout << "# of Entries (jetConstituents_kt4_p): " << tree->GetBranch("jetconstituents_kt4_p")->GetEntries() << std::endl;
-    std::cout << "# of Entries (jetConstituents_kt4_e): " << tree->GetBranch("jetconstituents_kt4_e")->GetEntries() << std::endl;
-    std::cout << "# of Entries (jetConstituents_kt4_theta): " << tree->GetBranch("jetconstituents_kt4_theta")->GetEntries() << std::endl;
-    std::cout << "# of Entries (jetConstituents_kt4_phi): " << tree->GetBranch("jetconstituents_kt4_phi")->GetEntries() << std::endl;
-    std::cout << "  " << std::endl;
+    varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_e {tree, "jetconstituents_kt4_e"};
+    varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_p {tree, "jetconstituents_kt4_p"};
+    varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_theta {tree, "jetconstituents_kt4_theta"};
+    varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_phi {tree, "jetconstituents_kt4_phi"};
 
     // Increment for CutFlow
     int NEvents = 0;
@@ -446,57 +430,29 @@ void AnalysisWWCR::run() {
             std::cout << "      " << std::endl;
         }
 
-        if (do_debug && nPrinted < maxPrint){
-            std::cout << "we make it this far (1)" << std::endl;
-        }
-
         // ****************************** CALCULATIONS USING JET CONSTITUENTS ******************************
         std::vector<TLorentzVector> jetConstituents; // flattens the overall vector and allows us to open it up
-        std::vector<TLorentzVector> jet4Vectors; // the 'sub'-vector within the jetConstituents vector
 
-        if (do_debug && nPrinted < maxPrint){
-            std::cout << "we make it this far (2)" << std::endl;
-        }
+        df = df.Define()
 
-        for (size_t i = 0; i < jetconstituents_kt4_p->size(); i++) {
-            // TLorentzVector jet_vec; // reset for each jet
+        // for (int i = 0; i < jetconstituents_kt4_p.size(); i++) {
+        //     for (int j = 0; j < jetconstituents_kt4_p.size(); ++j) {
 
-            if (i < maxPrint) {
-                std::cout << "we might get this far (3)" << std::endl;
-            }
+        //         float p = jetconstituents_kt4_p[i][j];
+        //         float theta = jetconstituents_kt4_theta[i][j];
+        //         float phi = jetconstituents_kt4_phi[i][j];
+        //         float e = jetconstituents_kt4_e[i][j];
 
-            // for (size_t j = 0; j < jetconstituents_kt4_p->at(i).size(); ++j) {
+        //         float px = p * sin(theta) * cos(phi);
+        //         float py = p * sin(theta) * sin(phi);
+        //         float pz = p * cos(theta);
 
-            //     float p = jetconstituents_kt4_p->at(i).at(j);
-            //     float theta = jetconstituents_kt4_theta->at(i).at(j);
-            //     float phi = jetconstituents_kt4_phi->at(i).at(j);
-            //     float e = jetconstituents_kt4_e->at(i).at(j);
+        //         TLorentzVector vec;
+        //         vec.SetPxPyPzE(px, py, pz, e);
 
-            //     if (i < 10) {
-            //         std::cout << "momentum: " << p << std::endl;
-            //         std::cout << "theta: " << theta << std::endl;
-            //         std::cout << "phi: " << phi << std::endl;
-            //         std::cout << "energy: " << e << std::endl;
-            //     }
-
-            //     // float p = jetconstituents_kt4_p[i][j];
-            //     // float theta = jetconstituents_kt4_theta[i][j];
-            //     // float phi = jetconstituents_kt4_phi[i][j];
-            //     // float e = jetconstituents_kt4_e[i][j];
-
-            //     float px = p * sin(theta) * cos(phi);
-            //     float py = p * sin(theta) * sin(phi);
-            //     float pz = p * cos(theta);
-
-            //     TLorentzVector vec;
-            //     vec.SetPxPyPzE(px, py, pz, e);
-
-            //     // jet_vec += vec;                 // accumulate total jet vector
-            //     jetConstituents.push_back(vec); // if needed for individual constituents
-            // }
-
-            // jet4Vectors.push_back(jet_vec);
-        }
+        //         jetConstituents.push_back(vec); // if needed for individual constituents
+        //     }
+        // }
 
 
 
