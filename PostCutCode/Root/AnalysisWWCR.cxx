@@ -1,4 +1,5 @@
 // Local includes
+#include <cstdlib>  // for std::exit
 #include "PostCutCode/AnalysisWWCR.h"
 #include "PostCutCode/TreeContainer.h"
 #include <iomanip>
@@ -213,6 +214,7 @@ void AnalysisWWCR::run() {
     varMember<ROOT::VecOps::RVec<float>> truth_Wp_phi {tree, "truth_Wp_Daugthers_phi"};
 
     // Jet Constituents
+    varMember<ROOT::VecOps::RVec<int>> jetconstituents_kt4 {tree, "jetconstituents_kt4"};
     varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_e {tree, "jetconstituents_kt4_e"};
     varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_p {tree, "jetconstituents_kt4_p"};
     varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_theta {tree, "jetconstituents_kt4_theta"};
@@ -309,10 +311,10 @@ void AnalysisWWCR::run() {
         NokFlav++;
 
         // cut on the number of electrons
-        if (event_nmu() > 2.) continue;
-        if (event_nel() > 2.) continue;
-        if (muons_p() > 20.) continue;
-        if (elecrons_p() > 20.) continue;
+        // if (event_nmu() > 2.) continue;
+        // if (event_nel() > 2.) continue;
+        // if (muons_p() > 20.) continue;
+        // if (elecrons_p() > 20.) continue;
 
         NleptonCut++;
 
@@ -432,29 +434,36 @@ void AnalysisWWCR::run() {
 
         // ****************************** CALCULATIONS USING JET CONSTITUENTS ******************************
         std::vector<TLorentzVector> jetConstituents; // flattens the overall vector and allows us to open it up
+        // jetconstituents_kt4.at(i): number of jet const. belogning to jet i. 
+        for (int i = 0; i < jetconstituents_kt4.size(); ++i){
+            std::cout << "instance i: " << i<< std::endl;
+                // std::cout << "jetconstituents_kt4_p.at(i): " << jetconstituents_kt4_p.at(i)<< std::endl;
+            if (jetconstituents_kt4_p.at(i).size() != jetconstituents_kt4.at(i)){
+                    std::cerr << "ERROR: Input mismatch — jet size doesn't match!" << std::endl;
+                    std::exit(EXIT_FAILURE); 
+                }
+                for (int k = 0; k < jetconstituents_kt4_p.at(i).size(); ++k){
+                    // jetconstituents_kt4_p.at(i).at(k)
+                    std::cout << "jetconstituents_kt4_p.at(i).at(k): " << jetconstituents_kt4_p.at(i).at(k)<< std::endl;
+                    float p = jetconstituents_kt4_p.at(i).at(k);
+                    float theta = jetconstituents_kt4_theta.at(i).at(k);
+                    float phi = jetconstituents_kt4_phi.at(i).at(k);
+                    float e = jetconstituents_kt4_e.at(i).at(k);
 
-        for (int i = 0; i < jetconstituents_kt4_p.size(); i++) {
-            for (int j = 0; j < jetconstituents_kt4_p.size(); ++j) {
 
-                float p = jetconstituents_kt4_p.at(i).at(j);
-                float theta = jetconstituents_kt4_theta.at(i).at(j);
-                float phi = jetconstituents_kt4_phi.at(i).at(j);
-                float e = jetconstituents_kt4_e.at(i).at(j);
+                    float px = p * sin(theta) * cos(phi);
+                    float py = p * sin(theta) * sin(phi);
+                    float pz = p * cos(theta);
 
-                // float p = jetconstituents_kt4_p[i][j];
-                // float theta = jetconstituents_kt4_theta[i][j];
-                // float phi = jetconstituents_kt4_phi[i][j];
-                // float e = jetconstituents_kt4_e[i][j];
+                    TLorentzVector vec;
+                    vec.SetPxPyPzE(px, py, pz, e);
 
-                float px = p * sin(theta) * cos(phi);
-                float py = p * sin(theta) * sin(phi);
-                float pz = p * cos(theta);
+                    jetConstituents.push_back(vec); // if needed for individual constituents
 
-                TLorentzVector vec;
-                vec.SetPxPyPzE(px, py, pz, e);
 
-                jetConstituents.push_back(vec); // if needed for individual constituents
-            }
+                }
+                
+            // }
         }
 
 
