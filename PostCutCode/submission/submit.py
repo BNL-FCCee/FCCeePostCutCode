@@ -53,8 +53,8 @@ if args.doZHvvJJ:
 elif args.doWWCR: 
     submissionJobList = [
     {"folderName" : "p8_ee_WW_ecm240",              "processName" : "WW"},
-    {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
-    {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"} 
+    # {"folderName" : "p8_ee_Zqq_ecm240",             "processName" : "Zqq"},
+    # {"folderName" : "p8_ee_ZZ_ecm240",              "processName" : "ZZ"} 
     ]
 
 elif args.doZHAllHad:
