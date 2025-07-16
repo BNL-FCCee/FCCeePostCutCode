@@ -1,4 +1,5 @@
 // Local includes
+#include <cstdlib>  // for std::exit
 #include "PostCutCode/AnalysisWWCR.h"
 #include "PostCutCode/TreeContainer.h"
 #include <iomanip>
@@ -12,7 +13,6 @@
 #include <set>
 
 using namespace std;
-using namespace ROOT::VecOps;
 
 // Base class 
 AnalysisWWCR::AnalysisWWCR():
@@ -215,7 +215,6 @@ void AnalysisWWCR::run() {
 
     // Jet Constituents
     varMember<ROOT::VecOps::RVec<int>> jetconstituents_kt4 {tree, "jetconstituents_kt4"};
-    varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_PID {tree, "jetconstituents_kt4_PID"};
     varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_e {tree, "jetconstituents_kt4_e"};
     varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_p {tree, "jetconstituents_kt4_p"};
     varMember<ROOT::VecOps::RVec<ROOT::VecOps::RVec<float>>> jetconstituents_kt4_theta {tree, "jetconstituents_kt4_theta"};
@@ -312,10 +311,10 @@ void AnalysisWWCR::run() {
         NokFlav++;
 
         // cut on the number of electrons
-        if (event_nmu() > 2.) continue;
-        if (event_nel() > 2.) continue;
-        if (muons_p() > 20.) continue;
-        if (elecrons_p() > 20.) continue;
+        // if (event_nmu() > 2.) continue;
+        // if (event_nel() > 2.) continue;
+        // if (muons_p() > 20.) continue;
+        // if (elecrons_p() > 20.) continue;
 
         NleptonCut++;
 
@@ -435,45 +434,36 @@ void AnalysisWWCR::run() {
 
         // ****************************** CALCULATIONS USING JET CONSTITUENTS ******************************
         std::vector<TLorentzVector> jetConstituents; // flattens the overall vector and allows us to open it up
+        // jetconstituents_kt4.at(i): number of jet const. belogning to jet i. 
+        for (int i = 0; i < jetconstituents_kt4.size(); ++i){
+            std::cout << "instance i: " << i<< std::endl;
+                // std::cout << "jetconstituents_kt4_p.at(i): " << jetconstituents_kt4_p.at(i)<< std::endl;
+            if (jetconstituents_kt4_p.at(i).size() != jetconstituents_kt4.at(i)){
+                    std::cerr << "ERROR: Input mismatch — jet size doesn't match!" << std::endl;
+                    std::exit(EXIT_FAILURE); 
+                }
+                for (int k = 0; k < jetconstituents_kt4_p.at(i).size(); ++k){
+                    // jetconstituents_kt4_p.at(i).at(k)
+                    std::cout << "jetconstituents_kt4_p.at(i).at(k): " << jetconstituents_kt4_p.at(i).at(k)<< std::endl;
+                    float p = jetconstituents_kt4_p.at(i).at(k);
+                    float theta = jetconstituents_kt4_theta.at(i).at(k);
+                    float phi = jetconstituents_kt4_phi.at(i).at(k);
+                    float e = jetconstituents_kt4_e.at(i).at(k);
 
-        // for (int j = 0; j < jetconstituents_kt4.size(); ++j){
-        //     for (int k = 0; k < jetconstituents_kt4.size(); ++k){
 
-        //     }
-        // }
+                    float px = p * sin(theta) * cos(phi);
+                    float py = p * sin(theta) * sin(phi);
+                    float pz = p * cos(theta);
 
-        for (int j = 0; j < jetconstituents_kt4_p.size(); ++j) {
-            for (size_t k = 0; k < jetconstituents_kt4_p.at(k).size(); ++k) {
+                    TLorentzVector vec;
+                    vec.SetPxPyPzE(px, py, pz, e);
 
-                // std::cout << "jetconstituents_kt4_p.size(): " << jetconstituents_kt4_p.size() << std::endl;
-                // std::cout << "jetconstituents_kt4_e.size(): " << jetconstituents_kt4_e.size() << std::endl;
-                // std::cout << "jetconstituents_kt4_theta.size(): " << jetconstituents_kt4_theta.size() << std::endl;
-                // std::cout << "jetconstituents_kt4_phi.size(): " << jetconstituents_kt4_phi.size() << std::endl;
+                    jetConstituents.push_back(vec); // if needed for individual constituents
 
-                float p = jetconstituents_kt4_p.at(j).at(k);
-                float theta = jetconstituents_kt4_theta.at(j).at(k);
-                float phi = jetconstituents_kt4_phi.at(j).at(k);
-                float e = jetconstituents_kt4_e.at(j).at(k);
 
-        //         // if (k < 10) {
-        //         //     std::cout << "  Constituent k: " << k << std::endl;
-        //         //     std::cout << "    p: " << p << ", theta: " << theta << ", phi: " << phi << ", e: " << e << std::endl;
-        //         // }
-
-        //         // float p = jetconstituents_kt4_p[i][j];
-        //         // float theta = jetconstituents_kt4_theta[i][j];
-        //         // float phi = jetconstituents_kt4_phi[i][j];
-        //         // float e = jetconstituents_kt4_e[i][j];
-
-        //         float px = p * sin(theta) * cos(phi);
-        //         float py = p * sin(theta) * sin(phi);
-        //         float pz = p * cos(theta);
-
-        //         TLorentzVector vec;
-        //         vec.SetPxPyPzE(px, py, pz, e);
-
-        //         jetConstituents.push_back(vec); // if needed for individual constituents
-            }
+                }
+                
+            // }
         }
 
 
@@ -694,5 +684,3 @@ void AnalysisWWCR::run() {
 
     // end of macro
 }
-
-
