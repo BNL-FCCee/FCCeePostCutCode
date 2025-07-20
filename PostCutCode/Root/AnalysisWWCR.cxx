@@ -45,23 +45,36 @@ QuarkCounter countQuarks(const ROOT::VecOps::RVec<int>* jet_truth) {
     return counter;
 }
 
-void CosPhi_Angle(const TLorentzVector& jet1, const TLorentzVector& jet2, TH1F* hist_theta, TH1F *hist_delta_theta, TH1F* hist_delta_eta, TH1F* hist_delta_phi, TH1F* hist_cosphi, TH1F* hist_eec) {
-    double theta = jet1.Angle(jet2.Vect());
-    double delta_theta = jet1.Theta() - jet2.Theta();
+// void CosPhi_Angle(const TLorentzVector& jet1, const TLorentzVector& jet2, TH1F* hist_global_theta, TH1F *hist_delta_theta, TH1F *hist_cos_theta, 
+//                   TH1F* hist_delta_eta, TH1F* hist_delta_phi, TH1F* hist_cosphi, TH1F* hist_eec_theta, TH1F* hist_eec_phi) {
+
+//     double global_theta = jet1.Angle(jet2.Vect());
+//     double delta_theta = jet1.Theta() - jet2.Theta();
+//     double cos_theta = cos(global_theta);
     
-    double delta_eta = jet1.Eta() - jet2.Eta();
-    double delta_phi = jet1.Phi() - jet2.Phi();
-    double cos_phi = cos(delta_phi);
+//     double delta_eta = jet1.Eta() - jet2.Eta();
+//     double delta_phi = jet1.Phi() - jet2.Phi();
+//     double cos_phi = cos(delta_phi);
 
-    double ee_correlator = 0.5 * (1 - cos_phi);
+//     double ee_correlator_theta = 0.5 * (1 - cos_theta);
+//     double ee_correlator_phi = 0.5 * (1 - cos_phi);
 
-    hist_theta->Fill(theta);
-    hist_delta_theta->Fill(delta_theta);
-    hist_delta_eta->Fill(delta_eta);
-    hist_delta_phi->Fill(delta_phi);
-    hist_cosphi->Fill(cos_phi);
-    hist_eec->Fill(ee_correlator);
-}
+//     // double degrees = radians * 180.0 / TMath::Pi();
+
+//     double global_theta_deg = global_theta * 180.0 / TMath::Pi();
+//     double delta_theta_deg = delta_theta * 180.0 / TMath::Pi();
+//     double delta_eta_deg = delta_eta * 180 / TMath::Pi();
+//     double delta_phi_deg = delta_phi * 180.0 / TMath::Pi();
+
+//     hist_global_theta->Fill(global_theta_deg);
+//     hist_delta_theta->Fill(delta_theta_deg);
+//     hist_cos_theta->Fill(cos_theta);
+//     hist_delta_eta->Fill(delta_eta_deg);
+//     hist_delta_phi->Fill(delta_phi_deg);
+//     hist_cosphi->Fill(cos_phi);
+//     hist_eec_theta->Fill(ee_correlator_theta);
+//     hist_eec_phi->Fill(ee_correlator_phi);
+// }
 
 void AnalysisWWCR::run() { 
 
@@ -71,25 +84,27 @@ void AnalysisWWCR::run() {
     auto countingHist = m_histContainer->getCountingHist();
     auto cutFlowHist = m_histContainer->get1DHist("cutFlowHist", cutFlowMap.size(), 0, 8, cutFlowMap);
 
-    // ******************* SUBSTRCTURE HISTOGRAMS *******************
-    // auto h_jetSub_p = m_histContainer->get1DHist("h_jetSub_p", 300, 0, 150);
+    // // ******************* SUBSTRCTURE HISTOGRAMS *******************
+    // auto h_subJet_1_p = m_histContainer->get1DHist("h_subJet_1_p", 300, 0, 150);
+    // auto h_subJet_2_p = m_histContainer->get1DHist("h_subJet_2_p", 300, 0, 150);
 
-    auto h_subJet_1_p = m_histContainer->get1DHist("h_subJet_1_p", 300, 0, 150);
-    auto h_subJet_2_p = m_histContainer->get1DHist("h_subJet_2_p", 300, 0, 150);
-
-    auto h_theta_jetSub_1 = m_histContainer->get1DHist("h_theta_jetSub_1", 150, -TMath::Pi(), TMath::Pi());
+    // auto h_theta_jetSub_1 = m_histContainer->get1DHist("h_theta_jetSub_1", 150, -180.0, 180.0);
     
-    auto h_delta_theta_jetSub_1 = m_histContainer->get1DHist("h_delta_theta_jetSub_1", 150, -TMath::Pi(), TMath::Pi());
+    // auto h_delta_theta_jetSub_1 = m_histContainer->get1DHist("h_delta_theta_jetSub_1", 150, -180.0, 180.0);
 
-    auto h_delta_eta_jetSub_1 = m_histContainer->get1DHist("h_delta_eta_jetSub_1", 150, -TMath::Pi(), TMath::Pi());
+    // auto h_delta_eta_jetSub_1 = m_histContainer->get1DHist("h_delta_eta_jetSub_1", 150, -180.0, 180.0);
 
-    auto h_delta_phi_jetSub_1 = m_histContainer->get1DHist("h_delta_phi_jetSub_1", 150, -TMath::Pi(), TMath::Pi());
+    // auto h_delta_phi_jetSub_1 = m_histContainer->get1DHist("h_delta_phi_jetSub_1", 150, -180.0, 180.0);
 
-    auto h_cos_phi_jetSub_1 = m_histContainer->get1DHist("h_cos_phi_jetSub_1", 150, -1, 1);
+    // auto h_cos_phi_jetSub_1 = m_histContainer->get1DHist("h_cos_phi_jetSub_1", 150, -1, 1);
 
-    auto h_eec_jetSub_1 = m_histContainer->get1DHist("h_eec_jetSub_1", 150, -1, 1);
+    // auto h_eec_phi_jetSub_1 = m_histContainer->get1DHist("h_eec_phi_jetSub_1", 150, -1, 1);
 
-    // ******************* TRUTH HISTOGRAMS *******************
+    // auto h_cos_theta_jetSub_1 = m_histContainer->get1DHist("h_cos_theta_jetSub_1", 150, -1, 1);
+
+    // auto h_eec_theta_jetSub_1 = m_histContainer->get1DHist("h_eec_theta_jetSub_1", 150, -1, 1);
+
+    // ******************************** TRUTH HISTOGRAMS ********************************
     auto h_W1_truth_mass = m_histContainer->get1DHist("h_W1_truth_mass", 300, 0, 150);
     auto h_W2_truth_mass = m_histContainer->get1DHist("h_W2_truth_mass", 300, 0, 150);
 
@@ -99,23 +114,39 @@ void AnalysisWWCR::run() {
     auto h_W1_truth_e = m_histContainer->get1DHist("h_W1_truth_e", 300, 0, 150);
     auto h_W2_truth_e = m_histContainer->get1DHist("h_W2_truth_e", 300, 0, 150);
 
+    
+    auto h_chi_truth_cs = m_histContainer->get1DHist("h_chi_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_chi_truth_ud = m_histContainer->get1DHist("h_chi_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+
     auto h_theta_truth_cs = m_histContainer->get1DHist("h_theta_truth_cs", 150, -TMath::Pi(), TMath::Pi());
     auto h_theta_truth_ud = m_histContainer->get1DHist("h_theta_truth_ud", 150, -TMath::Pi(), TMath::Pi());
 
-    auto h_delta_theta_truth_cs = m_histContainer->get1DHist("h_delta_theta_truth_cs", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_theta_truth_ud = m_histContainer->get1DHist("h_delta_theta_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+    auto h_eta_truth_cs = m_histContainer->get1DHist("h_eta_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_eta_truth_ud = m_histContainer->get1DHist("h_eta_truth_ud", 150, -TMath::Pi(), TMath::Pi());
 
-    auto h_delta_eta_truth_cs = m_histContainer->get1DHist("h_delta_eta_truth_cs", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_eta_truth_ud = m_histContainer->get1DHist("h_delta_eta_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+    auto h_phi_truth_cs = m_histContainer->get1DHist("h_phi_truth_cs", 150, -TMath::Pi(), TMath::Pi());
+    auto h_phi_truth_ud = m_histContainer->get1DHist("h_phi_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+    
 
-    auto h_delta_phi_truth_cs = m_histContainer->get1DHist("h_delta_phi_truth_cs", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_phi_truth_ud = m_histContainer->get1DHist("h_delta_phi_truth_ud", 150, -TMath::Pi(), TMath::Pi());
+    auto h_cos_chi_truth_cs = m_histContainer->get1DHist("h_cos_chi_truth_cs", 150, -1, 1);
+    auto h_cos_chi_truth_ud = m_histContainer->get1DHist("h_cos_chi_truth_ud", 150, -1, 1);
+
+    auto h_cos_theta_truth_cs = m_histContainer->get1DHist("h_cos_theta_truth_cs", 150, -1, 1);
+    auto h_cos_theta_truth_ud = m_histContainer->get1DHist("h_cos_theta_truth_ud", 150, -1, 1);
 
     auto h_cos_phi_truth_cs = m_histContainer->get1DHist("h_cos_phi_truth_cs", 150, -1, 1);
     auto h_cos_phi_truth_ud = m_histContainer->get1DHist("h_cos_phi_truth_ud", 150, -1, 1);
 
-    auto h_eec_truth_cs = m_histContainer->get1DHist("h_eec_truth_cs", 150, -1, 1);
-    auto h_eec_truth_ud = m_histContainer->get1DHist("h_eec_truth_ud", 150, -1, 1);
+
+
+    auto h_eec_chi_truth_cs = m_histContainer->get1DHist("h_eec_chi_truth_cs", 150, -1, 1);
+    auto h_eec_chi_truth_ud = m_histContainer->get1DHist("h_eec_chi_truth_ud", 150, -1, 1);
+
+    auto h_eec_theta_truth_cs = m_histContainer->get1DHist("h_eec_theta_truth_cs", 150, -1, 1);
+    auto h_eec_theta_truth_ud = m_histContainer->get1DHist("h_eec_theta_truth_ud", 150, -1, 1);
+
+    auto h_eec_phi_truth_cs = m_histContainer->get1DHist("h_eec_phi_truth_cs", 150, -1, 1);
+    auto h_eec_phi_truth_ud = m_histContainer->get1DHist("h_eec_phi_truth_ud", 150, -1, 1);
 
     // ******************* RECOJET HISTOGRAMS *******************
     auto h_W1_mass = m_histContainer->get1DHist("h_W1_mass", 300, 0, 150);
@@ -138,47 +169,73 @@ void AnalysisWWCR::run() {
     auto h_W1_e = m_histContainer->get1DHist("h_W1_e", 300, 0, 150);
     auto h_W2_e = m_histContainer->get1DHist("h_W2_e", 300, 0, 150);
 
+    auto h_chi_c_l0 = m_histContainer->get1DHist("h_chi_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_chi_l1_l2 = m_histContainer->get1DHist("h_chi_l1_l2", 150, -TMath::Pi(), TMath::Pi());
+
     auto h_theta_c_l0 = m_histContainer->get1DHist("h_theta_c_l0", 150, -TMath::Pi(), TMath::Pi());
-    auto h_theta_l1_l2 = m_histContainer->get1DHist("h_theta_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_theta_c_l1 = m_histContainer->get1DHist("h_theta_c_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_theta_c_l2 = m_histContainer->get1DHist("h_theta_c_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_theta_l0_l1 = m_histContainer->get1DHist("h_theta_l0_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_theta_l0_l2 = m_histContainer->get1DHist("h_theta_l0_l2", 150,  -TMath::Pi(), TMath::Pi());
+    auto h_theta_l1_l2 = m_histContainer->get1DHist("h_theta_l1_l2", 150, -TMath::Pi(), TMath::Pi());
 
-    auto h_delta_theta_c_l0 = m_histContainer->get1DHist("h_delta_theta_c_l0", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_theta_l1_l2 = m_histContainer->get1DHist("h_delta_theta_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_delta_theta_c_l1 = m_histContainer->get1DHist("h_delta_theta_c_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_theta_c_l2 = m_histContainer->get1DHist("h_delta_theta_c_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_delta_theta_l0_l1 = m_histContainer->get1DHist("h_delta_theta_l0_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_theta_l0_l2 = m_histContainer->get1DHist("h_delta_theta_l0_l2", 150,  -TMath::Pi(), TMath::Pi());
+    auto h_eta_c_l0 = m_histContainer->get1DHist("h_eta_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_eta_l1_l2 = m_histContainer->get1DHist("h_eta_l1_l2", 150, -TMath::Pi(), TMath::Pi());
 
-    auto h_delta_eta_c_l0 = m_histContainer->get1DHist("h_delta_eta_c_l0", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_eta_l1_l2 = m_histContainer->get1DHist("h_delta_eta_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_delta_eta_c_l1 = m_histContainer->get1DHist("h_delta_eta_c_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_eta_c_l2 = m_histContainer->get1DHist("h_delta_eta_c_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_delta_eta_l0_l1 = m_histContainer->get1DHist("h_delta_eta_l0_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_eta_l0_l2 = m_histContainer->get1DHist("h_delta_eta_l0_l2", 150,  -TMath::Pi(), TMath::Pi());
+    auto h_phi_c_l0 = m_histContainer->get1DHist("h_phi_c_l0", 150, -TMath::Pi(), TMath::Pi());
+    auto h_phi_l1_l2 = m_histContainer->get1DHist("h_phi_l1_l2", 150, -TMath::Pi(), TMath::Pi());
 
-    auto h_delta_phi_c_l0 = m_histContainer->get1DHist("h_delta_phi_c_l0", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_phi_l1_l2 = m_histContainer->get1DHist("h_delta_phi_l1_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_delta_phi_c_l1 = m_histContainer->get1DHist("h_delta_phi_c_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_phi_c_l2 = m_histContainer->get1DHist("h_delta_phi_c_l2", 150,  -TMath::Pi(), TMath::Pi());
-    auto h_delta_phi_l0_l1 = m_histContainer->get1DHist("h_delta_phi_l0_l1", 150, -TMath::Pi(), TMath::Pi());
-    auto h_delta_phi_l0_l2 = m_histContainer->get1DHist("h_delta_phi_l0_l2", 150,  -TMath::Pi(), TMath::Pi());
+    // auto h_theta_c_l0 = m_histContainer->get1DHist("h_theta_c_l0", 150, -180.0, -180.0);
+    // auto h_theta_l1_l2 = m_histContainer->get1DHist("h_theta_l1_l2", 150, -180.0, -180.0);
+    // auto h_theta_c_l1 = m_histContainer->get1DHist("h_theta_c_l1", 150, -180.0, -180.0);
+    // auto h_theta_c_l2 = m_histContainer->get1DHist("h_theta_c_l2", 150, -180.0, -180.0);
+    // auto h_theta_l0_l1 = m_histContainer->get1DHist("h_theta_l0_l1", 150, -180.0, -180.0);
+    // auto h_theta_l0_l2 = m_histContainer->get1DHist("h_theta_l0_l2", 150, -180.0, -180.0);
 
-    auto h_cos_phi_c_l0 = m_histContainer->get1DHist("h_cos_phi_c_l0", 150, -1, 1);
-    auto h_cos_phi_l1_l2 = m_histContainer->get1DHist("h_cos_phi_l1_l2", 150, -1, 1);
-    auto h_cos_phi_c_l1 = m_histContainer->get1DHist("h_cos_phi_c_l1", 150, -1, 1);
-    auto h_cos_phi_c_l2 = m_histContainer->get1DHist("h_cos_phi_c_l2", 150,  -1, 1);
-    auto h_cos_phi_l0_l1 = m_histContainer->get1DHist("h_cos_phi_l0_l1", 150, -1, 1);
-    auto h_cos_phi_l0_l2 = m_histContainer->get1DHist("h_cos_phi_l0_l2", 150,  -1, 1);
+    // auto h_delta_theta_c_l0 = m_histContainer->get1DHist("h_delta_theta_c_l0", 150, -180.0, -180.0);
+    // auto h_delta_theta_l1_l2 = m_histContainer->get1DHist("h_delta_theta_l1_l2", 150, -180.0, -180.0);
+    // auto h_delta_theta_c_l1 = m_histContainer->get1DHist("h_delta_theta_c_l1", 150, -180.0, -180.0);
+    // auto h_delta_theta_c_l2 = m_histContainer->get1DHist("h_delta_theta_c_l2", 150, -180.0, -180.0);
+    // auto h_delta_theta_l0_l1 = m_histContainer->get1DHist("h_delta_theta_l0_l1", 150, -180.0, -180.0);
+    // auto h_delta_theta_l0_l2 = m_histContainer->get1DHist("h_delta_theta_l0_l2", 150, -180.0, -180.0);
 
-    auto h_eec_c_l0 = m_histContainer->get1DHist("h_eec_c_l0", 150, -1, 1);
-    auto h_eec_l1_l2 = m_histContainer->get1DHist("h_eec_l1_l2", 150, -1, 1);
-    auto h_eec_c_l1 = m_histContainer->get1DHist("h_delta_eta_c_l1", 150, -1, 1);
-    auto h_eec_c_l2 = m_histContainer->get1DHist("h_delta_eta_c_l2", 150,  -1, 1);
-    auto h_eec_l0_l1 = m_histContainer->get1DHist("h_delta_eta_l0_l1", 150, -1, 1);
-    auto h_eec_l0_l2 = m_histContainer->get1DHist("h_delta_eta_l0_l2", 150, -1, 1);
+    // auto h_delta_eta_c_l0 = m_histContainer->get1DHist("h_delta_eta_c_l0", 150, -180.0, -180.0);
+    // auto h_delta_eta_l1_l2 = m_histContainer->get1DHist("h_delta_eta_l1_l2", 150, -180.0, -180.0);
+    // auto h_delta_eta_c_l1 = m_histContainer->get1DHist("h_delta_eta_c_l1", 150, -180.0, -180.0);
+    // auto h_delta_eta_c_l2 = m_histContainer->get1DHist("h_delta_eta_c_l2", 150, -180.0, -180.0);
+    // auto h_delta_eta_l0_l1 = m_histContainer->get1DHist("h_delta_eta_l0_l1", 150, -180.0, -180.0);
+    // auto h_delta_eta_l0_l2 = m_histContainer->get1DHist("h_delta_eta_l0_l2", 150, -180.0, -180.0);
+
+    // auto h_delta_phi_c_l0 = m_histContainer->get1DHist("h_delta_phi_c_l0", 150, -180.0, -180.0);
+    // auto h_delta_phi_l1_l2 = m_histContainer->get1DHist("h_delta_phi_l1_l2", 150, -180.0, -180.0);
+    // auto h_delta_phi_c_l1 = m_histContainer->get1DHist("h_delta_phi_c_l1", 150, -180.0, -180.0);
+    // auto h_delta_phi_c_l2 = m_histContainer->get1DHist("h_delta_phi_c_l2", 150, -180.0, -180.0);
+    // auto h_delta_phi_l0_l1 = m_histContainer->get1DHist("h_delta_phi_l0_l1", 150, -180.0, -180.0);
+    // auto h_delta_phi_l0_l2 = m_histContainer->get1DHist("h_delta_phi_l0_l2", 150, -180.0, -180.0);
+
+    // auto h_cos_phi_c_l0 = m_histContainer->get1DHist("h_cos_phi_c_l0", 150, -1, 1);
+    // auto h_cos_phi_l1_l2 = m_histContainer->get1DHist("h_cos_phi_l1_l2", 150, -1, 1);
+    // auto h_cos_phi_c_l1 = m_histContainer->get1DHist("h_cos_phi_c_l1", 150, -1, 1);
+    // auto h_cos_phi_c_l2 = m_histContainer->get1DHist("h_cos_phi_c_l2", 150,  -1, 1);
+    // auto h_cos_phi_l0_l1 = m_histContainer->get1DHist("h_cos_phi_l0_l1", 150, -1, 1);
+    // auto h_cos_phi_l0_l2 = m_histContainer->get1DHist("h_cos_phi_l0_l2", 150,  -1, 1);
+
+    // auto h_eec_phi_c_l0 = m_histContainer->get1DHist("h_eec_phi_c_l0", 150, -1, 1);
+    // auto h_eec_phi_l1_l2 = m_histContainer->get1DHist("h_eec_phi_l1_l2", 150, -1, 1);
+    // auto h_eec_phi_c_l1 = m_histContainer->get1DHist("h_eec_phi_c_l1", 150, -1, 1);
+    // auto h_eec_phi_c_l2 = m_histContainer->get1DHist("h_eec_phi_c_l2", 150,  -1, 1);
+    // auto h_eec_phi_l0_l1 = m_histContainer->get1DHist("h_eec_phi_l0_l1", 150, -1, 1);
+    // auto h_eec_phi_l0_l2 = m_histContainer->get1DHist("h_eec_phi_l0_l2", 150, -1, 1);
+
+    // auto h_cos_theta_c_l0 = m_histContainer->get1DHist("h_cos_theta_c_l0", 150, -1, 1);
+    // auto h_cos_theta_l1_l2 = m_histContainer->get1DHist("h_cos_theta_l1_l2", 150, -1, 1);
+    // auto h_cos_theta_c_l1 = m_histContainer->get1DHist("h_cos_theta_c_l1", 150, -1, 1);
+    // auto h_cos_theta_c_l2 = m_histContainer->get1DHist("h_cos_theta_c_l2", 150,  -1, 1);
+    // auto h_cos_theta_l0_l1 = m_histContainer->get1DHist("h_cos_theta_l0_l1", 150, -1, 1);
+    // auto h_cos_theta_l0_l2 = m_histContainer->get1DHist("h_cos_theta_l0_l2", 150,  -1, 1);
+
+    // auto h_eec_theta_c_l0 = m_histContainer->get1DHist("h_eec_theta_c_l0", 150, -1, 1);
+    // auto h_eec_theta_l1_l2 = m_histContainer->get1DHist("h_eec_theta_l1_l2", 150, -1, 1);
+    // auto h_eec_theta_c_l1 = m_histContainer->get1DHist("h_eec_theta_c_l1", 150, -1, 1);
+    // auto h_eec_theta_c_l2 = m_histContainer->get1DHist("h_eec_theta_c_l2", 150,  -1, 1);
+    // auto h_eec_theta_l0_l1 = m_histContainer->get1DHist("h_eec_theta_l0_l1", 150, -1, 1);
+    // auto h_eec_theta_l0_l2 = m_histContainer->get1DHist("h_eec_theta_l0_l2", 150, -1, 1);
 
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
@@ -450,54 +507,47 @@ void AnalysisWWCR::run() {
             std::cout << "      " << std::endl;
         }
 
-        // ****************************** CALCULATIONS USING JET CONSTITUENTS ******************************
-        std::vector<TLorentzVector> jetConstituents; // flattens the overall vector and allows us to open it up
-        // jetconstituents_kt4.at(i): number of jet const. belogning to jet i. 
-        for (int i = 0; i < jetconstituents_kt4.size(); ++i){
-            // std::cout << "instance i: " << i<< std::endl;
-            // std::cout << "jetconstituents_kt4_p.at(i): " << jetconstituents_kt4_p.at(i)<< std::endl;
+        // // ****************************** CALCULATIONS USING JET CONSTITUENTS ******************************
+        // std::vector<TLorentzVector> jetConstituents; // flattens the overall vector and allows us to open it up
+        // // jetconstituents_kt4.at(i): number of jet const. belogning to jet i. 
+        // for (int i = 0; i < jetconstituents_kt4.size(); ++i){
+        //     // std::cout << "instance i: " << i<< std::endl;
+        //     // std::cout << "jetconstituents_kt4_p.at(i): " << jetconstituents_kt4_p.at(i)<< std::endl;
 
-            if (jetconstituents_kt4_p.at(i).size() != jetconstituents_kt4.at(i)){
-                    std::cerr << "ERROR: Input mismatch — jet size doesn't match!" << std::endl;
-                    std::exit(EXIT_FAILURE); 
-                }
-                for (int k = 0; k < jetconstituents_kt4_p.at(i).size(); ++k){
-                    // std::cout << "jetconstituents_kt4_p.at(i).at(k): " << jetconstituents_kt4_p.at(i).at(k)<< std::endl;
-                    float p = jetconstituents_kt4_p.at(i).at(k);
-                    float theta = jetconstituents_kt4_theta.at(i).at(k);
-                    float phi = jetconstituents_kt4_phi.at(i).at(k);
-                    float e = jetconstituents_kt4_e.at(i).at(k);
-
-
-                    float px = p * sin(theta) * cos(phi);
-                    float py = p * sin(theta) * sin(phi);
-                    float pz = p * cos(theta);
-
-                    TLorentzVector vec;
-                    vec.SetPxPyPzE(px, py, pz, e);
-                    jetConstituents.push_back(vec);
-                }
-        }
-
-        for (size_t m = 0; m < jetConstituents.size(); ++m){
-            for (size_t n = m + 1; n < jetConstituents.size(); ++n){
-
-                TLorentzVector subJet_1 = jetConstituents.at(m);
-                TLorentzVector subJet_2 = jetConstituents.at(n);
-
-                h_subJet_1_p->Fill(subJet_1.P());
-                h_subJet_2_p->Fill(subJet_2.P());
-
-                CosPhi_Angle(subJet_1, subJet_2, h_theta_jetSub_1, h_delta_theta_jetSub_1, h_delta_eta_jetSub_1, h_delta_phi_jetSub_1, h_cos_phi_jetSub_1, h_eec_jetSub_1);
-            }
-        }
-
-        
+        //     if (jetconstituents_kt4_p.at(i).size() != jetconstituents_kt4.at(i)){
+        //             std::cerr << "ERROR: Input mismatch — jet size doesn't match!" << std::endl;
+        //             std::exit(EXIT_FAILURE); 
+        //         }
+        //         for (int k = 0; k < jetconstituents_kt4_p.at(i).size(); ++k){
+        //             // std::cout << "jetconstituents_kt4_p.at(i).at(k): " << jetconstituents_kt4_p.at(i).at(k)<< std::endl;
+        //             float p = jetconstituents_kt4_p.at(i).at(k);
+        //             float theta = jetconstituents_kt4_theta.at(i).at(k);
+        //             float phi = jetconstituents_kt4_phi.at(i).at(k);
+        //             float e = jetconstituents_kt4_e.at(i).at(k);
 
 
+        //             float px = p * sin(theta) * cos(phi);
+        //             float py = p * sin(theta) * sin(phi);
+        //             float pz = p * cos(theta);
 
+        //             TLorentzVector vec;
+        //             vec.SetPxPyPzE(px, py, pz, e);
+        //             jetConstituents.push_back(vec);
+        //         }
+        // }
 
+        // for (size_t m = 0; m < jetConstituents.size(); ++m){
+        //     for (size_t n = m + 1; n < jetConstituents.size(); ++n){
 
+        //         TLorentzVector subJet_1 = jetConstituents.at(m);
+        //         TLorentzVector subJet_2 = jetConstituents.at(n);
+
+        //         h_subJet_1_p->Fill(subJet_1.P());
+        //         h_subJet_2_p->Fill(subJet_2.P());
+
+        //         CosPhi_Angle(subJet_1, subJet_2, h_theta_jetSub_1, h_delta_theta_jetSub_1, h_delta_eta_jetSub_1, h_delta_phi_jetSub_1, h_cos_phi_jetSub_1, h_eec_phi_jetSub_1, h_cos_theta_jetSub_1, h_eec_theta_jetSub_1);
+        //     }
+        // }
 
         // ****************************** CALCULATIONS USING TRUTH QUARKS ******************************
         std::vector<TLorentzVector> truthJets_Wm, truthJets_Wp;
@@ -552,17 +602,61 @@ void AnalysisWWCR::run() {
             h_W1_truth_e->Fill(W1_truthJet.E());
             h_W2_truth_e->Fill(W2_truthJet.E());
 
-            CosPhi_Angle(W1_jet1, W1_jet2, h_theta_truth_cs, h_delta_theta_truth_cs, h_delta_eta_truth_cs, h_delta_phi_truth_cs, h_cos_phi_truth_cs, h_eec_truth_cs);
-            CosPhi_Angle(W2_jet1, W2_jet2, h_theta_truth_ud, h_delta_theta_truth_ud, h_delta_eta_truth_ud, h_delta_phi_truth_ud, h_cos_phi_truth_ud, h_eec_truth_ud);
+            double chi_truth_cs = W1_jet1.Angle(W1_jet2.Vect()); // Is this the proper variable name for the angle?
+            double chi_truth_ud = W2_jet1.Angle(W2_jet2.Vect()); // If not, please note the correct varaible name
 
-            double counts_eec_truth_cs = h_eec_truth_cs->Integral();
-            double counts_eec_truth_ud = h_eec_truth_ud->Integral();
+            double theta_truth_cs = std::fabs(W1_jet1.Theta() - W1_jet2.Theta());
+            double theta_truth_ud = std::fabs(W2_jet1.Theta() - W2_jet2.Theta());
 
-            if (counts_eec_truth_cs > 0)
-                h_eec_truth_cs->Scale(1.0 / (counts_eec_truth_cs * h_eec_truth_cs->GetXaxis()->GetBinWidth(1)));
+            double eta_truth_cs = std::fabs(W1_jet1.Eta() - W1_jet2.Eta());
+            double eta_truth_ud = std::fabs(W2_jet1.Eta() - W2_jet2.Eta());
+            
+            double phi_truth_cs = std::fabs(W1_jet1.Phi() - W1_jet2.Phi());
+            double phi_truth_ud = std::fabs(W2_jet1.Phi() - W2_jet2.Phi());
 
-            if (counts_eec_truth_ud > 0)
-                h_eec_truth_ud->Scale(1.0 / (counts_eec_truth_ud * h_eec_truth_ud->GetXaxis()->GetBinWidth(1)));
+            // ************** COSINE MEASUREMENTS **************
+            double cos_chi_truth_cs = cos(chi_truth_cs);
+            double cos_chi_truth_ud = cos(chi_truth_ud);
+
+            double cos_theta_truth_cs = cos(theta_truth_cs);
+            double cos_theta_truth_ud = cos(theta_truth_ud);
+
+            double cos_phi_truth_cs = cos(phi_truth_cs);
+            double cos_phi_truth_ud = cos(phi_truth_ud);
+
+            // ************** EE CORRELATIONS **************
+            double ee_correlation_chi_truth_cs = 0.5 * (1 - cos_chi_truth_cs);
+            double ee_correlation_chi_truth_ud = 0.5 * (1 - cos_chi_truth_ud);
+
+            double ee_correlation_theta_truth_cs = 0.5 * (1 - cos_theta_truth_cs);
+            double ee_correlation_theta_truth_ud = 0.5 * (1 - cos_theta_truth_ud);
+
+            double ee_correlation_phi_truth_cs = 0.5 * (1 - cos_phi_truth_cs);
+            double ee_correlation_phi_truth_ud = 0.5 * (1 - cos_phi_truth_ud);
+
+            // *********************** HISTOGRAMS ***********************
+            h_chi_truth_cs->Fill(chi_truth_cs);
+            h_chi_truth_ud->Fill(chi_truth_ud);
+            h_theta_truth_cs->Fill(theta_truth_cs);
+            h_theta_truth_ud->Fill(theta_truth_ud);
+            h_eta_truth_cs->Fill(eta_truth_cs);
+            h_eta_truth_ud->Fill(eta_truth_ud);
+            h_phi_truth_cs->Fill(phi_truth_cs);
+            h_phi_truth_ud->Fill(phi_truth_ud);
+
+            h_cos_chi_truth_cs->Fill(cos_chi_truth_cs);
+            h_cos_chi_truth_ud->Fill(cos_chi_truth_ud);
+            h_cos_theta_truth_cs->Fill(cos_theta_truth_cs);
+            h_cos_theta_truth_ud->Fill(cos_theta_truth_ud);
+            h_cos_phi_truth_cs->Fill(cos_phi_truth_cs);
+            h_cos_phi_truth_ud->Fill(cos_phi_truth_ud);
+
+            h_eec_chi_truth_cs->Fill(ee_correlation_chi_truth_cs);
+            h_eec_chi_truth_ud->Fill(ee_correlation_chi_truth_ud);
+            h_eec_theta_truth_cs->Fill(ee_correlation_theta_truth_cs);
+            h_eec_theta_truth_ud->Fill(ee_correlation_theta_truth_ud);
+            h_eec_phi_truth_cs->Fill(ee_correlation_phi_truth_cs);
+            h_eec_phi_truth_ud->Fill(ee_correlation_phi_truth_ud);
         }
 
         // ************************** CALCULATIONS FOR MASS AND SUCH BEGIN HERE (USING RECO-JETS) ************************** 
@@ -679,13 +773,48 @@ void AnalysisWWCR::run() {
             W2_j2 = lTag_Jet_0;
         }
 
-        // ************************* CHANGE // COMMENT OUT WHEN RUNNING WITH DIFFERENT WW DECAY OPTIONS *******************************
-        CosPhi_Angle(W1_j1, W1_j2, h_theta_c_l0, h_delta_theta_c_l0, h_delta_eta_c_l0, h_delta_phi_c_l0, h_cos_phi_c_l0, h_eec_c_l0);
-        CosPhi_Angle(W2_j1, W2_j2, h_theta_l1_l2, h_delta_theta_l1_l2, h_delta_eta_l1_l2, h_delta_phi_l1_l2, h_cos_phi_l1_l2, h_eec_l1_l2);
-        CosPhi_Angle(W1_j1, W1_j2, h_theta_c_l1, h_delta_theta_c_l1, h_delta_eta_c_l1, h_delta_phi_c_l1, h_cos_phi_c_l1, h_eec_c_l1);
-        CosPhi_Angle(W2_j1, W2_j2, h_theta_c_l2, h_delta_theta_c_l2, h_delta_eta_c_l2, h_delta_phi_c_l2, h_cos_phi_c_l2, h_eec_c_l2); 
-        CosPhi_Angle(W1_j1, W1_j2, h_theta_l0_l1, h_delta_theta_l0_l1, h_delta_eta_l0_l1, h_delta_phi_l0_l1, h_cos_phi_l0_l1, h_eec_l0_l1);
-        CosPhi_Angle(W2_j1, W2_j2, h_theta_l0_l2, h_delta_theta_l0_l2, h_delta_eta_l0_l2, h_delta_phi_l0_l2, h_cos_phi_l0_l2, h_eec_l0_l2); 
+        double chi_c_l0 = W1_j1.Angle(W1_j2.Vect()); // Is this the proper variable name for the angle?
+        double chi_l1_l2 = W2_j1.Angle(W2_j2.Vect()); // If not, please note the correct varaible name
+
+        double theta_c_l0 = std::fabs(W1_j1.Theta() - W1_j2.Theta());
+        double theta_l1_l2 = std::fabs(W2_j1.Theta() - W2_j2.Theta());
+
+        double eta_c_l0 = std::fabs(W1_j1.Eta() - W1_j2.Eta());
+        double eta_l1_l2 = std::fabs(W2_j1.Eta() - W2_j2.Eta());
+        
+        double phi_c_l0 = std::fabs(W1_j1.Phi() - W1_j2.Phi());
+        double phi_l1_l2 = std::fabs(W2_j1.Phi() - W2_j2.Phi());
+
+        // ************** COSINE MEASUREMENTS **************
+        double cos_chi_c_l0 = cos(chi_c_l0);
+        double cos_chi_l1_l2 = cos(chi_l1_l2);
+
+        double cos_theta_c_l0 = cos(theta_c_l0);
+        double cos_theta_l1_l2 = cos(theta_l1_l2);
+
+        double cos_phi_c_l0 = cos(phi_c_l0);
+        double cos_phi_l1_l2 = cos(phi_l1_l2);
+
+        // ************** EE CORRELATIONS **************
+        double ee_correlation_chi_c_l0 = 0.5 * (1 - cos_chi_c_l0);
+        double ee_correlation_chi_l1_l2 = 0.5 * (1 - cos_chi_l1_l2);
+
+        double ee_correlation_theta_c_l0 = 0.5 * (1 - cos_theta_c_l0);
+        double ee_correlation_theta_l1_l2 = 0.5 * (1 - cos_theta_l1_l2);
+
+        double ee_correlation_phi_c_l0 = 0.5 * (1 - cos_phi_c_l0);
+        double ee_correlation_phi_l1_l2 = 0.5 * (1 - cos_phi_l1_l2);
+
+        // *********************** HISTOGRAMS ***********************
+        h_chi_c_l0->Fill(chi_c_l0);
+        h_chi_l1_l2->Fill(chi_l1_l2);
+        h_theta_c_l0->Fill(theta_c_l0);
+        h_theta_l1_l2->Fill(theta_l1_l2);
+        h_eta_c_l0->Fill(eta_c_l0);
+        h_eta_l1_l2->Fill(eta_l1_l2);
+        h_phi_c_l0->Fill(phi_c_l0);
+        h_phi_l1_l2->Fill(phi_l1_l2);
+
 
         // cutflow histograms
         cutFlowHist->SetBinContent(1, NEvents);
@@ -696,7 +825,6 @@ void AnalysisWWCR::run() {
         cutFlowHist->SetBinContent(6, NdCutd123);
         cutFlowHist->SetBinContent(7, NdCutd34);
         cutFlowHist->SetBinContent(8, nFlavScore);
-
     }
 
     std::cout << "      " << std::endl;
