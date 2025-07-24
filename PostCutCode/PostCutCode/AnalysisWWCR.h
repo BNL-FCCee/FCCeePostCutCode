@@ -21,7 +21,11 @@ class AnalysisWWCR: public AnalysisBase
       void run() override;
 
    protected:
-
+      std::vector<double> ee_corr;
+      std::vector<double> theta_corr;
+      std::vector<double> phi_corr;
+      std::vector<double> chi_corr;
+      double mc_weight;
 
 };
 

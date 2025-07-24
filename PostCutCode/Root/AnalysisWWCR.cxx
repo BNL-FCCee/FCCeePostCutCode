@@ -8,6 +8,7 @@
 #include <TRandom.h>
 #include "TLorentzVector.h"
 // #include "Root"
+#include <nlohmann/json.hpp>
 
 #include "TH1F.h"
 #include <set>
@@ -79,7 +80,18 @@ QuarkCounter countQuarks(const ROOT::VecOps::RVec<int>* jet_truth) {
 void AnalysisWWCR::run() { 
 
     std::vector<std::string> cutFlowMap {"All Events", "DecayCuts", "NoNaNFlavScore", "Has 4 Jets", "leptonCut", "d123Cut", "d34Cut", "Events have a c, s, and 2 l tagged jets"};
+     // using json = nlohmann::json;
+    std::ifstream f(MDC::GetInstance()->getSOWJSONFile());
+    nlohmann::json data = nlohmann::json::parse(f);
 
+    // override the sum of weights, if it is inside the extra files that we built by hand
+    std::ifstream customF(MDC::GetInstance()->getCustomSOWJSONFile());
+    nlohmann::json customData = nlohmann::json::parse(customF);
+
+     auto sName = MDC::GetInstance()->getSampleName();
+
+    double norm_weight = (double)data[sName]["crossSection"]/(double)data[sName]["sumOfWeights"];
+    
     // Get the histograms
     auto countingHist = m_histContainer->getCountingHist();
     auto cutFlowHist = m_histContainer->get1DHist("cutFlowHist", cutFlowMap.size(), 0, 8, cutFlowMap);
@@ -175,7 +187,17 @@ void AnalysisWWCR::run() {
     auto h_cos_phi_l1_l2 = m_histContainer->get1DHist("h_cos_phi_l1_l2", 500, -1, 1);
     auto h_eec_phi_c_l0 = m_histContainer->get1DHist("h_eec_phi_c_l0", 500, -1, 1);
     auto h_eec_phi_l1_l2 = m_histContainer->get1DHist("h_eec_phi_l1_l2", 500, -1, 1);
-
+    
+    //Make new tree
+    TTree* t = new TTree("analysis","my analysis tree");
+    my_tree = (TTree*) t;
+    //define the output branches 
+     
+    my_tree->Branch("b_ee_corr",&ee_corr);
+    my_tree->Branch("b_theta_corr",&theta_corr);
+    my_tree->Branch("b_phi_corr",&phi_corr);
+    my_tree->Branch("b_chi_corr",&chi_corr);
+    my_tree->Branch("b_w",&mc_weight);
     // Get the trees
     auto treeCont = std::make_shared<TreeContainer>();
  
@@ -286,6 +308,11 @@ void AnalysisWWCR::run() {
             flage_toss = true;
         }
         if (flage_toss) continue;
+        // define vectors 
+        std::vector<double> vec_ee_corr;
+        std::vector<double> vec_theta_corr;
+        std::vector<double> vec_phi_corr;
+        std::vector<double> vec_chi_corr;
 
         float jet0_scoreQ = std::max({recojet_isU.at(0), recojet_isD.at(0), recojet_isS.at(0)});
         float jet1_scoreQ = std::max({recojet_isU.at(1), recojet_isD.at(1), recojet_isS.at(1)});
@@ -296,7 +323,8 @@ void AnalysisWWCR::run() {
         std::vector<float> j1_flav {recojet_isB.at(1), recojet_isC.at(1), jet1_scoreQ, recojet_isG.at(1), recojet_isTAU.at(1)};
         std::vector<float> j2_flav {recojet_isB.at(2), recojet_isC.at(2), jet2_scoreQ, recojet_isG.at(2), recojet_isTAU.at(2)};
         std::vector<float> j3_flav {recojet_isB.at(3), recojet_isC.at(3), jet3_scoreQ, recojet_isG.at(3), recojet_isTAU.at(3)};
-
+       
+       
         for (float j0_f : j0_flav) {
             if (std::isnan(j0_f)) {
                 flage_toss = true;
@@ -498,6 +526,11 @@ void AnalysisWWCR::run() {
                 double jetSub_cos_phi_4 = cos(jetSub_phi_4);
                 double eec_jetSub_phi_4 = 0.5 * (1 - jetSub_cos_phi_4);
 
+                vec_ee_corr.push_back(eec_jetSub_theta_2);
+                vec_theta_corr.push_back(jetSub_theta_2);
+                vec_phi_corr.push_back(jetSub_phi_4);
+                vec_chi_corr.push_back(jetSub_chi_1);
+
                 h_chi_subjet->Fill(jetSub_chi_1);
                 h_cos_chi_subjet->Fill(jetSub_cos_chi_1);
                 h_eec_chi_subjet->Fill(eec_jetSub_chi_1);
@@ -588,6 +621,8 @@ void AnalysisWWCR::run() {
 
             double cos_phi_truth_cs = cos(phi_truth_cs);
             double cos_phi_truth_ud = cos(phi_truth_ud);
+
+
 
             // if (nPrinted < maxPrint) {
             //         std::cout << "Truth Quarks" << std::endl;
@@ -733,6 +768,13 @@ void AnalysisWWCR::run() {
             W2_j1 = lTag_Jet_1;   
             W2_j2 = lTag_Jet_0;
         }
+
+        mc_weight = norm_weight;
+        ee_corr = vec_ee_corr;
+        theta_corr = vec_theta_corr;
+        phi_corr= vec_phi_corr;
+        chi_corr=vec_chi_corr;
+        my_tree->Fill();
 
         // ************* CHI *************
         double chi_c_l0 = W1_j1.Angle(W1_j2.Vect());
