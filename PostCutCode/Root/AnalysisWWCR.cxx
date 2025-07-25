@@ -292,22 +292,27 @@ void AnalysisWWCR::run() {
         int W1_decay_idx = -1, W2_decay_idx = -1;
         bool W1_decay_types[] = {W1_is_cs, W1_is_ud, W1_is_us, W1_is_ub, W1_is_cd, W1_is_cb};
         bool W2_decay_types[] = {W2_is_cs, W2_is_ud, W2_is_us, W2_is_ub, W2_is_cd, W2_is_cb};
-        for (int i = 0; i < 6; ++i) {
-            if (W1_decay_types[i]) W1_decay_idx = i;
-            if (W2_decay_types[i]) W2_decay_idx = i;
-        }
 
-        // add all hadronic decays, there is probably a more efficient way of doing this
-        if (!(
-            (W1_is_ud && W2_is_ud) || (W1_is_ud && W2_is_us) || (W1_is_ud && W2_is_ub) || (W1_is_ud && W2_is_cd) || (W1_is_ud && W2_is_cs) || (W1_is_ud && W2_is_cb) ||
-            (W1_is_us && W2_is_ud) || (W1_is_us && W2_is_us) || (W1_is_us && W2_is_ub) || (W1_is_us && W2_is_cd) || (W1_is_us && W2_is_cs) || (W1_is_us && W2_is_cb) ||
-            (W1_is_ub && W2_is_ud) || (W1_is_ub && W2_is_us) || (W1_is_ub && W2_is_ub) || (W1_is_ub && W2_is_cd) || (W1_is_ub && W2_is_cs) || (W1_is_ub && W2_is_cb) ||
-            (W1_is_cd && W2_is_ud) || (W1_is_cd && W2_is_us) || (W1_is_cd && W2_is_ub) || (W1_is_cd && W2_is_cd) || (W1_is_cd && W2_is_cs) || (W1_is_cd && W2_is_cb) ||
-            (W1_is_cs && W2_is_ud) || (W1_is_cs && W2_is_us) || (W1_is_cs && W2_is_ub) || (W1_is_cs && W2_is_cd) || (W1_is_cs && W2_is_cs) || (W1_is_cs && W2_is_cb) ||
-            (W1_is_cb && W2_is_ud) || (W1_is_cb && W2_is_us) || (W1_is_cb && W2_is_ub) || (W1_is_cb && W2_is_cd) || (W1_is_cb && W2_is_cs) || (W1_is_cb && W2_is_cb)
-        )) continue;
+        int W1_nHad = W1_quarks.n_u+W1_quarks.n_d+W1_quarks.n_b+W1_quarks.n_s+W1_quarks.n_c;
+        int W2_nHad = W2_quarks.n_u+W2_quarks.n_d+W2_quarks.n_b+W2_quarks.n_s+W2_quarks.n_c;
+        //select onlt WW->all had
+        if (W1_nHad==0 || W2_nHad==0) continue;
+        // for (int i = 0; i < 6; ++i) {
+        //     if (W1_decay_types[i]) W1_decay_idx = i;
+        //     if (W2_decay_types[i]) W2_decay_idx = i;
+        // }
 
-if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
+        // // add all hadronic decays, there is probably a more efficient way of doing this
+        // if (!(
+        //     (W1_is_ud && W2_is_ud) || (W1_is_ud && W2_is_us) || (W1_is_ud && W2_is_ub) || (W1_is_ud && W2_is_cd) || (W1_is_ud && W2_is_cs) || (W1_is_ud && W2_is_cb) ||
+        //     (W1_is_us && W2_is_ud) || (W1_is_us && W2_is_us) || (W1_is_us && W2_is_ub) || (W1_is_us && W2_is_cd) || (W1_is_us && W2_is_cs) || (W1_is_us && W2_is_cb) ||
+        //     (W1_is_ub && W2_is_ud) || (W1_is_ub && W2_is_us) || (W1_is_ub && W2_is_ub) || (W1_is_ub && W2_is_cd) || (W1_is_ub && W2_is_cs) || (W1_is_ub && W2_is_cb) ||
+        //     (W1_is_cd && W2_is_ud) || (W1_is_cd && W2_is_us) || (W1_is_cd && W2_is_ub) || (W1_is_cd && W2_is_cd) || (W1_is_cd && W2_is_cs) || (W1_is_cd && W2_is_cb) ||
+        //     (W1_is_cs && W2_is_ud) || (W1_is_cs && W2_is_us) || (W1_is_cs && W2_is_ub) || (W1_is_cs && W2_is_cd) || (W1_is_cs && W2_is_cs) || (W1_is_cs && W2_is_cb) ||
+        //     (W1_is_cb && W2_is_ud) || (W1_is_cb && W2_is_us) || (W1_is_cb && W2_is_ub) || (W1_is_cb && W2_is_cd) || (W1_is_cb && W2_is_cs) || (W1_is_cb && W2_is_cb)
+        // )) continue;
+
+        // if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
 
 
         NdecayCuts++;
@@ -448,44 +453,34 @@ if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
             else if (maxScoreIdx[i] == 2) n_l++;
         }
 
-        if (has_invalid_flavor) continue;
+        // if (has_invalid_flavor) continue;
 
-        if (!(n_c == 1 && n_l == 3)) continue;
+        // if (!(n_c == 1 && n_l == 3)) continue;
 
         nFlavScore++;
 
         // Start Pairing the jets in W1 and W2
-        int cJet = -1;
-        std::vector<int> lJets;
+        // int cJet = -1;
+        // std::vector<int> lJets;
 
-        for (int i = 0; i < 4; ++i) {
-            if (maxScoreIdx[i] == 1) cJet = i;
-            else if (maxScoreIdx[i] == 2) lJets.push_back(i); 
-        }
+        // for (int i = 0; i < 4; ++i) {
+        //     if (maxScoreIdx[i] == 1) cJet = i;
+        //     else if (maxScoreIdx[i] == 2) lJets.push_back(i); 
+        // }
 
-        // remove this section 
-        // Prevent jet reuse: ensure all jet indices are unique
-        std::set<int> uniqueJets = {cJet, lJets[0], lJets[1], lJets[2]};
+        // // remove this section 
+        // // Prevent jet reuse: ensure all jet indices are unique
+        // std::set<int> uniqueJets = {cJet, lJets[0], lJets[1], lJets[2]};
 
-        if (cJet == -1 || lJets.size() != 3 || uniqueJets.size() < 4) {
-            if (cJet == lJets[0] && cJet == lJets[1] && cJet == lJets[2] && 
-                lJets[0] == lJets[1] && lJets[0] == lJets[2] && lJets[1] == lJets[2]) {
+        // if (cJet == -1 || lJets.size() != 3 || uniqueJets.size() < 4) {
+        //     if (cJet == lJets[0] && cJet == lJets[1] && cJet == lJets[2] && 
+        //         lJets[0] == lJets[1] && lJets[0] == lJets[2] && lJets[1] == lJets[2]) {
 
-            std::cerr << "Error: Jet reuse detected or invalid jet assignment!" << std::endl;
-            continue;
+        //     std::cerr << "Error: Jet reuse detected or invalid jet assignment!" << std::endl;
+        //     continue;
 
-            }
-        }
-
-        // W pair 1: c + s and u+d
-        std::pair<int, int> W1_pair = {cJet, lJets[0]};
-        std::pair<int, int> W2_pair = {lJets[1], lJets[2]};
-
-        if (do_debug && nPrinted < maxPrint) {
-            std::cout << "W1 pair: Jet " << W1_pair.first << " (c), Jet " << W1_pair.second << " (s)" << std::endl;
-            std::cout << "W2 pair: Jet " << W2_pair.first << " (l), Jet " << W2_pair.second << " (l)" << std::endl;
-            std::cout << "      " << std::endl;
-        }
+        //     }
+        // }
 
         // ****************************** CALCULATIONS USING JET CONSTITUENTS ******************************
         std::vector<TLorentzVector> jetConstituents; // flattens the overall vector and allows us to open it up
@@ -684,24 +679,28 @@ if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
         }
 
         // ************************** CALCULATIONS FOR MASS AND SUCH BEGIN HERE (USING RECO-JETS) ************************** 
-        TLorentzVector cTag_Jet, lTag_Jet_0, lTag_Jet_1, lTag_Jet_2;
+        TLorentzVector Jet1, Jet2, Jet3, Jet4;
 
-        cTag_Jet.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_pz.at(cJet), jet_e.at(cJet));
-        lTag_Jet_0.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_pz.at(lJets[0]), jet_e.at(lJets[0]));
+        // Jet1.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_pz.at(cJet), jet_e.at(cJet));
+        // Jet2.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_pz.at(lJets[0]), jet_e.at(lJets[0]));
 
-        lTag_Jet_1.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_pz.at(lJets[1]), jet_e.at(lJets[1]));
-        lTag_Jet_2.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_pz.at(lJets[2]), jet_e.at(lJets[2]));
-        
+        // Jet3.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_pz.at(lJets[1]), jet_e.at(lJets[1]));
+        // Jet3.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_pz.at(lJets[2]), jet_e.at(lJets[2]));
+        Jet1.SetPxPyPzE(jet_px.at(0), jet_py.at(0), jet_pz.at(0), jet_e.at(0));
+        Jet2.SetPxPyPzE(jet_px.at(1), jet_py.at(1), jet_pz.at(1), jet_e.at(1));
+
+        Jet3.SetPxPyPzE(jet_px.at(2), jet_py.at(2), jet_pz.at(2), jet_e.at(2));
+        Jet4.SetPxPyPzE(jet_px.at(3), jet_py.at(3), jet_pz.at(3), jet_e.at(3));
         const double m_W_true = 80.379;
 
-        TLorentzVector W1_option1 = cTag_Jet + lTag_Jet_0;
-        TLorentzVector W2_option1 = lTag_Jet_1 + lTag_Jet_2;
+        TLorentzVector W1_option1 = Jet1 + Jet2;
+        TLorentzVector W2_option1 = Jet3 + Jet4;
 
-        TLorentzVector W1_option2 = cTag_Jet + lTag_Jet_1;
-        TLorentzVector W2_option2 = lTag_Jet_0 + lTag_Jet_2;
+        TLorentzVector W1_option2 = Jet1 + Jet3;
+        TLorentzVector W2_option2 = Jet2 + Jet4;
 
-        TLorentzVector W1_option3 = cTag_Jet + lTag_Jet_2;
-        TLorentzVector W2_option3 = lTag_Jet_0 + lTag_Jet_1;
+        TLorentzVector W1_option3 = Jet1 + Jet4;
+        TLorentzVector W2_option3 = Jet2 + Jet3;
 
         double chi2_option1 = 
             (pow(W1_option1.M() - m_W_true, 2) + pow(W2_option1.M() - m_W_true, 2)) / (m_W_true);
@@ -726,16 +725,16 @@ if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
             h_W1_e->Fill(W1_option1.E());
             h_W2_e->Fill(W2_option1.E());
 
-            h_cJet_p->Fill(cTag_Jet.P());
-            h_lJet0_p->Fill(lTag_Jet_0.P());
-            h_lJet1_p->Fill(lTag_Jet_1.P());
-            h_lJet2_p->Fill(lTag_Jet_2.P());
+            h_cJet_p->Fill(Jet1.P());
+            h_lJet0_p->Fill(Jet2.P());
+            h_lJet1_p->Fill(Jet3.P());
+            h_lJet2_p->Fill(Jet4.P());
 
-            W1_j1 = cTag_Jet; 
-            W1_j2 = lTag_Jet_0;
+            W1_j1 = Jet1; 
+            W1_j2 = Jet2;
 
-            W2_j1 = lTag_Jet_1;   
-            W2_j2 = lTag_Jet_2;
+            W2_j1 = Jet3;   
+            W2_j2 = Jet4;
 
         } else if (chi2_option2 <= chi2_option1 && chi2_option2 <= chi2_option3) {
             h_W1_mass->Fill(W1_option2.M());
@@ -748,16 +747,16 @@ if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
             h_W1_e->Fill(W1_option2.E());
             h_W2_e->Fill(W2_option2.E());
 
-            h_cJet_p->Fill(cTag_Jet.P());
-            h_lJet0_p->Fill(lTag_Jet_0.P());
-            h_lJet1_p->Fill(lTag_Jet_1.P());
-            h_lJet2_p->Fill(lTag_Jet_2.P());
+            h_cJet_p->Fill(Jet1.P());
+            h_lJet0_p->Fill(Jet2.P());
+            h_lJet1_p->Fill(Jet3.P());
+            h_lJet2_p->Fill(Jet4.P());
 
-            W1_j1 = cTag_Jet; 
-            W1_j2 = lTag_Jet_1;
+            W1_j1 = Jet1; 
+            W1_j2 = Jet3;
 
-            W2_j1 = lTag_Jet_0;   
-            W2_j2 = lTag_Jet_2;
+            W2_j1 = Jet2;   
+            W2_j2 = Jet4;
 
         } else {
             h_W1_mass->Fill(W1_option3.M());
@@ -770,16 +769,16 @@ if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
             h_W1_e->Fill(W1_option3.E());
             h_W2_e->Fill(W2_option3.E());
 
-            h_cJet_p->Fill(cTag_Jet.P());
-            h_lJet0_p->Fill(lTag_Jet_0.P());
-            h_lJet1_p->Fill(lTag_Jet_1.P());
-            h_lJet2_p->Fill(lTag_Jet_2.P());
+            h_cJet_p->Fill(Jet1.P());
+            h_lJet0_p->Fill(Jet2.P());
+            h_lJet1_p->Fill(Jet3.P());
+            h_lJet2_p->Fill(Jet3.P());
 
-            W1_j1 = cTag_Jet; 
-            W1_j2 = lTag_Jet_2;
+            W1_j1 = Jet1; 
+            W1_j2 = Jet4;
 
-            W2_j1 = lTag_Jet_1;   
-            W2_j2 = lTag_Jet_0;
+            W2_j1 = Jet3;   
+            W2_j2 = Jet2;
         }
 
         mc_weight = norm_weight;
