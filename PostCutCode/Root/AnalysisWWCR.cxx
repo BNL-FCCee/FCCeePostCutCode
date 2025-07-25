@@ -297,13 +297,18 @@ void AnalysisWWCR::run() {
             if (W2_decay_types[i]) W2_decay_idx = i;
         }
 
-        // add all hadronic
-        if (! ( 
-            (W1_is_cs && W2_is_ud) 
-            // (W1_is_ud && W2_is_ud)
-            // (W1_is_cs && W2_is_cs)
+        // add all hadronic decays, there is probably a more efficient way of doing this
+        if (!(
+            (W1_is_ud && W2_is_ud) || (W1_is_ud && W2_is_us) || (W1_is_ud && W2_is_ub) || (W1_is_ud && W2_is_cd) || (W1_is_ud && W2_is_cs) || (W1_is_ud && W2_is_cb) ||
+            (W1_is_us && W2_is_ud) || (W1_is_us && W2_is_us) || (W1_is_us && W2_is_ub) || (W1_is_us && W2_is_cd) || (W1_is_us && W2_is_cs) || (W1_is_us && W2_is_cb) ||
+            (W1_is_ub && W2_is_ud) || (W1_is_ub && W2_is_us) || (W1_is_ub && W2_is_ub) || (W1_is_ub && W2_is_cd) || (W1_is_ub && W2_is_cs) || (W1_is_ub && W2_is_cb) ||
+            (W1_is_cd && W2_is_ud) || (W1_is_cd && W2_is_us) || (W1_is_cd && W2_is_ub) || (W1_is_cd && W2_is_cd) || (W1_is_cd && W2_is_cs) || (W1_is_cd && W2_is_cb) ||
+            (W1_is_cs && W2_is_ud) || (W1_is_cs && W2_is_us) || (W1_is_cs && W2_is_ub) || (W1_is_cs && W2_is_cd) || (W1_is_cs && W2_is_cs) || (W1_is_cs && W2_is_cb) ||
+            (W1_is_cb && W2_is_ud) || (W1_is_cb && W2_is_us) || (W1_is_cb && W2_is_ub) || (W1_is_cb && W2_is_cd) || (W1_is_cb && W2_is_cs) || (W1_is_cb && W2_is_cb)
         )) continue;
-        if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
+
+if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
+
 
         NdecayCuts++;
 
