@@ -297,6 +297,7 @@ void AnalysisWWCR::run() {
             if (W2_decay_types[i]) W2_decay_idx = i;
         }
 
+        // add all hadronic
         if (! ( 
             (W1_is_cs && W2_is_ud) 
             // (W1_is_ud && W2_is_ud)
@@ -457,6 +458,7 @@ void AnalysisWWCR::run() {
             else if (maxScoreIdx[i] == 2) lJets.push_back(i); 
         }
 
+        // remove this section 
         // Prevent jet reuse: ensure all jet indices are unique
         std::set<int> uniqueJets = {cJet, lJets[0], lJets[1], lJets[2]};
 
