@@ -46,37 +46,6 @@ QuarkCounter countQuarks(const ROOT::VecOps::RVec<int>* jet_truth) {
     return counter;
 }
 
-// void CosPhi_Angle(const TLorentzVector& jet1, const TLorentzVector& jet2, TH1F* hist_global_theta, TH1F *hist_delta_theta, TH1F *hist_cos_theta, 
-//                   TH1F* hist_delta_eta, TH1F* hist_delta_phi, TH1F* hist_cosphi, TH1F* hist_eec_theta, TH1F* hist_eec_phi) {
-
-//     double global_theta = jet1.Angle(jet2.Vect());
-//     double delta_theta = jet1.Theta() - jet2.Theta();
-//     double cos_theta = cos(global_theta);
-    
-//     double delta_eta = jet1.Eta() - jet2.Eta();
-//     double delta_phi = jet1.Phi() - jet2.Phi();
-//     double cos_phi = cos(delta_phi);
-
-//     double ee_correlator_theta = 0.5 * (1 - cos_theta);
-//     double ee_correlator_phi = 0.5 * (1 - cos_phi);
-
-//     // double degrees = radians * 180.0 / TMath::Pi();
-
-//     double global_theta_deg = global_theta * 180.0 / TMath::Pi();
-//     double delta_theta_deg = delta_theta * 180.0 / TMath::Pi();
-//     double delta_eta_deg = delta_eta * 180 / TMath::Pi();
-//     double delta_phi_deg = delta_phi * 180.0 / TMath::Pi();
-
-//     hist_global_theta->Fill(global_theta_deg);
-//     hist_delta_theta->Fill(delta_theta_deg);
-//     hist_cos_theta->Fill(cos_theta);
-//     hist_delta_eta->Fill(delta_eta_deg);
-//     hist_delta_phi->Fill(delta_phi_deg);
-//     hist_cosphi->Fill(cos_phi);
-//     hist_eec_theta->Fill(ee_correlator_theta);
-//     hist_eec_phi->Fill(ee_correlator_phi);
-// }
-
 void AnalysisWWCR::run() { 
 
     std::vector<std::string> cutFlowMap {"All Events", "DecayCuts", "NoNaNFlavScore", "Has 4 Jets", "leptonCut", "d123Cut", "d34Cut", "Events have a c, s, and 2 l tagged jets"};
@@ -88,7 +57,7 @@ void AnalysisWWCR::run() {
     std::ifstream customF(MDC::GetInstance()->getCustomSOWJSONFile());
     nlohmann::json customData = nlohmann::json::parse(customF);
 
-     auto sName = MDC::GetInstance()->getSampleName();
+    auto sName = MDC::GetInstance()->getSampleName();
 
     double norm_weight = (double)data[sName]["crossSection"]/(double)data[sName]["sumOfWeights"];
     
@@ -299,6 +268,43 @@ void AnalysisWWCR::run() {
         }
 
         eventNum++;
+
+        // Add in a pre-selection cut to look at hadronic decays
+        QuarkCounter W1_quarks = countQuarks(Wm_jet_truth);
+        QuarkCounter W2_quarks = countQuarks(Wp_jet_truth);
+
+        bool W1_is_cs = ( (W1_quarks.n_c == 1 && W1_quarks.n_s == 1) );
+        // bool W1_is_ud = ( (W1_quarks.n_u == 1 && W1_quarks.n_d == 1) );
+        bool W1_is_ud = ( (W1_quarks.n_u == 1 && W1_quarks.n_d == 1) );
+        bool W1_is_us = ( (W1_quarks.n_u == 1 && W1_quarks.n_s == 1) );
+        bool W1_is_ub = ( (W1_quarks.n_u == 1 && W1_quarks.n_b == 1) );
+        bool W1_is_cd = ( (W1_quarks.n_c == 1 && W1_quarks.n_d == 1) );
+        bool W1_is_cb = ( (W1_quarks.n_c == 1 && W1_quarks.n_b == 1) );
+
+        // bool W2_is_cs = ( (W2_quarks.n_c == 1 && W2_quarks.n_s == 1) );
+        bool W2_is_cs = ( (W2_quarks.n_c == 1 && W2_quarks.n_s == 1) );
+        bool W2_is_ud = ( (W2_quarks.n_u == 1 && W2_quarks.n_d == 1) );
+        bool W2_is_us = ( (W2_quarks.n_u == 1 && W2_quarks.n_s == 1) );
+        bool W2_is_ub = ( (W2_quarks.n_u == 1 && W2_quarks.n_b == 1) );
+        bool W2_is_cd = ( (W2_quarks.n_c == 1 && W2_quarks.n_d == 1) );
+        bool W2_is_cb = ( (W2_quarks.n_c == 1 && W2_quarks.n_b == 1) );
+
+        int W1_decay_idx = -1, W2_decay_idx = -1;
+        bool W1_decay_types[] = {W1_is_cs, W1_is_ud, W1_is_us, W1_is_ub, W1_is_cd, W1_is_cb};
+        bool W2_decay_types[] = {W2_is_cs, W2_is_ud, W2_is_us, W2_is_ub, W2_is_cd, W2_is_cb};
+        for (int i = 0; i < 6; ++i) {
+            if (W1_decay_types[i]) W1_decay_idx = i;
+            if (W2_decay_types[i]) W2_decay_idx = i;
+        }
+
+        if (! ( 
+            (W1_is_cs && W2_is_ud) 
+            // (W1_is_ud && W2_is_ud)
+            // (W1_is_cs && W2_is_cs)
+        )) continue;
+        if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
+
+        NdecayCuts++;
 
         if(event_njet() != 4) continue;
         NjetCut++;
