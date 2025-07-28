@@ -70,6 +70,11 @@ void plot() {
     TH1D* h_cos_theta_SKI = new TH1D("h_cos_theta_SKI", "Cos(theta) - SKI", 100, -1.0, 1.0);
     TH1D* h_cos_theta_SKII = new TH1D("h_cos_theta_SKII", "Cos(theta) - SKII", 100, -1.0, 1.0);
 
+    TH1D* h_eec_Nom = new TH1D("h_eec_Nom", "Cos(theta) - Nominal", 100, 0, 1.0);
+    TH1D* h_eec_CR = new TH1D("h_eec_CR", "Cos(theta) - noCR", 100, 0, 1.0);
+    TH1D* h_eec_SKI = new TH1D("h_eec_SKI", "Cos(theta) - SKI", 100, 0, 1.0);
+    TH1D* h_eec_SKII = new TH1D("h_eec_SKII", "Cos(theta) - SKII", 100, 0, 1.0);
+
     // Fill
     tNom->Draw("b_theta_corr >> h_theta_Nom", "", "goff");
     tCR->Draw("b_theta_corr >> h_theta_CR",  "", "goff");
@@ -115,6 +120,10 @@ void plot() {
     TH1F *r_chi_SKI = (TH1F*)h_chi_SKI->Clone("r_chi_SKI"); r_chi_SKI->Divide(h_chi_Nom);
     TH1F *r_chi_SKII = (TH1F*)h_chi_SKII->Clone("r_chi_SKII"); r_chi_SKII->Divide(h_chi_Nom);
 
+    TH1D *r_eec_CR = (TH1D*)h_eec_CR->Clone("r_eec_CR");   r_chi_CR->Divide(h_eec_Nom);
+    TH1D *r_eec_SKI = (TH1D*)h_eec_SKI->Clone("r_eec_SKI"); r_chi_SKI->Divide(h_eec_Nom);
+    TH1D *r_eec_SKII = (TH1D*)h_eec_SKII->Clone("r_eec_SKII"); r_chi_SKII->Divide(h_eec_Nom);
+
     // Canvas 1
     TCanvas *c_theta = new TCanvas("c_theta", "comparison", 1000, 800);
     c_theta->Divide(1, 2);
@@ -141,6 +150,7 @@ void plot() {
     h_theta_Nom->GetYaxis()->SetTitle("normalized events");
     h_theta_Nom->GetYaxis()->CenterTitle(true);
     h_theta_Nom->GetXaxis()->SetTitleSize(0.08);
+    h_theta_Nom->GetXaxis()->SetLabelSize(0.09);
     h_theta_Nom->GetYaxis()->SetTitleOffset(1.0);
 
     h_theta_Nom->SetLineColor(kBlack); h_theta_Nom->SetLineWidth(3);
@@ -153,7 +163,7 @@ void plot() {
     h_theta_SKI->Draw("HIST SAME");
     h_theta_SKII->Draw("HIST SAME");
 
-    auto leg_theta = new TLegend(0.15, 0.75, 0.45, 0.88);
+    auto leg_theta = new TLegend(0.15, 0.3, 0.35, 0.45);
     leg_theta->AddEntry(h_theta_Nom,  "Nominal", "l");
     leg_theta->AddEntry(h_theta_CR,   "noCR",   "l");
     leg_theta->AddEntry(h_theta_SKI,  "SKI",  "l");
@@ -175,11 +185,11 @@ void plot() {
     r_theta_SKII->SetLineWidth(3);
     r_theta_SKII->Draw("HIST SAME");
 
-    r_theta_CR->GetXaxis()->SetTitle("#theta (degrees)"); // Axis titles
+    r_theta_CR->GetXaxis()->SetTitle("#theta (radians)"); // Axis titles
     r_theta_CR->GetYaxis()->SetTitle("ratio");
     r_theta_CR->GetXaxis()->CenterTitle(true); // Center them
     r_theta_CR->GetYaxis()->CenterTitle(true);
-    r_theta_CR->GetXaxis()->SetTitleSize(0.07); // Set the title size
+    r_theta_CR->GetXaxis()->SetTitleSize(0.08); // Set the title size
     r_theta_CR->GetYaxis()->SetTitleSize(0.055);
     r_theta_CR->GetXaxis()->SetLabelSize(0.05); // Set the label size
     r_theta_CR->GetYaxis()->SetLabelSize(0.05);
@@ -247,7 +257,7 @@ void plot() {
     r_phi_SKII->SetLineWidth(3);
     r_phi_SKII->Draw("HIST SAME");
 
-    r_phi_CR->GetXaxis()->SetTitle("#phi (degrees)"); // Axis titles
+    r_phi_CR->GetXaxis()->SetTitle("#phi (radians)"); // Axis titles
     r_phi_CR->GetYaxis()->SetTitle("ratio");
     r_phi_CR->GetXaxis()->CenterTitle(true); // Center them
     r_phi_CR->GetYaxis()->CenterTitle(true);
@@ -319,7 +329,7 @@ void plot() {
     r_chi_SKII->SetLineWidth(3);
     r_chi_SKII->Draw("HIST SAME");
 
-    r_chi_CR->GetXaxis()->SetTitle("#chi (degrees)"); // Axis titles
+    r_chi_CR->GetXaxis()->SetTitle("#chi (radians)"); // Axis titles
     r_chi_CR->GetYaxis()->SetTitle("ratio");
     r_chi_CR->GetXaxis()->CenterTitle(true); // Center them
     r_chi_CR->GetYaxis()->CenterTitle(true);
@@ -366,6 +376,15 @@ void plot() {
         weight = h_theta_SKII->GetBinContent(i) / binWidt_SKII;
         h_cos_theta_SKII->Fill(cos_theta_SKII, weight);
 
+        double z_Nom = 0.5 * (1 - cos_theta_Nom);
+        double z_noCR = 0.5 * (1 - cos_theta_CR);
+        double z_SKI = 0.5 * (1 - cos_theta_SKI);
+        double z_SKII = 0.5 * (1 - cos_theta_SKII);
+
+        h_eec_Nom->Fill(z_Nom);
+        h_eec_CR->Fill(z_noCR);
+        h_eec_SKI->Fill(z_SKI);
+        h_eec_SKII->Fill(z_SKII);
     }
 
     TCanvas *c_cos_theta = new TCanvas("c_cos_theta", "Cos(theta) Comparison", 1000, 800);
@@ -392,12 +411,71 @@ void plot() {
     leg_cos->AddEntry(h_cos_theta_SKII, "SKII", "l");
     leg_cos->Draw();
 
-    // **************************** EE Correlation Plots ****************************
+    TCanvas *c_eec_theta = new TCanvas("c_eec_theta", "eec theta Comparison", 1000, 800);
+    c_eec_theta->cd();
 
+    // Top pad (60% height): from y = 0.4 to y = 1.0
+    TPad *topPad_eec_theta = new TPad("topPad_eec_theta", "Top Pad", 0.0, 0.4, 1.0, 1.0);
+    // topPad->SetTopMargin(0.1);    // Optional
+    topPad_eec_theta->SetBottomMargin(0.025);
+    topPad_eec_theta->Draw();
 
+    // Bottom pad (40% height): from y = 0.0 to y = 0.4
+    TPad *bottomPad_eec_theta = new TPad("bottomPad_eec_theta", "Bottom Pad", 0.0, 0.0, 1.0, 0.4);
+    bottomPad_eec_theta->SetTopMargin(0.025);    // Small top margin
+    bottomPad_eec_theta->SetBottomMargin(0.2); // More space for x-axis label
+    bottomPad_eec_theta->Draw();
+
+    topPad_eec_theta->cd();
+    h_eec_Nom->SetLineColor(kBlack); h_eec_Nom->SetLineWidth(3);
+    h_eec_CR->SetLineColor(kRed); h_eec_CR->SetLineWidth(3);
+    h_eec_SKI->SetLineColor(kBlue); h_eec_SKI->SetLineWidth(3);
+    h_eec_SKII->SetLineColor(kGreen+2); h_eec_SKII->SetLineWidth(3);
+
+    // h_eec_Nom->SetTitle("z = 1/2(1 - cos(#theta)) comparison");
+    h_eec_Nom->GetYaxis()->SetTitle("Events");
+
+    h_eec_Nom->Draw("HIST");
+    h_eec_CR->Draw("HIST SAME");
+    h_eec_SKI->Draw("HIST SAME");
+    h_eec_SKII->Draw("HIST SAME");
+
+    auto leg_eec = new TLegend(0.15, 0.75, 0.45, 0.88);
+    leg_eec->AddEntry(h_cos_theta_Nom,  "Nominal", "l");
+    leg_eec->AddEntry(h_eec_CR,   "noCR",   "l");
+    leg_eec->AddEntry(h_eec_SKI,  "SKI",  "l");
+    leg_eec->AddEntry(h_eec_SKII, "SKII", "l");
+    leg_eec->Draw();
+
+    bottomPad_eec_theta->cd();
+    // r_eec_CR->GetXaxis()->SetTitle("z = 1/2(1 - cos(#theta)))");
+    // r_eec_CR->GetYaxis()->SetTitle("ratio");
+
+    // r_eec_CR->SetMinimum(0.85);  r_eec_CR->SetMaximum(1.1);
+    r_eec_CR->SetLineColor(kRed);
+    r_eec_CR->Draw("HIST");
+    r_eec_CR->SetLineWidth(3);
+    r_eec_SKI->SetLineColor(kBlue);
+    r_eec_SKI->SetLineWidth(3);
+    r_eec_SKI->Draw("HIST SAME");
+    r_eec_SKII->SetLineColor(kGreen+2);
+    r_eec_SKII->SetLineWidth(3);
+    r_eec_SKII->Draw("HIST SAME");
+
+    r_eec_CR->GetXaxis()->SetTitle("z = 1/2(1 - cos(#theta)))");
+    r_eec_CR->GetYaxis()->SetTitle("ratio");
+    r_eec_CR->GetXaxis()->CenterTitle(true); // Center them
+    r_eec_CR->GetYaxis()->CenterTitle(true);
+    r_eec_CR->GetXaxis()->SetTitleSize(0.07); // Set the title size
+    r_eec_CR->GetYaxis()->SetTitleSize(0.055);
+    r_eec_CR->GetXaxis()->SetLabelSize(0.05); // Set the label size
+    r_eec_CR->GetYaxis()->SetLabelSize(0.05);
+    r_eec_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
+    r_eec_CR->GetYaxis()->SetTitleOffset(0.55);
 
     c_theta->SaveAs("b_theta_corr_comparison_full_all.png");
     c_cos_theta->SaveAs("b_cos_theta_corr_comparison_full_all.png");
+    c_eec_theta->SaveAs("b_eec_comparison_full_all.png");
 
     c_phi->SaveAs("b_phi_corr_comparison_full_all.png");
     c_chi->SaveAs("b_chi_corr_comparison_full_all.png");
