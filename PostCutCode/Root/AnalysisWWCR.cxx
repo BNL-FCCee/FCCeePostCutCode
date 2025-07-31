@@ -157,26 +157,33 @@ void AnalysisWWCR::run() {
     auto h_eec_phi_c_l0 = m_histContainer->get1DHist("h_eec_phi_c_l0", 500, -1, 1);
     auto h_eec_phi_l1_l2 = m_histContainer->get1DHist("h_eec_phi_l1_l2", 500, -1, 1);
     
-    //Make new tree
-    TTree* t = new TTree("analysis","my analysis tree");
-    my_tree = (TTree*) t;
-    //define the output branches 
+    TTree* t = new TTree("analysis","my analysis tree"); // Make a new tree
+    my_tree = (TTree*) t; // define the output branches 
      
-    my_tree->Branch("b_ee_corr",&ee_corr);
-    my_tree->Branch("b_theta_corr",&theta_corr);
-    my_tree->Branch("b_phi_corr",&phi_corr);
-    my_tree->Branch("b_chi_corr",&chi_corr);
+    my_tree->Branch("b_ee_corr", &ee_corr);
+    my_tree->Branch("b_p_jet_const_1", &p_jet_const_1);
+    my_tree->Branch("b_p_jet_const_2", &p_jet_const_2);
+    my_tree->Branch("b_theta_corr", &theta_corr);
+    my_tree->Branch("b_phi_corr", &phi_corr);
+    my_tree->Branch("b_chi_corr", &chi_corr);
+
+    my_tree->Branch("b_p_reco_cJet", &p_reco_cJet);
+    my_tree->Branch("b_p_reco_lJet0", &p_reco_lJet0);
+    my_tree->Branch("b_p_reco_lJet1", &p_reco_lJet1);
+    my_tree->Branch("b_p_reco_lJet2", &p_reco_lJet2);
+    my_tree->Branch("b_theta_c_l0", &theta_c_l0);
+    my_tree->Branch("b_theta_l1_l2", &theta_l1_l2);
+    my_tree->Branch("b_phi_c_l0", &phi_c_l0);
+    my_tree->Branch("b_phi_l1_l2", &phi_l1_l2);
+    my_tree->Branch("b_chi_c_l0", &chi_c_l0);
+    my_tree->Branch("b_chi_l1_l2", &chi_l1_l2);
     my_tree->Branch("b_w",&mc_weight);
-    // Get the trees
-    auto treeCont = std::make_shared<TreeContainer>();
- 
-    // Get max events to run on
-    int nEntries = treeCont->getEventsToRun();
 
-    // Connect branches to trees
-    auto tree = treeCont->getTree();
+    auto treeCont = std::make_shared<TreeContainer>(); // Get the trees
+    int nEntries = treeCont->getEventsToRun(); // Get max events to run on
+    auto tree = treeCont->getTree(); // Connect branches to trees
 
-    // calls the branch_name (var_type branch {tree, "branch_name"};)
+    // calls the branch_name
     varMember<int> event_njet {tree, "event_njet"};
     varMember<ulong> event_nmu {tree, "event_nmu"};
     varMember<ulong> event_nel {tree, "event_nel"};
@@ -236,6 +243,11 @@ void AnalysisWWCR::run() {
     int NdCutd34 = 0;
     int NdecayCuts = 0;
 
+    int count_cJet = 0;
+    int count_lJet0 = 0;
+    int count_lJet1 = 0;
+    int count_lJet2 = 0;
+
     const int maxPrint = 10;
     int nPrinted = 0;
     bool do_debug = true; // Set to false to turn off all debug printing
@@ -245,7 +257,7 @@ void AnalysisWWCR::run() {
     {
         treeCont->getEntry(i);
         countingHist->Fill(1);
-        NEvents++;
+        NEvents++; // Total Number of Events
 
         if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
 
@@ -274,14 +286,12 @@ void AnalysisWWCR::run() {
         QuarkCounter W2_quarks = countQuarks(Wp_jet_truth);
 
         bool W1_is_cs = ( (W1_quarks.n_c == 1 && W1_quarks.n_s == 1) );
-        // bool W1_is_ud = ( (W1_quarks.n_u == 1 && W1_quarks.n_d == 1) );
         bool W1_is_ud = ( (W1_quarks.n_u == 1 && W1_quarks.n_d == 1) );
         bool W1_is_us = ( (W1_quarks.n_u == 1 && W1_quarks.n_s == 1) );
         bool W1_is_ub = ( (W1_quarks.n_u == 1 && W1_quarks.n_b == 1) );
         bool W1_is_cd = ( (W1_quarks.n_c == 1 && W1_quarks.n_d == 1) );
         bool W1_is_cb = ( (W1_quarks.n_c == 1 && W1_quarks.n_b == 1) );
 
-        // bool W2_is_cs = ( (W2_quarks.n_c == 1 && W2_quarks.n_s == 1) );
         bool W2_is_cs = ( (W2_quarks.n_c == 1 && W2_quarks.n_s == 1) );
         bool W2_is_ud = ( (W2_quarks.n_u == 1 && W2_quarks.n_d == 1) );
         bool W2_is_us = ( (W2_quarks.n_u == 1 && W2_quarks.n_s == 1) );
@@ -295,42 +305,40 @@ void AnalysisWWCR::run() {
 
         int W1_nHad = W1_quarks.n_u+W1_quarks.n_d+W1_quarks.n_b+W1_quarks.n_s+W1_quarks.n_c;
         int W2_nHad = W2_quarks.n_u+W2_quarks.n_d+W2_quarks.n_b+W2_quarks.n_s+W2_quarks.n_c;
-        //select onlt WW->all had
-        if (W1_nHad==0 || W2_nHad==0) continue;
-        // for (int i = 0; i < 6; ++i) {
-        //     if (W1_decay_types[i]) W1_decay_idx = i;
-        //     if (W2_decay_types[i]) W2_decay_idx = i;
-        // }
 
-        // // add all hadronic decays, there is probably a more efficient way of doing this
-        // if (!(
-        //     (W1_is_ud && W2_is_ud) || (W1_is_ud && W2_is_us) || (W1_is_ud && W2_is_ub) || (W1_is_ud && W2_is_cd) || (W1_is_ud && W2_is_cs) || (W1_is_ud && W2_is_cb) ||
-        //     (W1_is_us && W2_is_ud) || (W1_is_us && W2_is_us) || (W1_is_us && W2_is_ub) || (W1_is_us && W2_is_cd) || (W1_is_us && W2_is_cs) || (W1_is_us && W2_is_cb) ||
-        //     (W1_is_ub && W2_is_ud) || (W1_is_ub && W2_is_us) || (W1_is_ub && W2_is_ub) || (W1_is_ub && W2_is_cd) || (W1_is_ub && W2_is_cs) || (W1_is_ub && W2_is_cb) ||
-        //     (W1_is_cd && W2_is_ud) || (W1_is_cd && W2_is_us) || (W1_is_cd && W2_is_ub) || (W1_is_cd && W2_is_cd) || (W1_is_cd && W2_is_cs) || (W1_is_cd && W2_is_cb) ||
-        //     (W1_is_cs && W2_is_ud) || (W1_is_cs && W2_is_us) || (W1_is_cs && W2_is_ub) || (W1_is_cs && W2_is_cd) || (W1_is_cs && W2_is_cs) || (W1_is_cs && W2_is_cb) ||
-        //     (W1_is_cb && W2_is_ud) || (W1_is_cb && W2_is_us) || (W1_is_cb && W2_is_ub) || (W1_is_cb && W2_is_cd) || (W1_is_cb && W2_is_cs) || (W1_is_cb && W2_is_cb)
-        // )) continue;
-
-        // if (W1_decay_idx == -1 || W2_decay_idx == -1) continue;
-
-
-        NdecayCuts++;
+        if (W1_nHad==0 || W2_nHad==0) continue;  // select WW --> all hadronic decays
+        NdecayCuts++; // number of events all hardonic decays
 
         if(event_njet() != 4) continue;
-        NjetCut++;
+        NjetCut++; // number of events with four jets
 
         bool flage_toss = false;
         if (recojet_isB.size() == 0){
             flage_toss = true;
         }
         if (flage_toss) continue;
+
         // define vectors 
-        std::vector<double> vec_ee_corr;
+        std::vector<double> vec_p_jet_const_1;
+        std::vector<double> vec_p_jet_const_2;
         std::vector<double> vec_theta_corr;
         std::vector<double> vec_phi_corr;
         std::vector<double> vec_chi_corr;
+        std::vector<double> vec_ee_corr;
 
+        std::vector<double> vec_p_reco_cJet;
+        std::vector<double> vec_p_reco_lJet0;
+        std::vector<double> vec_p_reco_lJet1;
+        std::vector<double> vec_p_reco_lJet2;
+        std::vector<double> vec_theta_c_l0;
+        std::vector<double> vec_theta_l1_l2;
+        std::vector<double> vec_phi_c_l0;
+        std::vector<double> vec_phi_l1_l2;
+        std::vector<double> vec_chi_c_l0;
+        std::vector<double> vec_chi_l1_l2;
+        
+
+        // set u/d/s to a "light flavor" quark
         float jet0_scoreQ = std::max({recojet_isU.at(0), recojet_isD.at(0), recojet_isS.at(0)});
         float jet1_scoreQ = std::max({recojet_isU.at(1), recojet_isD.at(1), recojet_isS.at(1)});
         float jet2_scoreQ = std::max({recojet_isU.at(2), recojet_isD.at(2), recojet_isS.at(2)});
@@ -454,7 +462,6 @@ void AnalysisWWCR::run() {
         }
 
         // if (has_invalid_flavor) continue;
-
         // if (!(n_c == 1 && n_l == 3)) continue;
 
         nFlavScore++;
@@ -534,10 +541,12 @@ void AnalysisWWCR::run() {
                 double jetSub_cos_phi_4 = cos(jetSub_phi_4);
                 double eec_jetSub_phi_4 = 0.5 * (1 - jetSub_cos_phi_4);
 
-                vec_ee_corr.push_back(eec_jetSub_theta_2);
+                vec_p_jet_const_1.push_back(subJet_1.P());
+                vec_p_jet_const_2.push_back(subJet_2.P());
                 vec_theta_corr.push_back(jetSub_theta_2);
                 vec_phi_corr.push_back(jetSub_phi_4);
                 vec_chi_corr.push_back(jetSub_chi_1);
+                vec_ee_corr.push_back(eec_jetSub_theta_2);
 
                 h_chi_subjet->Fill(jetSub_chi_1);
                 h_cos_chi_subjet->Fill(jetSub_cos_chi_1);
@@ -630,19 +639,6 @@ void AnalysisWWCR::run() {
             double cos_phi_truth_cs = cos(phi_truth_cs);
             double cos_phi_truth_ud = cos(phi_truth_ud);
 
-
-
-            // if (nPrinted < maxPrint) {
-            //         std::cout << "Truth Quarks" << std::endl;
-            //         std::cout << "chi: " << chi_truth_cs << " " << "cos(chi): " << cos_chi_truth_cs << std::endl;
-            //         std::cout << "chi: " << chi_truth_ud << " " << "cos(chi): " << cos_chi_truth_ud << std::endl;
-            //         std::cout << "theta: " << theta_truth_cs << " " << "cos(chi): " << cos_theta_truth_cs << std::endl;
-            //         std::cout << "theta: " << theta_truth_ud << " " << "cos(chi): " << cos_theta_truth_ud << std::endl;
-            //         std::cout << "phi: " << phi_truth_cs << " " << "cos(chi): " << cos_phi_truth_cs << std::endl;
-            //         std::cout << "phi: " << phi_truth_ud << " " << "cos(chi): " << cos_phi_truth_ud << std::endl;
-            //         std::cout << "  " << std::endl;
-            // }
-
             // ************** EE CORRELATIONS **************
             double ee_correlation_chi_truth_cs = 0.5 * (1 - cos_chi_truth_cs);
             double ee_correlation_chi_truth_ud = 0.5 * (1 - cos_chi_truth_ud);
@@ -681,16 +677,12 @@ void AnalysisWWCR::run() {
         // ************************** CALCULATIONS FOR MASS AND SUCH BEGIN HERE (USING RECO-JETS) ************************** 
         TLorentzVector Jet1, Jet2, Jet3, Jet4;
 
-        // Jet1.SetPxPyPzE(jet_px.at(cJet), jet_py.at(cJet), jet_pz.at(cJet), jet_e.at(cJet));
-        // Jet2.SetPxPyPzE(jet_px.at(lJets[0]), jet_py.at(lJets[0]), jet_pz.at(lJets[0]), jet_e.at(lJets[0]));
-
-        // Jet3.SetPxPyPzE(jet_px.at(lJets[1]), jet_py.at(lJets[1]), jet_pz.at(lJets[1]), jet_e.at(lJets[1]));
-        // Jet3.SetPxPyPzE(jet_px.at(lJets[2]), jet_py.at(lJets[2]), jet_pz.at(lJets[2]), jet_e.at(lJets[2]));
         Jet1.SetPxPyPzE(jet_px.at(0), jet_py.at(0), jet_pz.at(0), jet_e.at(0));
         Jet2.SetPxPyPzE(jet_px.at(1), jet_py.at(1), jet_pz.at(1), jet_e.at(1));
 
         Jet3.SetPxPyPzE(jet_px.at(2), jet_py.at(2), jet_pz.at(2), jet_e.at(2));
         Jet4.SetPxPyPzE(jet_px.at(3), jet_py.at(3), jet_pz.at(3), jet_e.at(3));
+
         const double m_W_true = 80.379;
 
         TLorentzVector W1_option1 = Jet1 + Jet2;
@@ -714,6 +706,11 @@ void AnalysisWWCR::run() {
         // for the cos(phi) angle
         TLorentzVector W1_j1, W1_j2, W2_j1, W2_j2;
 
+        // int count_cJet = 0;
+        // int count_lJet0 = 0;
+        // int count_lJet1 = 0;
+        // int count_lJet2 = 0;
+
         if (chi2_option1 <= chi2_option2 && chi2_option1 <= chi2_option3) {
             h_W1_mass->Fill(W1_option1.M());
             h_W2_mass->Fill(W2_option1.M());
@@ -729,6 +726,16 @@ void AnalysisWWCR::run() {
             h_lJet0_p->Fill(Jet2.P());
             h_lJet1_p->Fill(Jet3.P());
             h_lJet2_p->Fill(Jet4.P());
+
+            vec_p_reco_cJet.push_back(Jet1.P());
+            vec_p_reco_lJet0.push_back(Jet2.P());
+            vec_p_reco_lJet1.push_back(Jet3.P());
+            vec_p_reco_lJet2.push_back(Jet4.P());
+
+            count_cJet++;
+            count_lJet0++;
+            count_lJet1++;
+            count_lJet2++;
 
             W1_j1 = Jet1; 
             W1_j2 = Jet2;
@@ -752,6 +759,16 @@ void AnalysisWWCR::run() {
             h_lJet1_p->Fill(Jet3.P());
             h_lJet2_p->Fill(Jet4.P());
 
+            vec_p_reco_cJet.push_back(Jet1.P());
+            vec_p_reco_lJet0.push_back(Jet2.P());
+            vec_p_reco_lJet1.push_back(Jet3.P());
+            vec_p_reco_lJet2.push_back(Jet4.P());
+
+            count_cJet++;
+            count_lJet0++;
+            count_lJet1++;
+            count_lJet2++;
+
             W1_j1 = Jet1; 
             W1_j2 = Jet3;
 
@@ -774,6 +791,16 @@ void AnalysisWWCR::run() {
             h_lJet1_p->Fill(Jet3.P());
             h_lJet2_p->Fill(Jet3.P());
 
+            vec_p_reco_cJet.push_back(Jet1.P());
+            vec_p_reco_lJet0.push_back(Jet2.P());
+            vec_p_reco_lJet1.push_back(Jet3.P());
+            vec_p_reco_lJet2.push_back(Jet4.P());
+
+            count_cJet++;
+            count_lJet0++;
+            count_lJet1++;
+            count_lJet2++;
+
             W1_j1 = Jet1; 
             W1_j2 = Jet4;
 
@@ -783,10 +810,21 @@ void AnalysisWWCR::run() {
 
         mc_weight = norm_weight;
         ee_corr = vec_ee_corr;
+        p_jet_const_1 = vec_p_jet_const_1;
+        p_jet_const_2 = vec_p_jet_const_2;
         theta_corr = vec_theta_corr;
         phi_corr= vec_phi_corr;
         chi_corr=vec_chi_corr;
+        p_reco_cJet = vec_p_reco_cJet;
+        p_reco_lJet0 = vec_p_reco_lJet0;
+        p_reco_lJet1 = vec_p_reco_lJet1;
+        p_reco_lJet2 = vec_p_reco_lJet2;
         my_tree->Fill();
+
+        // double counts_cJet = h_cJet_p->Integral();
+        // double counts_lJet0 = h_lJet0_p->Integral();
+        // double counts_lJet1 = h_lJet1_p->Integral();
+        // double counts_lJet2 = h_lJet2_p->Integral();
 
         // ************* CHI *************
         double chi_c_l0 = W1_j1.Angle(W1_j2.Vect());
@@ -823,6 +861,13 @@ void AnalysisWWCR::run() {
         double ee_correlation_phi_l1_l2 = 0.5 * (1 - cos_phi_l1_l2);
 
         // *********************** HISTOGRAMS ***********************
+        vec_theta_c_l0.push_back(theta_c_l0);
+        vec_theta_l1_l2.push_back(theta_l1_l2);
+        vec_phi_c_l0.push_back(phi_c_l0);
+        vec_phi_l1_l2.push_back(phi_l1_l2);
+        vec_chi_c_l0.push_back(chi_c_l0);
+        vec_chi_l1_l2.push_back(chi_l1_l2);
+
         h_chi_c_l0->Fill(chi_c_l0);
         h_chi_l1_l2->Fill(chi_l1_l2);
         h_theta_c_l0->Fill(theta_c_l0);
@@ -866,6 +911,20 @@ void AnalysisWWCR::run() {
     std::cout << "Number of Leptons Cut: " << NleptonCut << std::endl;
     std::cout << "Number of events with 1 c-tagged, 1 s-tagged, and 2 light-tagged jets: " << nFlavScore << std::endl;
     std::cout << "      " << std::endl;
+
+    std::cout << "Number of events for cJet: " << count_cJet << std::endl;
+    std::cout << "Number of events for lJet0: " << count_lJet0 << std::endl;
+    std::cout << "Number of events for lJet1: " << count_lJet1 << std::endl;
+    std::cout << "Number of events for lJet2: " << count_lJet2 << std::endl;
+
+    std::cout << "      " << std::endl;
+
+    std::cout << "Histogram entries for cJet: " << h_cJet_p->GetEntries() << std::endl;
+    std::cout << "Histogram entries for lJet0: " << h_lJet0_p->GetEntries() << std::endl;
+    std::cout << "Histogram entries for lJet1: " << h_lJet1_p->GetEntries() << std::endl;
+    std::cout << "Histogram entries for lJet2: " << h_lJet2_p->GetEntries() << std::endl;
+
+
 
     std::cout << "      " << std::endl;
     std::cout << "Let there be data :)" << std::endl;
