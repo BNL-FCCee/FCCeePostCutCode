@@ -443,13 +443,16 @@ void plot() {
 
     h_p_jet_const_1_Nom->SetLineColor(kBlue); h_p_jet_const_1_Nom->SetLineWidth(3);
     h_p_jet_const_1_CR->SetLineColor(kRed);   h_p_jet_const_1_CR->SetLineWidth(3);
+    h_p_jet_const_1_SKI_100->SetLineColor(kViolet+1);   h_p_jet_const_1_SKI_100->SetLineWidth(3);
 
     h_p_jet_const_1_Nom->Draw("HIST");
     h_p_jet_const_1_CR->Draw("HIST SAME");
+    h_p_jet_const_1_SKI_100->Draw("HIST SAME");
 
     auto leg_p_jetConst_1 = new TLegend(0.725, 0.75, 0.88, 0.88);
     leg_p_jetConst_1->AddEntry(h_p_jet_const_1_Nom,  "Nominal", "l");
     leg_p_jetConst_1->AddEntry(h_p_jet_const_1_CR,   "noCR",   "l");
+    leg_p_jetConst_1->AddEntry(h_p_jet_const_1_SKI_100,   "SKI, kl = 100",   "l");
     leg_p_jetConst_1->Draw();
 
     // Ratio plot
@@ -459,6 +462,9 @@ void plot() {
     r_p_jet_const_1_CR->SetLineColor(kRed);
     r_p_jet_const_1_CR->Draw("HIST");
     r_p_jet_const_1_CR->SetLineWidth(3);
+    r_p_jet_const_1_SKI_100->SetLineColor(kViolet+1);
+    r_p_jet_const_1_SKI_100->Draw("HIST SAME");
+    r_p_jet_const_1_SKI_100->SetLineWidth(3);
 
     r_p_jet_const_1_CR->GetXaxis()->SetTitle("momenta (GeV/c)"); // Axis titles
     r_p_jet_const_1_CR->GetYaxis()->SetTitle("ratio");
@@ -471,6 +477,11 @@ void plot() {
     r_p_jet_const_1_CR->GetYaxis()->SetLabelSize(0.05);
     r_p_jet_const_1_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
     r_p_jet_const_1_CR->GetYaxis()->SetTitleOffset(0.55);
+
+    auto leg_ratio_p_jetConst_1 = new TLegend(0.725, 0.75, 0.88, 0.88);
+    leg_ratio_p_jetConst_1->AddEntry(r_p_jet_const_1_CR,   "noCR",   "l");
+    leg_ratio_p_jetConst_1->AddEntry(r_p_jet_const_1_SKI_100,   "SKI, kl = 100",   "l");
+    leg_ratio_p_jetConst_1->Draw();
 
 
     TCanvas *c_p_jet_const_2 = new TCanvas("c_p_jet_const_2", "comparison", 1000, 800);
@@ -502,13 +513,16 @@ void plot() {
 
     h_p_jet_const_2_Nom->SetLineColor(kBlue); h_p_jet_const_2_Nom->SetLineWidth(3);
     h_p_jet_const_2_CR->SetLineColor(kRed);   h_p_jet_const_2_CR->SetLineWidth(3);
+    h_p_jet_const_2_SKI_100->SetLineColor(kViolet+1);   h_p_jet_const_2_SKI_100->SetLineWidth(3);
 
     h_p_jet_const_2_Nom->Draw("HIST");
     h_p_jet_const_2_CR->Draw("HIST SAME");
+    h_p_jet_const_2_SKI_100->Draw("HIST SAME");
 
     auto leg_p_jetConst_2 = new TLegend(0.725, 0.75, 0.88, 0.88);
     leg_p_jetConst_2->AddEntry(h_p_jet_const_2_Nom,  "Nominal", "l");
     leg_p_jetConst_2->AddEntry(h_p_jet_const_2_CR,   "noCR",   "l");
+    leg_p_jetConst_2->AddEntry(h_p_jet_const_2_SKI_100,   "SKI, kl = 100",   "l");
     leg_p_jetConst_2->Draw();
 
     // Ratio plot
@@ -518,6 +532,9 @@ void plot() {
     r_p_jet_const_2_CR->SetLineColor(kRed);
     r_p_jet_const_2_CR->Draw("HIST");
     r_p_jet_const_2_CR->SetLineWidth(3);
+    r_p_jet_const_2_SKI_100->SetLineColor(kViolet+1);
+    r_p_jet_const_2_SKI_100->Draw("HIST SAME");
+    r_p_jet_const_2_SKI_100->SetLineWidth(3);
 
     r_p_jet_const_2_CR->GetXaxis()->SetTitle("momenta (GeV/c)"); // Axis titles
     r_p_jet_const_2_CR->GetYaxis()->SetTitle("ratio");
@@ -530,6 +547,11 @@ void plot() {
     r_p_jet_const_2_CR->GetYaxis()->SetLabelSize(0.05);
     r_p_jet_const_2_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
     r_p_jet_const_2_CR->GetYaxis()->SetTitleOffset(0.55);
+
+    auto leg_ratio_p_jetConst_2 = new TLegend(0.725, 0.75, 0.88, 0.88);
+    leg_ratio_p_jetConst_2->AddEntry(r_p_jet_const_2_CR,   "noCR",   "l");
+    leg_ratio_p_jetConst_2->AddEntry(r_p_jet_const_2_SKI_100,   "SKI, kl = 100",   "l");
+    leg_ratio_p_jetConst_2->Draw();
 
     TCanvas *c_theta = new TCanvas("c_theta", "comparison", 1000, 800);
     c_theta->Divide(1, 2);
@@ -561,13 +583,16 @@ void plot() {
 
     h_theta_Nom->SetLineColor(kBlack); h_theta_Nom->SetLineWidth(3);
     h_theta_CR->SetLineColor(kRed);   h_theta_CR->SetLineWidth(3);
+    h_theta_SKI_100->SetLineColor(kViolet+1);   h_theta_SKI_100->SetLineWidth(3);
 
     h_theta_Nom->Draw("HIST");
     h_theta_CR->Draw("HIST SAME");
+    h_theta_SKI_100->Draw("HIST SAME");
 
     auto leg_theta = new TLegend(0.15, 0.3, 0.25, 0.4);
     leg_theta->AddEntry(h_theta_Nom,  "Nominal", "l");
     leg_theta->AddEntry(h_theta_CR,   "noCR",   "l");
+    leg_theta->AddEntry(h_theta_SKI_100,   "SKI, kl = 100",   "l");
     leg_theta->Draw();
 
     // Ratio plot
@@ -577,6 +602,9 @@ void plot() {
     r_theta_CR->SetLineColor(kRed);
     r_theta_CR->Draw("HIST");
     r_theta_CR->SetLineWidth(3);
+    r_theta_SKI_100->SetLineColor(kViolet+1);
+    r_theta_SKI_100->Draw("HIST SAME");
+    r_theta_SKI_100->SetLineWidth(3);
 
     r_theta_CR->GetXaxis()->SetTitle("#theta (radians)"); // Axis titles
     r_theta_CR->GetYaxis()->SetTitle("ratio");
@@ -588,6 +616,11 @@ void plot() {
     r_theta_CR->GetYaxis()->SetLabelSize(0.05);
     r_theta_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
     r_theta_CR->GetYaxis()->SetTitleOffset(0.55);
+
+    auto leg_ratio_theta = new TLegend(0.15, 0.3, 0.25, 0.4);
+    leg_ratio_theta->AddEntry(r_theta_CR,   "noCR",   "l");
+    leg_ratio_theta->AddEntry(r_theta_SKI_100,   "SKI, kl = 100",   "l");
+    leg_ratio_theta->Draw();
 
 
     // Canvas 2
@@ -620,13 +653,16 @@ void plot() {
 
     h_phi_Nom->SetLineColor(kBlack); h_phi_Nom->SetLineWidth(3);
     h_phi_CR->SetLineColor(kRed);   h_phi_CR->SetLineWidth(3);
+    h_phi_SKI_100->SetLineColor(kViolet+1);   h_phi_SKI_100->SetLineWidth(3);
 
     h_phi_Nom->Draw("HIST");
     h_phi_CR->Draw("HIST SAME");
+    h_phi_SKI_100->Draw("HIST SAME");
 
     auto leg_phi = new TLegend(0.15, 0.75, 0.25, 0.88);
     leg_phi->AddEntry(h_phi_Nom,  "Nominal", "l");
     leg_phi->AddEntry(h_phi_CR,   "noCR",   "l");
+    leg_phi->AddEntry(h_phi_SKI_100,   "SKI, kl = 100",   "l");
     leg_phi->Draw();
 
     // Ratio plot
@@ -637,6 +673,9 @@ void plot() {
     r_phi_CR->SetLineColor(kRed);
     r_phi_CR->Draw("HIST");
     r_phi_CR->SetLineWidth(3);
+    r_phi_SKI_100->SetLineColor(kViolet+1);
+    r_phi_SKI_100->Draw("HIST SAME");
+    r_phi_SKI_100->SetLineWidth(3);
 
     r_phi_CR->GetXaxis()->SetTitle("#phi (radians)"); // Axis titles
     r_phi_CR->GetYaxis()->SetTitle("ratio");
@@ -648,6 +687,11 @@ void plot() {
     r_phi_CR->GetYaxis()->SetLabelSize(0.05);
     r_phi_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
     r_phi_CR->GetYaxis()->SetTitleOffset(0.55);
+
+    auto leg_ratio_phi = new TLegend(0.15, 0.75, 0.25, 0.88);
+    leg_ratio_phi->AddEntry(r_phi_CR,   "noCR",   "l");
+    leg_ratio_phi->AddEntry(r_phi_SKI_100,   "SKI, kl = 100",   "l");
+    leg_ratio_phi->Draw();
 
 
     // Canvas 3
@@ -680,13 +724,16 @@ void plot() {
 
     h_chi_Nom->SetLineColor(kBlack); h_chi_Nom->SetLineWidth(3);
     h_chi_CR->SetLineColor(kRed);   h_chi_CR->SetLineWidth(3);
+    h_chi_SKI_100->SetLineColor(kViolet+1);   h_chi_SKI_100->SetLineWidth(3);
 
     h_chi_Nom->Draw("HIST");
     h_chi_CR->Draw("HIST SAME");
+    h_chi_SKI_100->Draw("HIST SAME");
 
     auto leg_chi = new TLegend(0.15, 0.75, 0.25, 0.88);
     leg_chi->AddEntry(h_chi_Nom,  "Nominal", "l");
     leg_chi->AddEntry(h_chi_CR,   "noCR",   "l");
+    leg_chi->AddEntry(h_chi_SKI_100,   "SKI, kl=100",   "l");
     leg_chi->Draw();
 
     // Ratio plot
@@ -697,6 +744,9 @@ void plot() {
     r_chi_CR->SetLineColor(kRed);
     r_chi_CR->Draw("HIST");
     r_chi_CR->SetLineWidth(3);
+    r_chi_SKI_100->SetLineColor(kViolet+1);
+    r_chi_SKI_100->Draw("HIST SAME");
+    r_chi_SKI_100->SetLineWidth(3);
 
     r_chi_CR->GetXaxis()->SetTitle("#chi (radians)"); // Axis titles
     r_chi_CR->GetYaxis()->SetTitle("ratio");
@@ -708,6 +758,11 @@ void plot() {
     r_chi_CR->GetYaxis()->SetLabelSize(0.05);
     r_chi_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
     r_chi_CR->GetYaxis()->SetTitleOffset(0.55);
+
+    auto leg_ratio_chi = new TLegend(0.15, 0.75, 0.25, 0.88);
+    leg_ratio_chi->AddEntry(r_chi_CR,   "noCR",   "l");
+    leg_ratio_chi->AddEntry(r_chi_SKI_100,   "SKI, kl=100",   "l");
+    leg_ratio_chi->Draw();
 
 
     TCanvas *c_delR = new TCanvas("c_delR", "comparison", 1000, 800);
@@ -799,19 +854,25 @@ void plot() {
 
     h_mass_W1_Nom->SetLineColor(kBlack); h_mass_W1_Nom->SetLineWidth(3);
     h_mass_W1_CR->SetLineColor(kRed);   h_mass_W1_CR->SetLineWidth(3);
+    h_mass_W1_SKI_100->SetLineColor(kViolet+1);   h_mass_W1_SKI_100->SetLineWidth(3);
     h_mass_W2_Nom->SetLineColor(kBlue); h_mass_W2_Nom->SetLineWidth(3);
-    h_mass_W2_CR->SetLineColor(kGreen);   h_mass_W2_CR->SetLineWidth(3);
+    h_mass_W2_CR->SetLineColor(kGreen+2);   h_mass_W2_CR->SetLineWidth(3);
+    h_mass_W2_SKI_100->SetLineColor(kPink+8);   h_mass_W2_SKI_100->SetLineWidth(3);
 
     h_mass_W1_Nom->Draw("HIST");
     h_mass_W1_CR->Draw("HIST SAME");
+    h_mass_W1_SKI_100->Draw("HIST SAME");
     h_mass_W2_Nom->Draw("HIST SAME");
     h_mass_W2_CR->Draw("HIST SAME");
+    h_mass_W2_SKI_100->Draw("HIST SAME");
 
-    auto leg_W_mass = new TLegend(0.7, 0.75, 0.88, 0.88);
+    auto leg_W_mass = new TLegend(0.7, 0.6, 0.88, 0.88);
     leg_W_mass->AddEntry(h_mass_W1_Nom,  "W1 Mass- Nom", "l");
     leg_W_mass->AddEntry(h_mass_W1_CR,   "W1 Mass- No CR",   "l");
+    leg_W_mass->AddEntry(h_mass_W1_SKI_100,   "W1 Mass- SKI, kl=100",   "l");
     leg_W_mass->AddEntry(h_mass_W2_Nom,  "W2 Mass- Nom", "l");
     leg_W_mass->AddEntry(h_mass_W2_CR,   "W2 Mass- No CR",   "l");
+    leg_W_mass->AddEntry(h_mass_W2_SKI_100,   "W2 Mass- SKI, kl=100",   "l");
     leg_W_mass->Draw();
 
     // Ratio plot
@@ -821,9 +882,15 @@ void plot() {
     r_mass_W1_CR->SetLineColor(kRed);
     r_mass_W1_CR->Draw("HIST");
     r_mass_W1_CR->SetLineWidth(3);
+    r_mass_W1_SKI_100->SetLineColor(kViolet+1);
+    r_mass_W1_SKI_100->Draw("HIST SAME");
+    r_mass_W1_SKI_100->SetLineWidth(3);
     r_mass_W2_CR->SetLineColor(kBlue);
     r_mass_W2_CR->Draw("HIST SAME");
     r_mass_W2_CR->SetLineWidth(3);
+    r_mass_W2_SKI_100->SetLineColor(kPink+8);
+    r_mass_W2_SKI_100->Draw("HIST SAME");
+    r_mass_W2_SKI_100->SetLineWidth(3);
 
     r_mass_W1_CR->GetXaxis()->SetTitle("Momentum (GeV/c)"); // Axis titles
     r_mass_W1_CR->GetYaxis()->SetTitle("ratio");
@@ -837,9 +904,11 @@ void plot() {
     r_mass_W1_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
     r_mass_W1_CR->GetYaxis()->SetTitleOffset(0.55);
 
-    auto leg_ratio_W_mass = new TLegend(0.15, 0.75, 0.35, 0.9);
+    auto leg_ratio_W_mass = new TLegend(0.15, 0.75, 0.35, 0.88);
     leg_ratio_W_mass->AddEntry(r_mass_W1_CR,  "W1 Mass Nominal", "l");
+    leg_ratio_W_mass->AddEntry(r_mass_W1_SKI_100,  "W1 Mass- SKI, kl=100", "l");
     leg_ratio_W_mass->AddEntry(r_mass_W2_CR,   "W2 Mass noCR",   "l");
+    leg_ratio_W_mass->AddEntry(r_mass_W2_SKI_100,  "W2 Mass- SKI, kl=100", "l");
     leg_ratio_W_mass->Draw();
 
     
@@ -873,19 +942,25 @@ void plot() {
 
     h_p_W1_Nom->SetLineColor(kBlack); h_p_W1_Nom->SetLineWidth(3);
     h_p_W1_CR->SetLineColor(kRed);   h_p_W1_CR->SetLineWidth(3);
+    h_p_W1_SKI_100->SetLineColor(kViolet+1);   h_p_W1_SKI_100->SetLineWidth(3);
     h_p_W2_Nom->SetLineColor(kBlue); h_p_W2_Nom->SetLineWidth(3);
     h_p_W2_CR->SetLineColor(kGreen);   h_p_W2_CR->SetLineWidth(3);
+    h_p_W2_SKI_100->SetLineColor(kPink+8);   h_p_W2_SKI_100->SetLineWidth(3);
 
     h_p_W1_Nom->Draw("HIST");
     h_p_W1_CR->Draw("HIST SAME");
+    h_p_W1_SKI_100->Draw("HIST SAME");
     h_p_W2_Nom->Draw("HIST SAME");
     h_p_W2_CR->Draw("HIST SAME");
+    h_p_W2_SKI_100->Draw("HIST SAME");
 
-    auto leg_p_W = new TLegend(0.7, 0.75, 0.88, 0.88);
-    leg_p_W->AddEntry(h_p_W1_Nom,  "W1 Nom", "l");
-    leg_p_W->AddEntry(h_p_W1_CR,   "W1 No CR",   "l");
-    leg_p_W->AddEntry(h_p_W2_Nom,  "W2 Nom", "l");
-    leg_p_W->AddEntry(h_p_W2_CR,   "W2 No CR",   "l");
+    auto leg_p_W = new TLegend(0.7, 0.6, 0.88, 0.88);
+    leg_p_W->AddEntry(h_p_W1_Nom,  "W1- Nom", "l");
+    leg_p_W->AddEntry(h_p_W1_CR,   "W1- No CR",   "l");
+    leg_p_W->AddEntry(h_p_W1_SKI_100,   "W1- SKI, kl=100",   "l");
+    leg_p_W->AddEntry(h_p_W2_Nom,  "W2- Nom", "l");
+    leg_p_W->AddEntry(h_p_W2_CR,   "W2- No CR",   "l");
+    leg_p_W->AddEntry(h_p_W2_SKI_100,  "W2- SKI, kl=100",   "l");
     leg_p_W->Draw();
 
     // Ratio plot
@@ -895,9 +970,15 @@ void plot() {
     r_p_W1_CR->SetLineColor(kRed);
     r_p_W1_CR->Draw("HIST");
     r_p_W1_CR->SetLineWidth(3);
+    r_p_W1_SKI_100->SetLineColor(kViolet+1);
+    r_p_W1_SKI_100->Draw("HIST SAME");
+    r_p_W1_SKI_100->SetLineWidth(3);
     r_p_W2_CR->SetLineColor(kBlue);
     r_p_W2_CR->Draw("HIST SAME");
     r_p_W2_CR->SetLineWidth(3);
+    r_p_W2_SKI_100->SetLineColor(kPink+8);
+    r_p_W2_SKI_100->Draw("HIST SAME");
+    r_p_W2_SKI_100->SetLineWidth(3);
 
     r_p_W1_CR->GetXaxis()->SetTitle("momenta (GeV/c)"); // Axis titles
     r_p_W1_CR->GetYaxis()->SetTitle("ratio");
@@ -911,10 +992,12 @@ void plot() {
     r_p_W1_CR->GetXaxis()->SetTitleOffset(1.0); // Set the title offset to the axis
     r_p_W1_CR->GetYaxis()->SetTitleOffset(0.55);
 
-    auto leg_ratio_p_mass = new TLegend(0.75, 0.75, 0.88, 0.9);
-    leg_ratio_p_mass->AddEntry(r_p_W1_CR,  "W1 Momenta", "l");
-    leg_ratio_p_mass->AddEntry(r_p_W2_CR,   "W2 Momenta",   "l");
-    leg_ratio_p_mass->Draw();
+    auto leg_ratio_p_W = new TLegend(0.75, 0.75, 0.88, 0.9);
+    leg_ratio_p_W->AddEntry(r_p_W1_CR,  "W1 Momenta", "l");
+    leg_ratio_p_W->AddEntry(r_p_W1_SKI_100,  "W1- SKI, kl=100", "l");
+    leg_ratio_p_W->AddEntry(r_p_W2_CR,   "W2 Momenta",   "l");
+    leg_ratio_p_W->AddEntry(r_p_W2_SKI_100,  "W2- SKI, kl=100", "l");
+    leg_ratio_p_W->Draw();
 
 
     TCanvas *c_e_W = new TCanvas("c_e_W", "comparison", 1000, 800);
@@ -947,19 +1030,25 @@ void plot() {
 
     h_e_W1_Nom->SetLineColor(kBlack); h_e_W1_Nom->SetLineWidth(3);
     h_e_W1_CR->SetLineColor(kRed);   h_e_W1_CR->SetLineWidth(3);
+    h_e_W1_SKI_100->SetLineColor(kViolet+1);   h_e_W1_SKI_100->SetLineWidth(3);
     h_e_W2_Nom->SetLineColor(kBlue); h_e_W2_Nom->SetLineWidth(3);
     h_e_W2_CR->SetLineColor(kGreen);   h_e_W2_CR->SetLineWidth(3);
+    h_e_W2_SKI_100->SetLineColor(kPink+8);   h_e_W2_SKI_100->SetLineWidth(3);
 
     h_e_W1_Nom->Draw("HIST");
     h_e_W1_CR->Draw("HIST SAME");
+    h_e_W1_SKI_100->Draw("HIST SAME");
     h_e_W2_Nom->Draw("HIST SAME");
     h_e_W2_CR->Draw("HIST SAME");
+    h_e_W2_SKI_100->Draw("HIST SAME");
 
-    auto leg_e_W = new TLegend(0.15, 0.7, 0.35, 0.88);
+    auto leg_e_W = new TLegend(0.7, 0.6, 0.88, 0.88);
     leg_e_W->AddEntry(h_e_W1_Nom,  "W1- Nom", "l");
     leg_e_W->AddEntry(h_e_W1_CR,   "W1- CR",   "l");
+    leg_e_W->AddEntry(h_e_W1_SKI_100,   "W1- SKI, kl=100",   "l");
     leg_e_W->AddEntry(h_e_W2_Nom,  "W2- Nom", "l");
     leg_e_W->AddEntry(h_e_W2_CR,   "W2- CR",   "l");
+    leg_e_W->AddEntry(h_e_W2_SKI_100,   "W2- SKI, kl=100",   "l");
     leg_e_W->Draw();
 
     // Ratio plot
@@ -969,9 +1058,15 @@ void plot() {
     r_e_W1_CR->SetLineColor(kRed);
     r_e_W1_CR->Draw("HIST");
     r_e_W1_CR->SetLineWidth(3);
+    r_e_W1_SKI_100->SetLineColor(kViolet+1);
+    r_e_W1_SKI_100->Draw("HIST SAME");
+    r_e_W1_SKI_100->SetLineWidth(3);
     r_e_W2_CR->SetLineColor(kBlue);
     r_e_W2_CR->Draw("HIST SAME");
     r_e_W2_CR->SetLineWidth(3);
+    r_e_W2_SKI_100->SetLineColor(kPink+8);
+    r_e_W2_SKI_100->Draw("HIST SAME");
+    r_e_W2_SKI_100->SetLineWidth(3);
 
     r_e_W1_CR->GetXaxis()->SetTitle("momenta (GeV/c)"); // Axis titles
     r_e_W1_CR->GetYaxis()->SetTitle("ratio");
@@ -987,7 +1082,9 @@ void plot() {
 
     auto leg_ratio_e_W = new TLegend(0.725, 0.75, 0.88, 0.9);
     leg_ratio_e_W->AddEntry(r_e_W1_CR,  "W1 p Ratio", "l");
+    leg_ratio_e_W->AddEntry(r_e_W1_SKI_100,  "W1- SKI, kl=100", "l");
     leg_ratio_e_W->AddEntry(r_e_W2_CR,   "W2 p Ratio",   "l");
+    leg_ratio_e_W->AddEntry(r_e_W1_SKI_100,  "W1- SKI, kl=100", "l");
     leg_ratio_e_W->Draw();
 
 
@@ -1021,13 +1118,17 @@ void plot() {
 
     h_p_reco_Jet1_Nom->SetLineColor(kBlack); h_p_reco_Jet1_Nom->SetLineWidth(3);
     h_p_reco_Jet1_CR->SetLineColor(kRed); h_p_reco_Jet1_CR->SetLineWidth(3);
+    h_p_reco_Jet1_SKI_100->SetLineColor(kViolet+1); h_p_reco_Jet1_SKI_100->SetLineWidth(3);
     h_p_reco_Jet2_Nom->SetLineColor(kBlue); h_p_reco_Jet2_Nom->SetLineWidth(3);
     h_p_reco_Jet2_CR->SetLineColor(kGreen); h_p_reco_Jet2_CR->SetLineWidth(3);
+    h_p_reco_Jet2_SKI_100->SetLineColor(kMagenta-4); h_p_reco_Jet2_SKI_100->SetLineWidth(3);
 
     h_p_reco_Jet3_Nom->SetLineColor(kOrange+7); h_p_reco_Jet3_Nom->SetLineWidth(3);
     h_p_reco_Jet3_CR->SetLineColor(kPink+7); h_p_reco_Jet3_CR->SetLineWidth(3);
+    h_p_reco_Jet3_SKI_100->SetLineColor(kGray+2); h_p_reco_Jet3_SKI_100->SetLineWidth(3);
     h_p_reco_Jet4_Nom->SetLineColor(kAzure+7); h_p_reco_Jet4_Nom->SetLineWidth(3);
     h_p_reco_Jet4_CR->SetLineColor(kGreen+3); h_p_reco_Jet4_CR->SetLineWidth(3);
+    h_p_reco_Jet4_SKI_100->SetLineColor(kPink); h_p_reco_Jet4_SKI_100->SetLineWidth(3);
 
     h_p_reco_Jet1_Nom->Draw("HIST");
     h_p_reco_Jet1_CR->Draw("HIST SAME");
