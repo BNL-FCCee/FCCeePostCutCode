@@ -68,165 +68,213 @@ void plot() {
     // Histograms
     TH1F *h_p_jet_const_1_Nom = new TH1F("h_p_jet_const_1_Nom", "Jet constituent momentum", totalBins, binsArray);
     TH1F *h_p_jet_const_1_CR = new TH1F("h_p_jet_const_1_CR", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_1_SKI_kl5 = new TH1F("h_p_jet_const_1_SKI_kl5", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_1_SKI_kl50 = new TH1F("h_p_jet_const_1_SKI_kl50", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_1_SKI_kl100 = new TH1F("h_p_jet_const_1_SKI_kl100", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_1_SKI_100 = new TH1F("h_p_jet_const_1_SKI_100", "", totalBins, binsArray);
 
     TH1F *h_p_jet_const_2_Nom = new TH1F("h_p_jet_const_2_Nom", "Jet constituent momentum", totalBins, binsArray);
     TH1F *h_p_jet_const_2_CR = new TH1F("h_p_jet_const_2_CR", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_2_SKI_kl5 = new TH1F("h_p_jet_const_2_SKI_kl5", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_2_SKI_kl50 = new TH1F("h_p_jet_const_2_SKI_kl50", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_2_SKI_kl100 = new TH1F("h_p_jet_const_2_SKI_kl100", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_2_SKI_100 = new TH1F("h_p_jet_const_2_SKI_100", "", totalBins, binsArray);
 
     TH1F *h_theta_Nom = new TH1F("h_theta_Nom", "#Delta#theta;#theta;Normalized Events", nBins, logBins);
     TH1F *h_theta_CR = new TH1F("h_theta_CR",  "", nBins, logBins);
-    TH1F *h_theta_SKI_kl5 = new TH1F("h_theta_SKI_kl5",  "", nBins, logBins);
-    TH1F *h_theta_SKI_kl50 = new TH1F("h_theta_SKI_kl50",  "", nBins, logBins);
-    TH1F *h_theta_SKI_kl100 = new TH1F("h_theta_SKI_kl100",  "", nBins, logBins);
+    TH1F *h_theta_SKI_100 = new TH1F("h_theta_SKI_100",  "", nBins, logBins);
 
     TH1F *h_phi_Nom = new TH1F("h_phi_Nom", "#Delta#phi;Normalized Events", nBins, logBins);
     TH1F *h_phi_CR = new TH1F("h_phi_CR",  "", nBins, logBins);
-    TH1F *h_phi_SKI_kl5 = new TH1F("h_phi_SKI_kl5",  "", nBins, logBins);
-    TH1F *h_phi_SKI_kl50 = new TH1F("h_phi_SKI_kl50",  "", nBins, logBins);
-    TH1F *h_phi_SKI_kl100 = new TH1F("h_phi_SKI_kl100",  "", nBins, logBins);
+    TH1F *h_phi_SKI_100 = new TH1F("h_phi_SKI_100",  "", nBins, logBins);
 
     TH1F *h_chi_Nom = new TH1F("h_chi_Nom", "#Delta#chi;Normalized Events", nBins, logBins);
     TH1F *h_chi_CR = new TH1F("h_chi_CR",  "", nBins, logBins);
-    TH1F *h_chi_SKI_kl5 = new TH1F("h_chi_SKI_kl5",  "", nBins, logBins);
-    TH1F *h_chi_SKI_kl50 = new TH1F("h_chi_SKI_kl50",  "", nBins, logBins);
-    TH1F *h_chi_SKI_kl100 = new TH1F("h_chi_SKI_kl100",  "", nBins, logBins);
+    TH1F *h_chi_SKI_100 = new TH1F("h_chi_SKI_100",  "", nBins, logBins);
 
-    // TH1F *h_delR_Nom = new TH1F("h_delR_Nom", "#deltaR- Nominal", nBins, linearBins);
-    // TH1F *h_delR_CR = new TH1F("h_delR_CR", "", nBins, linearBins);
+    TH1F *h_delR_Nom = new TH1F("h_delR_Nom", "#deltaR- Nominal", nBins, linearBins);
+    TH1F *h_delR_CR = new TH1F("h_delR_CR", "", nBins, linearBins);
 
-    // TH1F *h_eec_theta_Nom = new TH1F("h_eec_theta_Nom", "Change Title;Normalized Events", nBins, logBins);
-    // TH1F *h_eec_theta_CR = new TH1F("h_eec_theta_CR",  "", nBins, logBins);
+    TH1F *h_eec_theta_Nom = new TH1F("h_eec_theta_Nom", "Change Title;Normalized Events", nBins, logBins);
+    TH1F *h_eec_theta_CR = new TH1F("h_eec_theta_CR",  "", nBins, logBins);
 
-    // TH1D* h_cos_theta_Nom = new TH1D("h_cos_theta_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
-    // TH1D* h_cos_theta_CR = new TH1D("h_cos_theta_CR", "Cos(theta) - noCR", nBins, linearBins_2);
+    TH1D* h_cos_theta_Nom = new TH1D("h_cos_theta_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
+    TH1D* h_cos_theta_CR = new TH1D("h_cos_theta_CR", "Cos(theta) - noCR", nBins, linearBins_2);
 
-    // TH1D* h_eec_Nom = new TH1D("h_eec_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
-    // TH1D* h_eec_CR = new TH1D("h_eec_CR", "Cos(theta) - noCR", nBins, linearBins_2);
+    TH1D* h_eec_Nom = new TH1D("h_eec_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
+    TH1D* h_eec_CR = new TH1D("h_eec_CR", "Cos(theta) - noCR", nBins, linearBins_2);
 
     // ************************ Reconstructed W Bosons ************************
     TH1F* h_mass_W1_Nom = new TH1F("h_mass_W1_Nom", "Mass", nBins, linearBins);
     TH1F* h_mass_W1_CR = new TH1F("h_mass_W1_CR", "", nBins, linearBins);
+    TH1F* h_mass_W1_SKI_100 = new TH1F("h_mass_W1_SKI_100", "", nBins, linearBins);
 
     TH1F* h_mass_W2_Nom = new TH1F("h_mass_W2_Nom", "Mass", nBins, linearBins);
     TH1F* h_mass_W2_CR = new TH1F("h_mass_W2_CR", "", nBins, linearBins);
+    TH1F* h_mass_W2_SKI_100 = new TH1F("h_mass_W2_SKI_100", "", nBins, linearBins);
 
     TH1F* h_p_W1_Nom = new TH1F("h_p_W1_Nom", "Momentum", nBins, linearBins);
     TH1F* h_p_W1_CR = new TH1F("h_p_W1_CR", "", nBins, linearBins);
+    TH1F* h_p_W1_SKI_100 = new TH1F("h_p_W1_SKI_100", "", nBins, linearBins);
 
     TH1F* h_p_W2_Nom = new TH1F("h_p_W2_Nom", "Momentum", nBins, linearBins);
     TH1F* h_p_W2_CR = new TH1F("h_p_W2_CR", "", nBins, linearBins);
+    TH1F* h_p_W2_SKI_100 = new TH1F("h_p_W2_SKI_100", "", nBins, linearBins);
 
     TH1F* h_e_W1_Nom = new TH1F("h_e_W1_Nom", "Energy", nBins, linearBins);
     TH1F* h_e_W1_CR = new TH1F("h_e_W1_CR", "", nBins, linearBins);
+    TH1F* h_e_W1_SKI_100 = new TH1F("h_e_W1_SKI_100", "", nBins, linearBins);
 
     TH1F* h_e_W2_Nom = new TH1F("h_e_W2_Nom", "Energy", nBins, linearBins);
     TH1F* h_e_W2_CR = new TH1F("h_e_W2_CR", "", nBins, linearBins);
+    TH1F* h_e_W2_SKI_100 = new TH1F("h_e_W2_SKI_100", "", nBins, linearBins);
 
     // ************************ Reconstructed Jets ************************
     TH1F* h_p_reco_Jet1_Nom = new TH1F("h_p_reco_Jet1_Nom", "Momentum", nBins, linearBins);
     TH1F* h_p_reco_Jet1_CR = new TH1F("h_p_reco_Jet1_CR", "", nBins, linearBins);
+    TH1F* h_p_reco_Jet1_SKI_100 = new TH1F("h_p_reco_Jet1_SKI_100", "", nBins, linearBins);
+
     TH1F* h_p_reco_Jet2_Nom = new TH1F("h_p_reco_Jet2_Nom", "Momentum", nBins, linearBins);
     TH1F* h_p_reco_Jet2_CR = new TH1F("h_p_reco_Jet2_CR", "", nBins, linearBins);
+    TH1F* h_p_reco_Jet2_SKI_100 = new TH1F("h_p_reco_Jet2_SKI_100", "", nBins, linearBins);
+
     TH1F* h_p_reco_Jet3_Nom = new TH1F("h_p_reco_Jet3_Nom", "Momentum", nBins, linearBins);
     TH1F* h_p_reco_Jet3_CR = new TH1F("h_p_reco_Jet3_CR", "", nBins, linearBins);
+    TH1F* h_p_reco_Jet3_SKI_100 = new TH1F("h_p_reco_Jet3_SKI_100", "", nBins, linearBins);
+
     TH1F* h_p_reco_Jet4_Nom = new TH1F("h_p_reco_Jet4_Nom", "Momentum", nBins, linearBins);
     TH1F* h_p_reco_Jet4_CR = new TH1F("h_p_reco_Jet4_CR", "", nBins, linearBins);
+    TH1F* h_p_reco_Jet4_SKI_100 = new TH1F("h_p_reco_Jet4_SKI_100", "", nBins, linearBins);
 
     TH1F* h_theta_Jet1_Jet2_Nom = new TH1F("h_theta_Jet1_Jet2_Nom", "#theta", nBins, logBins);
     TH1F* h_theta_Jet1_Jet2_CR = new TH1F("h_theta_Jet1_Jet2_CR", "", nBins, logBins);
+    TH1F* h_theta_Jet1_Jet2_SKI_100 = new TH1F("h_theta_Jet1_Jet2_SKI_100", "", nBins, logBins);
+
     TH1F* h_theta_Jet3_Jet4_Nom = new TH1F("h_theta_Jet3_Jet4_Nom", "#theta", nBins, logBins);
     TH1F* h_theta_Jet3_Jet4_CR = new TH1F("h_theta_Jet3_Jet4_CR", "", nBins, logBins);
+    TH1F* h_theta_Jet3_Jet4_SKI_100 = new TH1F("h_theta_Jet3_Jet4_SKI_100", "", nBins, logBins);
 
     TH1F* h_phi_Jet1_Jet2_Nom = new TH1F("h_phi_Jet1_Jet2_Nom", "#theta", nBins, logBins);
     TH1F* h_phi_Jet1_Jet2_CR = new TH1F("h_phi_Jet1_Jet2_CR", "", nBins, logBins);
+    TH1F* h_phi_Jet1_Jet2_SKI_100 = new TH1F("h_phi_Jet1_Jet2_SKI_100", "", nBins, logBins);
+
     TH1F* h_phi_Jet3_Jet4_Nom = new TH1F("h_phi_Jet3_Jet4_Nom", "#theta", nBins, logBins);
     TH1F* h_phi_Jet3_Jet4_CR = new TH1F("h_phi_Jet3_Jet4_CR", "", nBins, logBins);
+    TH1F* h_phi_Jet3_Jet4_SKI_100 = new TH1F("h_phi_Jet3_Jet4_SKI_100", "", nBins, logBins);
 
     TH1F* h_chi_Jet1_Jet2_Nom = new TH1F("h_chi_Jet1_Jet2_Nom", "#theta", nBins, logBins);
     TH1F* h_chi_Jet1_Jet2_CR = new TH1F("h_chi_Jet1_Jet2_CR", "", nBins, logBins);
+    TH1F* h_chi_Jet1_Jet2_SKI_100 = new TH1F("h_chi_Jet1_Jet2_SKI_100", "", nBins, logBins);
+
     TH1F* h_chi_Jet3_Jet4_Nom = new TH1F("h_chi_Jet3_Jet4_Nom", "#theta", nBins, logBins);
     TH1F* h_chi_Jet3_Jet4_CR = new TH1F("h_chi_Jet3_Jet4_CR", "", nBins, logBins);
+    TH1F* h_chi_Jet3_Jet4_SKI_100 = new TH1F("h_chi_Jet3_Jet4_SKI_100", "", nBins, logBins);
 
     // Fill
     tNom->Draw("b_p_jet_const_1 >> h_p_jet_const_1_Nom", "", "goff");
     tCR->Draw("b_p_jet_const_1 >> h_p_jet_const_1_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_jet_const_1 >> h_p_jet_const_1_SKI_100", "", "goff");
 
     tNom->Draw("b_p_jet_const_2 >> h_p_jet_const_2_Nom", "", "goff");
     tCR->Draw("b_p_jet_const_2 >> h_p_jet_const_2_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_jet_const_2 >> h_p_jet_const_2_SKI_100", "", "goff");
 
     tNom->Draw("b_theta_corr >> h_theta_Nom", "", "goff");
     tCR->Draw("b_theta_corr >> h_theta_CR",  "", "goff");
+    tSKI_kl100->Draw("b_theta_corr >> h_theta_SKI_100",  "", "goff");
 
     tNom->Draw("b_phi_corr >> h_phi_Nom", "", "goff");
     tCR->Draw("b_phi_corr >> h_phi_CR",  "", "goff");
+    tSKI_kl100->Draw("b_phi_corr >> h_phi_SKI_100",  "", "goff");
 
     tNom->Draw("b_chi_corr >> h_chi_Nom", "", "goff");
     tCR->Draw("b_chi_corr >> h_chi_CR",  "", "goff");
+    tSKI_kl100->Draw("b_chi_corr >> h_chi_SKI_100",  "", "goff");
 
     tNom->Draw("b_delR_corr >> h_delR_Nom", "", "goff");
     tCR->Draw("b_delR_corr >> h_delR_CR", "", "goff");
+    tSKI_kl100->Draw("b_delR_corr >> h_delR_SKI_100", "", "goff");
 
     // ***************** W Bosons *****************
     tNom->Draw("b_mass_W1 >> h_mass_W1_Nom", "", "goff");
     tCR->Draw("b_mass_W1 >> h_mass_W1_CR", "", "goff");
+    tSKI_kl100->Draw("b_mass_W1 >> h_mass_W1_SKI_100", "", "goff");
+
     tNom->Draw("b_mass_W2 >> h_mass_W2_Nom", "", "goff");
     tCR->Draw("b_mass_W2 >> h_mass_W2_CR", "", "goff");
+    tSKI_kl100->Draw("b_mass_W2 >> h_mass_W2_SKI_100", "", "goff");
 
     tNom->Draw("b_p_W1 >> h_p_W1_Nom", "", "goff");
     tCR->Draw("b_p_W1 >> h_p_W1_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_W1 >> h_p_W1_SKI_100", "", "goff");
+
     tNom->Draw("b_p_W2 >> h_p_W2_Nom", "", "goff");
     tCR->Draw("b_p_W2 >> h_p_W2_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_W2 >> h_p_W2_SKI_100", "", "goff");
 
     tNom->Draw("b_e_W1 >> h_e_W1_Nom", "", "goff");
     tCR->Draw("b_e_W1 >> h_e_W1_CR", "", "goff");
+    tSKI_kl100->Draw("b_e_W1 >> h_e_W1_SKI_100", "", "goff");
+
     tNom->Draw("b_e_W2 >> h_e_W2_Nom", "", "goff");
     tCR->Draw("b_e_W2 >> h_e_W2_CR", "", "goff");
+    tSKI_kl100->Draw("b_e_W2 >> h_e_W2_SKI_100", "", "goff");
 
     // ***************** Reconstructed Jets *****************
     tNom->Draw("b_p_reco_Jet1 >> h_p_reco_Jet1_Nom", "", "goff");
     tCR->Draw("b_p_reco_Jet1 >> h_p_reco_Jet1_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_reco_Jet1 >> h_p_reco_Jet1_SKI_100", "", "goff");
+
     tNom->Draw("b_p_reco_Jet2 >> h_p_reco_Jet2_Nom", "", "goff");
     tCR->Draw("b_p_reco_Jet2 >> h_p_reco_Jet2_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_reco_Jet2 >> h_p_reco_Jet2_SKI_100", "", "goff");
+
     tNom->Draw("b_p_reco_Jet3 >> h_p_reco_Jet3_Nom", "", "goff");
     tCR->Draw("b_p_reco_Jet3 >> h_p_reco_Jet3_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_reco_Jet3 >> h_p_reco_Jet3_SKI_100", "", "goff");
+
     tNom->Draw("b_p_reco_Jet4 >> h_p_reco_Jet4_Nom", "", "goff");
     tCR->Draw("b_p_reco_Jet4 >> h_p_reco_Jet4_CR", "", "goff");
+    tSKI_kl100->Draw("b_p_reco_Jet4 >> h_p_reco_Jet4_SKI_100", "", "goff");
 
     tNom->Draw("b_theta_Jet1_Jet2 >> h_theta_Jet1_Jet2_Nom", "", "goff");
     tCR->Draw("b_theta_Jet1_Jet2 >> h_theta_Jet1_Jet2_CR", "", "goff");
+    tSKI_kl100->Draw("b_theta_Jet1_Jet2 >> h_theta_Jet1_Jet2_SKI_100", "", "goff");
+
     tNom->Draw("b_theta_Jet3_Jet4 >> h_theta_Jet3_Jet4_Nom", "", "goff");
     tCR->Draw("b_theta_Jet3_Jet4 >> h_theta_Jet3_Jet4_CR", "", "goff");
+    tSKI_kl100->Draw("b_theta_Jet3_Jet4 >> h_theta_Jet3_Jet4_SKI_100", "", "goff");
 
     tNom->Draw("b_phi_Jet1_Jet2 >> h_phi_Jet1_Jet2_Nom", "", "goff");
     tCR->Draw("b_phi_Jet1_Jet2 >> h_phi_Jet1_Jet2_CR", "", "goff");
+    tSKI_kl100->Draw("b_phi_Jet1_Jet2 >> h_phi_Jet1_Jet2_SKI_100", "", "goff");
+
     tNom->Draw("b_phi_Jet3_Jet4 >> h_phi_Jet3_Jet4_Nom", "", "goff");
     tCR->Draw("b_phi_Jet3_Jet4 >> h_phi_Jet3_Jet4_CR", "", "goff");
+    tSKI_kl100->Draw("b_phi_Jet3_Jet4 >> h_phi_Jet3_Jet4_SKI_100", "", "goff");
 
     tNom->Draw("b_chi_Jet1_Jet2 >> h_chi_Jet1_Jet2_Nom", "", "goff");
     tCR->Draw("b_chi_Jet1_Jet2 >> h_chi_Jet1_Jet2_CR", "", "goff");
+    tSKI_kl100->Draw("b_chi_Jet1_Jet2 >> h_chi_Jet1_Jet2_SKI_100", "", "goff");
+    
     tNom->Draw("b_chi_Jet3_Jet4 >> h_chi_Jet3_Jet4_Nom", "", "goff");
     tCR->Draw("b_chi_Jet3_Jet4 >> h_chi_Jet3_Jet4_CR", "", "goff");
+    tSKI_kl100->Draw("b_chi_Jet3_Jet4 >> h_chi_Jet3_Jet4_SKI_100", "", "goff");
 
     // Normalize both histograms by their integrals
     h_p_jet_const_1_Nom->Scale(1.0 / h_p_jet_const_1_Nom->Integral());
     h_p_jet_const_1_CR->Scale(1.0 / h_p_jet_const_1_CR->Integral());
+    h_p_jet_const_1_SKI_100->Scale(1.0 / h_p_jet_const_1_SKI_100->Integral());
     
     h_p_jet_const_2_Nom->Scale(1.0 / h_p_jet_const_2_Nom->Integral());
     h_p_jet_const_2_CR->Scale(1.0 / h_p_jet_const_2_CR->Integral());
+    h_p_jet_const_2_SKI_100->Scale(1.0 / h_p_jet_const_2_SKI_100->Integral());
 
     h_theta_Nom->Scale(1.0 / h_theta_Nom->Integral());
     h_theta_CR->Scale(1.0 / h_theta_CR->Integral());
+    h_theta_SKI_100->Scale(1.0 / h_theta_SKI_100->Integral());
 
     h_phi_Nom->Scale(1.0 / h_phi_Nom->Integral());
     h_phi_CR->Scale(1.0 / h_phi_CR->Integral());
+    h_phi_SKI_100->Scale(1.0 / h_phi_SKI_100->Integral());
 
     h_chi_Nom->Scale(1.0 / h_chi_Nom->Integral());
     h_chi_CR->Scale(1.0 / h_chi_CR->Integral());
+    h_chi_SKI_100->Scale(1.0 / h_chi_SKI_100->Integral());
 
     h_delR_Nom->Scale(1.0 / h_delR_Nom->Integral());
     h_delR_CR->Scale(1.0 / h_delR_CR->Integral());
@@ -234,70 +282,135 @@ void plot() {
     // ***************** W Bosons *****************
     h_mass_W1_Nom->Scale(1.0 / h_mass_W1_Nom->Integral());
     h_mass_W1_CR->Scale(1.0 / h_mass_W1_CR->Integral());
+    h_mass_W1_SKI_100->Scale(1.0 / h_mass_W1_SKI_100->Integral());
+
     h_mass_W2_Nom->Scale(1.0 / h_mass_W2_Nom->Integral());
     h_mass_W2_CR->Scale(1.0 / h_mass_W2_CR->Integral());
+    h_mass_W2_SKI_100->Scale(1.0 / h_mass_W2_SKI_100->Integral());
 
     h_p_W1_Nom->Scale(1.0 / h_p_W1_Nom->Integral());
     h_p_W1_CR->Scale(1.0 / h_p_W1_CR->Integral());
+    h_p_W1_SKI_100->Scale(1.0 / h_p_W1_SKI_100->Integral());
+
     h_p_W2_Nom->Scale(1.0 / h_p_W2_Nom->Integral());
     h_p_W2_CR->Scale(1.0 / h_p_W2_CR->Integral());
+    h_p_W2_SKI_100->Scale(1.0 / h_p_W2_SKI_100->Integral());
 
     h_e_W1_Nom->Scale(1.0 / h_e_W1_Nom->Integral());
     h_e_W1_CR->Scale(1.0 / h_e_W1_CR->Integral());
+    h_e_W1_SKI_100->Scale(1.0 / h_e_W1_SKI_100->Integral());
+
     h_e_W2_Nom->Scale(1.0 / h_e_W2_Nom->Integral());
     h_e_W2_CR->Scale(1.0 / h_e_W2_CR->Integral());
+    h_e_W2_SKI_100->Scale(1.0 / h_e_W2_SKI_100->Integral());
 
     // ***************** Reconstructed Jets *****************
     h_p_reco_Jet1_Nom->Scale(1.0 / h_p_reco_Jet1_Nom->Integral());
     h_p_reco_Jet1_CR->Scale(1.0 / h_p_reco_Jet1_CR->Integral());
+    h_p_reco_Jet1_SKI_100->Scale(1.0 / h_p_reco_Jet1_SKI_100->Integral());
+
     h_p_reco_Jet2_Nom->Scale(1.0 / h_p_reco_Jet2_Nom->Integral());
     h_p_reco_Jet2_CR->Scale(1.0 / h_p_reco_Jet2_CR->Integral());
+    h_p_reco_Jet2_SKI_100->Scale(1.0 / h_p_reco_Jet2_SKI_100->Integral());
+
     h_p_reco_Jet3_Nom->Scale(1.0 / h_p_reco_Jet3_Nom->Integral());
     h_p_reco_Jet3_CR->Scale(1.0 / h_p_reco_Jet3_CR->Integral());
+    h_p_reco_Jet3_SKI_100->Scale(1.0 / h_p_reco_Jet3_SKI_100->Integral());
+
     h_p_reco_Jet4_Nom->Scale(1.0 / h_p_reco_Jet4_Nom->Integral());
     h_p_reco_Jet4_CR->Scale(1.0 / h_p_reco_Jet4_CR->Integral());
+    h_p_reco_Jet4_SKI_100->Scale(1.0 / h_p_reco_Jet4_SKI_100->Integral());
 
     h_theta_Jet1_Jet2_Nom->Scale(1.0 / h_theta_Jet1_Jet2_Nom->Integral());
     h_theta_Jet1_Jet2_CR->Scale(1.0 / h_theta_Jet1_Jet2_CR->Integral());
+    h_theta_Jet1_Jet2_SKI_100->Scale(1.0 / h_theta_Jet1_Jet2_SKI_100->Integral());
+
     h_theta_Jet3_Jet4_Nom->Scale(1.0 / h_theta_Jet3_Jet4_Nom->Integral());
     h_theta_Jet3_Jet4_CR->Scale(1.0 / h_theta_Jet3_Jet4_CR->Integral());
+    h_theta_Jet3_Jet4_SKI_100->Scale(1.0 / h_theta_Jet3_Jet4_SKI_100->Integral());
 
     h_phi_Jet1_Jet2_Nom->Scale(1.0 / h_phi_Jet1_Jet2_Nom->Integral());
     h_phi_Jet1_Jet2_CR->Scale(1.0 / h_phi_Jet1_Jet2_CR->Integral());
+    h_phi_Jet1_Jet2_SKI_100->Scale(1.0 / h_phi_Jet1_Jet2_SKI_100->Integral());
+
     h_phi_Jet3_Jet4_Nom->Scale(1.0 / h_phi_Jet3_Jet4_Nom->Integral());
     h_phi_Jet3_Jet4_CR->Scale(1.0 / h_phi_Jet3_Jet4_CR->Integral());
+    h_phi_Jet3_Jet4_SKI_100->Scale(1.0 / h_phi_Jet3_Jet4_SKI_100->Integral());
 
     h_chi_Jet1_Jet2_Nom->Scale(1.0 / h_chi_Jet1_Jet2_Nom->Integral());
     h_chi_Jet1_Jet2_CR->Scale(1.0 / h_chi_Jet1_Jet2_CR->Integral());
+    h_chi_Jet1_Jet2_SKI_100->Scale(1.0 / h_chi_Jet1_Jet2_SKI_100->Integral());
+
     h_chi_Jet3_Jet4_Nom->Scale(1.0 / h_chi_Jet3_Jet4_Nom->Integral());
     h_chi_Jet3_Jet4_CR->Scale(1.0 / h_chi_Jet3_Jet4_CR->Integral());
+    h_chi_Jet3_Jet4_SKI_100->Scale(1.0 / h_chi_Jet3_Jet4_SKI_100->Integral());
 
      // Ratio to Nominal
     TH1F *r_p_jet_const_1_CR = (TH1F*)h_p_jet_const_1_CR->Clone("r_p_jet_const_1_CR");   r_p_jet_const_1_CR->Divide(h_p_jet_const_1_Nom);
+    TH1F *r_p_jet_const_1_SKI_100 = (TH1F*)h_p_jet_const_1_SKI_100->Clone("r_p_jet_const_1_SKI_100");   r_p_jet_const_1_SKI_100->Divide(h_p_jet_const_1_Nom);
+
     TH1F *r_p_jet_const_2_CR = (TH1F*)h_p_jet_const_2_CR->Clone("r_p_jet_const_2_CR");   r_p_jet_const_2_CR->Divide(h_p_jet_const_2_Nom);
+    TH1F *r_p_jet_const_2_SKI_100 = (TH1F*)h_p_jet_const_2_SKI_100->Clone("r_p_jet_const_2_SKI_100");   r_p_jet_const_2_SKI_100->Divide(h_p_jet_const_2_Nom);
+
     TH1F *r_theta_CR = (TH1F*)h_theta_CR->Clone("r_theta_CR");   r_theta_CR->Divide(h_theta_Nom);
+    TH1F *r_theta_SKI_100 = (TH1F*)h_theta_SKI_100->Clone("r_theta_SKI_100");   r_theta_SKI_100->Divide(h_theta_Nom);
+
     TH1F *r_phi_CR = (TH1F*)h_phi_CR->Clone("r_phi_CR");   r_phi_CR->Divide(h_phi_Nom);
+    TH1F *r_phi_SKI_100 = (TH1F*)h_phi_SKI_100->Clone("r_phi_SKI_100");   r_phi_SKI_100->Divide(h_phi_Nom);
+
     TH1F *r_chi_CR = (TH1F*)h_chi_CR->Clone("r_chi_CR");   r_chi_CR->Divide(h_chi_Nom);
+    TH1F *r_chi_SKI_100 = (TH1F*)h_chi_SKI_100->Clone("r_chi_SKI_100");   r_chi_SKI_100->Divide(h_chi_Nom);
+
     TH1F *r_delR_CR = (TH1F*)h_delR_CR->Clone("r_delR_CR");   r_delR_CR->Divide(h_delR_Nom);
     TH1D *r_eec_CR = (TH1D*)h_eec_CR->Clone("r_eec_CR");     r_eec_CR->Divide(h_eec_Nom);
 
     TH1F *r_mass_W1_CR = (TH1F*)h_mass_W1_CR->Clone("r_mass_W1_CR");  r_mass_W1_CR->Divide(h_mass_W1_Nom);
+    TH1F *r_mass_W1_SKI_100 = (TH1F*)h_mass_W1_SKI_100->Clone("r_mass_W1_SKI_100");  r_mass_W1_SKI_100->Divide(h_mass_W1_Nom);
+
     TH1F *r_mass_W2_CR = (TH1F*)h_mass_W2_CR->Clone("r_mass_W2_CR");  r_mass_W2_CR->Divide(h_mass_W2_Nom);
+    TH1F *r_mass_W2_SKI_100 = (TH1F*)h_mass_W2_SKI_100->Clone("r_mass_W2_SKI_100");  r_mass_W2_SKI_100->Divide(h_mass_W2_Nom);
+
     TH1F *r_p_W1_CR = (TH1F*)h_p_W1_CR->Clone("r_p_W1_CR");  r_p_W1_CR->Divide(h_p_W1_Nom);
+    TH1F *r_p_W1_SKI_100 = (TH1F*)h_p_W1_SKI_100->Clone("r_p_W1_SKI_100");  r_p_W1_SKI_100->Divide(h_p_W1_Nom);
+
     TH1F *r_p_W2_CR = (TH1F*)h_p_W2_CR->Clone("r_p_W2_CR");  r_p_W2_CR->Divide(h_p_W2_Nom);
+    TH1F *r_p_W2_SKI_100 = (TH1F*)h_p_W2_SKI_100->Clone("r_p_W2_SKI_100");  r_p_W2_SKI_100->Divide(h_p_W2_Nom);
+
     TH1F *r_e_W1_CR = (TH1F*)h_e_W1_CR->Clone("r_e_W1_CR");  r_e_W1_CR->Divide(h_e_W1_Nom);
+    TH1F *r_e_W1_SKI_100 = (TH1F*)h_e_W1_SKI_100->Clone("r_e_W1_SKI_100");  r_e_W1_SKI_100->Divide(h_e_W1_Nom);
+
     TH1F *r_e_W2_CR = (TH1F*)h_e_W2_CR->Clone("r_e_W2_CR");  r_e_W2_CR->Divide(h_e_W2_Nom);
+    TH1F *r_e_W2_SKI_100 = (TH1F*)h_e_W2_SKI_100->Clone("r_e_W2_SKI_100");  r_e_W2_SKI_100->Divide(h_e_W2_Nom);
 
     TH1F *r_p_reco_Jet1_CR = (TH1F*)h_p_reco_Jet1_CR->Clone("r_p_reco_Jet1_CR");  r_p_reco_Jet1_CR->Divide(h_p_reco_Jet1_Nom);
+    TH1F *r_p_reco_Jet1_SKI_100 = (TH1F*)h_p_reco_Jet1_SKI_100->Clone("r_p_reco_Jet1_SKI_100");  r_p_reco_Jet1_SKI_100->Divide(h_p_reco_Jet1_Nom);
+
     TH1F *r_p_reco_Jet2_CR = (TH1F*)h_p_reco_Jet2_CR->Clone("r_p_reco_Jet2_CR");  r_p_reco_Jet2_CR->Divide(h_p_reco_Jet2_Nom);
+    TH1F *r_p_reco_Jet2_SKI_100 = (TH1F*)h_p_reco_Jet2_SKI_100->Clone("r_p_reco_Jet2_SKI_100");  r_p_reco_Jet2_SKI_100->Divide(h_p_reco_Jet2_Nom);
+
     TH1F *r_p_reco_Jet3_CR = (TH1F*)h_p_reco_Jet3_CR->Clone("r_p_reco_Jet3_CR");  r_p_reco_Jet3_CR->Divide(h_p_reco_Jet3_Nom);
+    TH1F *r_p_reco_Jet3_SKI_100 = (TH1F*)h_p_reco_Jet3_SKI_100->Clone("r_p_reco_Jet3_SKI_100");  r_p_reco_Jet3_SKI_100->Divide(h_p_reco_Jet3_Nom);
+
     TH1F *r_p_reco_Jet4_CR = (TH1F*)h_p_reco_Jet4_CR->Clone("r_p_reco_Jet4_CR");  r_p_reco_Jet4_CR->Divide(h_p_reco_Jet4_Nom);
+    TH1F *r_p_reco_Jet4_SKI_100 = (TH1F*)h_p_reco_Jet4_SKI_100->Clone("r_p_reco_Jet4_SKI_100");  r_p_reco_Jet4_SKI_100->Divide(h_p_reco_Jet4_Nom);
+
     TH1F *r_theta_Jet1_Jet2_CR = (TH1F*)h_theta_Jet1_Jet2_CR->Clone("r_theta_Jet1_Jet2_CR"); r_theta_Jet1_Jet2_CR->Divide(h_theta_Jet1_Jet2_Nom);
+    TH1F *r_theta_Jet1_Jet2_SKI_100 = (TH1F*)h_theta_Jet1_Jet2_SKI_100->Clone("r_theta_Jet1_Jet2_SKI_100"); r_theta_Jet1_Jet2_SKI_100->Divide(h_theta_Jet1_Jet2_Nom);
+
     TH1F *r_theta_Jet3_Jet4_CR = (TH1F*)h_theta_Jet3_Jet4_CR->Clone("r_theta_Jet3_Jet4_CR"); r_theta_Jet3_Jet4_CR->Divide(h_theta_Jet3_Jet4_Nom);
+    TH1F *r_theta_Jet3_Jet4_SKI_100 = (TH1F*)h_theta_Jet3_Jet4_SKI_100->Clone("r_theta_Jet3_Jet4_SKI_100"); r_theta_Jet3_Jet4_SKI_100->Divide(h_theta_Jet3_Jet4_Nom);
+
     TH1F *r_phi_Jet1_Jet2_CR = (TH1F*)h_phi_Jet1_Jet2_CR->Clone("r_phi_Jet1_Jet2_CR"); r_phi_Jet1_Jet2_CR->Divide(h_phi_Jet1_Jet2_Nom);
+    TH1F *r_phi_Jet1_Jet2_SKI_100 = (TH1F*)h_phi_Jet1_Jet2_SKI_100->Clone("r_phi_Jet1_Jet2_SKI_100"); r_phi_Jet1_Jet2_SKI_100->Divide(h_phi_Jet1_Jet2_Nom);
+
     TH1F *r_phi_Jet3_Jet4_CR = (TH1F*)h_phi_Jet3_Jet4_CR->Clone("r_phi_Jet3_Jet4_CR"); r_phi_Jet3_Jet4_CR->Divide(h_phi_Jet3_Jet4_Nom);
+    TH1F *r_phi_Jet3_Jet4_SKI_100 = (TH1F*)h_phi_Jet3_Jet4_SKI_100->Clone("r_phi_Jet3_Jet4_SKI_100"); r_phi_Jet3_Jet4_SKI_100->Divide(h_phi_Jet3_Jet4_Nom);
+
     TH1F *r_chi_Jet1_Jet2_CR = (TH1F*)h_chi_Jet1_Jet2_CR->Clone("r_chi_Jet1_Jet2_CR"); r_chi_Jet1_Jet2_CR->Divide(h_chi_Jet1_Jet2_Nom);
+    TH1F *r_chi_Jet1_Jet2_SKI_100 = (TH1F*)h_chi_Jet1_Jet2_SKI_100->Clone("r_chi_Jet1_Jet2_SKI_100"); r_chi_Jet1_Jet2_SKI_100->Divide(h_chi_Jet1_Jet2_Nom);
+
     TH1F *r_chi_Jet3_Jet4_CR = (TH1F*)h_chi_Jet3_Jet4_CR->Clone("r_chi_Jet3_Jet4_CR"); r_chi_Jet3_Jet4_CR->Divide(h_chi_Jet3_Jet4_Nom);
+    TH1F *r_chi_Jet3_Jet4_SKI_100 = (TH1F*)h_chi_Jet3_Jet4_SKI_100->Clone("r_chi_Jet3_Jet4_SKI_100"); r_chi_Jet3_Jet4_SKI_100->Divide(h_chi_Jet3_Jet4_Nom);
     
     // **************************************** Jet Constituent Plots ****************************************
     TCanvas *c_p_jet_const_1 = new TCanvas("c_p_jet_const_1", "comparison", 1000, 800);
