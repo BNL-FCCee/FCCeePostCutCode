@@ -32,7 +32,6 @@ void plot() {
     for (int i = 0; i <= nBins; ++i)
         linearBins_2[i] = xMin_lin_2 + i * linearBinWidth_2;
 
-
     // Logarithmic Bins
     double logMin = std::log10(xMin);
     double logMax = std::log10(xMax);
@@ -69,30 +68,45 @@ void plot() {
     // Histograms
     TH1F *h_p_jet_const_1_Nom = new TH1F("h_p_jet_const_1_Nom", "Jet constituent momentum", totalBins, binsArray);
     TH1F *h_p_jet_const_1_CR = new TH1F("h_p_jet_const_1_CR", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_1_SKI_kl5 = new TH1F("h_p_jet_const_1_SKI_kl5", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_1_SKI_kl50 = new TH1F("h_p_jet_const_1_SKI_kl50", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_1_SKI_kl100 = new TH1F("h_p_jet_const_1_SKI_kl100", "", totalBins, binsArray);
 
     TH1F *h_p_jet_const_2_Nom = new TH1F("h_p_jet_const_2_Nom", "Jet constituent momentum", totalBins, binsArray);
     TH1F *h_p_jet_const_2_CR = new TH1F("h_p_jet_const_2_CR", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_2_SKI_kl5 = new TH1F("h_p_jet_const_2_SKI_kl5", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_2_SKI_kl50 = new TH1F("h_p_jet_const_2_SKI_kl50", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_2_SKI_kl100 = new TH1F("h_p_jet_const_2_SKI_kl100", "", totalBins, binsArray);
 
     TH1F *h_theta_Nom = new TH1F("h_theta_Nom", "#Delta#theta;#theta;Normalized Events", nBins, logBins);
     TH1F *h_theta_CR = new TH1F("h_theta_CR",  "", nBins, logBins);
+    TH1F *h_theta_SKI_kl5 = new TH1F("h_theta_SKI_kl5",  "", nBins, logBins);
+    TH1F *h_theta_SKI_kl50 = new TH1F("h_theta_SKI_kl50",  "", nBins, logBins);
+    TH1F *h_theta_SKI_kl100 = new TH1F("h_theta_SKI_kl100",  "", nBins, logBins);
 
     TH1F *h_phi_Nom = new TH1F("h_phi_Nom", "#Delta#phi;Normalized Events", nBins, logBins);
     TH1F *h_phi_CR = new TH1F("h_phi_CR",  "", nBins, logBins);
+    TH1F *h_phi_SKI_kl5 = new TH1F("h_phi_SKI_kl5",  "", nBins, logBins);
+    TH1F *h_phi_SKI_kl50 = new TH1F("h_phi_SKI_kl50",  "", nBins, logBins);
+    TH1F *h_phi_SKI_kl100 = new TH1F("h_phi_SKI_kl100",  "", nBins, logBins);
 
     TH1F *h_chi_Nom = new TH1F("h_chi_Nom", "#Delta#chi;Normalized Events", nBins, logBins);
     TH1F *h_chi_CR = new TH1F("h_chi_CR",  "", nBins, logBins);
+    TH1F *h_chi_SKI_kl5 = new TH1F("h_chi_SKI_kl5",  "", nBins, logBins);
+    TH1F *h_chi_SKI_kl50 = new TH1F("h_chi_SKI_kl50",  "", nBins, logBins);
+    TH1F *h_chi_SKI_kl100 = new TH1F("h_chi_SKI_kl100",  "", nBins, logBins);
 
-    TH1F *h_delR_Nom = new TH1F("h_delR_Nom", "#deltaR- Nominal", nBins, linearBins);
-    TH1F *h_delR_CR = new TH1F("h_delR_CR", "", nBins, linearBins);
+    // TH1F *h_delR_Nom = new TH1F("h_delR_Nom", "#deltaR- Nominal", nBins, linearBins);
+    // TH1F *h_delR_CR = new TH1F("h_delR_CR", "", nBins, linearBins);
 
-    TH1F *h_eec_theta_Nom = new TH1F("h_eec_theta_Nom", "Change Title;Normalized Events", nBins, logBins);
-    TH1F *h_eec_theta_CR = new TH1F("h_eec_theta_CR",  "", nBins, logBins);
+    // TH1F *h_eec_theta_Nom = new TH1F("h_eec_theta_Nom", "Change Title;Normalized Events", nBins, logBins);
+    // TH1F *h_eec_theta_CR = new TH1F("h_eec_theta_CR",  "", nBins, logBins);
 
-    TH1D* h_cos_theta_Nom = new TH1D("h_cos_theta_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
-    TH1D* h_cos_theta_CR = new TH1D("h_cos_theta_CR", "Cos(theta) - noCR", nBins, linearBins_2);
+    // TH1D* h_cos_theta_Nom = new TH1D("h_cos_theta_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
+    // TH1D* h_cos_theta_CR = new TH1D("h_cos_theta_CR", "Cos(theta) - noCR", nBins, linearBins_2);
 
-    TH1D* h_eec_Nom = new TH1D("h_eec_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
-    TH1D* h_eec_CR = new TH1D("h_eec_CR", "Cos(theta) - noCR", nBins, linearBins_2);
+    // TH1D* h_eec_Nom = new TH1D("h_eec_Nom", "Cos(theta) - Nominal", nBins, linearBins_2);
+    // TH1D* h_eec_CR = new TH1D("h_eec_CR", "Cos(theta) - noCR", nBins, linearBins_2);
 
     // ************************ Reconstructed W Bosons ************************
     TH1F* h_mass_W1_Nom = new TH1F("h_mass_W1_Nom", "Mass", nBins, linearBins);
