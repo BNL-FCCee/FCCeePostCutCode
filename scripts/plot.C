@@ -66,13 +66,13 @@ void plot() {
 
     // Create histograms
     // Histograms
-    TH1F *h_p_jet_const_1_Nom = new TH1F("h_p_jet_const_1_Nom", "Jet constituent momentum", totalBins, binsArray);
-    TH1F *h_p_jet_const_1_CR = new TH1F("h_p_jet_const_1_CR", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_1_SKI_100 = new TH1F("h_p_jet_const_1_SKI_100", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_1_Nom = new TH1F("h_p_jet_const_1_Nom", "Jet constituent momentum", nBins, linearBins);
+    TH1F *h_p_jet_const_1_CR = new TH1F("h_p_jet_const_1_CR", "", nBins, linearBins);
+    TH1F *h_p_jet_const_1_SKI_100 = new TH1F("h_p_jet_const_1_SKI_100", "", nBins, linearBins);
 
-    TH1F *h_p_jet_const_2_Nom = new TH1F("h_p_jet_const_2_Nom", "Jet constituent momentum", totalBins, binsArray);
-    TH1F *h_p_jet_const_2_CR = new TH1F("h_p_jet_const_2_CR", "", totalBins, binsArray);
-    TH1F *h_p_jet_const_2_SKI_100 = new TH1F("h_p_jet_const_2_SKI_100", "", totalBins, binsArray);
+    TH1F *h_p_jet_const_2_Nom = new TH1F("h_p_jet_const_2_Nom", "Jet constituent momentum", nBins, linearBins);
+    TH1F *h_p_jet_const_2_CR = new TH1F("h_p_jet_const_2_CR", "", nBins, linearBins);
+    TH1F *h_p_jet_const_2_SKI_100 = new TH1F("h_p_jet_const_2_SKI_100", "", nBins, linearBins);
 
     TH1F *h_theta_Nom = new TH1F("h_theta_Nom", "#Delta#theta;#theta;Normalized Events", nBins, logBins);
     TH1F *h_theta_CR = new TH1F("h_theta_CR",  "", nBins, logBins);
@@ -1132,22 +1132,30 @@ void plot() {
 
     h_p_reco_Jet1_Nom->Draw("HIST");
     h_p_reco_Jet1_CR->Draw("HIST SAME");
+    h_p_reco_Jet1_SKI_100->Draw("HIST SAME");
     h_p_reco_Jet2_Nom->Draw("HIST SAME");
     h_p_reco_Jet2_CR->Draw("HIST SAME");
+    h_p_reco_Jet2_SKI_100->Draw("HIST SAME");
     h_p_reco_Jet3_Nom->Draw("HIST SAME");
     h_p_reco_Jet3_CR->Draw("HIST SAME");
+    h_p_reco_Jet3_SKI_100->Draw("HIST SAME");
     h_p_reco_Jet4_Nom->Draw("HIST SAME");
     h_p_reco_Jet4_CR->Draw("HIST SAME");
+    h_p_reco_Jet4_SKI_100->Draw("HIST SAME");
 
     auto leg_reco_jets = new TLegend(0.725, 0.48, 0.88, 0.88);
     leg_reco_jets->AddEntry(h_p_reco_Jet1_Nom,  "Jet1- Nom", "l");
     leg_reco_jets->AddEntry(h_p_reco_Jet1_CR,   "Jet1- CR",   "l");
+    leg_reco_jets->AddEntry(h_p_reco_Jet1_SKI_100,   "Jet1- SKI, kl=100",   "l");
     leg_reco_jets->AddEntry(h_p_reco_Jet2_Nom,  "Jet2- Nom", "l");
     leg_reco_jets->AddEntry(h_p_reco_Jet2_CR,   "Jet2- CR",   "l");
+    leg_reco_jets->AddEntry(h_p_reco_Jet2_SKI_100,   "Jet2- SKI, kl=100",   "l");
     leg_reco_jets->AddEntry(h_p_reco_Jet3_Nom,  "Jet3- Nom", "l");
     leg_reco_jets->AddEntry(h_p_reco_Jet3_CR,   "Jet3- CR",   "l");
+    leg_reco_jets->AddEntry(h_p_reco_Jet3_SKI_100,   "Jet3- SKI, kl=100",   "l");
     leg_reco_jets->AddEntry(h_p_reco_Jet4_Nom,  "Jet4- Nom", "l");
     leg_reco_jets->AddEntry(h_p_reco_Jet4_CR,   "Jet4- CR",   "l");
+    leg_reco_jets->AddEntry(h_p_reco_Jet4_SKI_100,   "Jet4- SKI, kl=100",   "l");
     leg_reco_jets->Draw();
 
     // Ratio plot
@@ -1157,15 +1165,30 @@ void plot() {
     r_p_reco_Jet1_CR->SetLineColor(kBlack);
     r_p_reco_Jet1_CR->Draw("HIST");
     r_p_reco_Jet1_CR->SetLineWidth(3);
+    r_p_reco_Jet1_SKI_100->SetLineColor(kViolet+1);
+    r_p_reco_Jet1_SKI_100->Draw("HIST SAME");
+    r_p_reco_Jet1_SKI_100->SetLineWidth(3);
+
     r_p_reco_Jet2_CR->SetLineColor(kRed);
     r_p_reco_Jet2_CR->Draw("HIST SAME");
     r_p_reco_Jet2_CR->SetLineWidth(3);
+    r_p_reco_Jet2_SKI_100->SetLineColor(kMagenta-4);
+    r_p_reco_Jet2_SKI_100->Draw("HIST SAME");
+    r_p_reco_Jet2_SKI_100->SetLineWidth(3);
+
     r_p_reco_Jet3_CR->SetLineColor(kBlue);
     r_p_reco_Jet3_CR->Draw("HIST SAME");
     r_p_reco_Jet3_CR->SetLineWidth(3);
+    r_p_reco_Jet3_SKI_100->SetLineColor(kGray+2);
+    r_p_reco_Jet3_SKI_100->Draw("HIST SAME");
+    r_p_reco_Jet3_SKI_100->SetLineWidth(3);
+
     r_p_reco_Jet4_CR->SetLineColor(kGreen);
     r_p_reco_Jet4_CR->Draw("HIST SAME");
     r_p_reco_Jet4_CR->SetLineWidth(3);
+    r_p_reco_Jet4_SKI_100->SetLineColor(kOrange+7);
+    r_p_reco_Jet4_SKI_100->Draw("HIST SAME");
+    r_p_reco_Jet4_SKI_100->SetLineWidth(3);
 
     r_p_reco_Jet1_CR->GetXaxis()->SetTitle("Momenta (GeV/c)"); // Axis titles
     r_p_reco_Jet1_CR->GetYaxis()->SetTitle("ratio");
@@ -1180,10 +1203,14 @@ void plot() {
     r_p_reco_Jet1_CR->GetYaxis()->SetTitleOffset(0.55);
 
     auto leg_ratio_reco_jets = new TLegend(0.68, 0.68, 0.88, 0.88);
-    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet1_CR, "Jet1- Momenta Ratio", "l");
-    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet2_CR, "Jet2- Momenta Ratio",   "l");
-    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet3_CR, "Jet3- Momenta Ratio", "l");
-    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet4_CR, "Jet4- Momenta Ratio",   "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet1_CR, "Jet1- noCR", "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet1_SKI_100, "Jet1- SKI, kl=100", "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet2_CR, "Jet2- noCR",   "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet2_SKI_100, "Jet2- SKI, kl=100",   "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet3_CR, "Jet3- noCR", "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet3_SKI_100, "Jet3- SKI, kl=100", "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet4_CR, "Jet4- noCR",   "l");
+    leg_ratio_reco_jets->AddEntry(r_p_reco_Jet4_SKI_100, "Jet4- SKI, kl=100",   "l");
     leg_ratio_reco_jets->Draw();
 
 
@@ -1216,19 +1243,27 @@ void plot() {
 
     h_theta_Jet1_Jet2_Nom->SetLineColor(kBlack); h_theta_Jet1_Jet2_Nom->SetLineWidth(3);
     h_theta_Jet1_Jet2_CR->SetLineColor(kRed); h_theta_Jet1_Jet2_CR->SetLineWidth(3);
+    h_theta_Jet1_Jet2_SKI_100->SetLineColor(kViolet+1); h_theta_Jet1_Jet2_SKI_100->SetLineWidth(3);
+
     h_theta_Jet3_Jet4_Nom->SetLineColor(kBlue); h_theta_Jet3_Jet4_Nom->SetLineWidth(3);
     h_theta_Jet3_Jet4_CR->SetLineColor(kGreen); h_theta_Jet3_Jet4_CR->SetLineWidth(3);
+    h_theta_Jet3_Jet4_SKI_100->SetLineColor(kPink-8); h_theta_Jet3_Jet4_SKI_100->SetLineWidth(3);
+
 
     h_theta_Jet1_Jet2_Nom->Draw("HIST");
     h_theta_Jet1_Jet2_CR->Draw("HIST SAME");
+    h_theta_Jet1_Jet2_SKI_100->Draw("HIST SAME");
     h_theta_Jet3_Jet4_Nom->Draw("HIST SAME");
     h_theta_Jet3_Jet4_CR->Draw("HIST SAME");
+    h_theta_Jet3_Jet4_SKI_100->Draw("HIST SAME");
 
     auto leg_theta_reco_jets = new TLegend(0.15, 0.73, 0.35, 0.88);
     leg_theta_reco_jets->AddEntry(h_theta_Jet1_Jet2_Nom,  "W1 Jets- Nom", "l");
     leg_theta_reco_jets->AddEntry(h_theta_Jet1_Jet2_CR,   "W1 Jets- CR",   "l");
+    leg_theta_reco_jets->AddEntry(h_theta_Jet1_Jet2_SKI_100,   "W1 Jets- SKI, kl=100",   "l");
     leg_theta_reco_jets->AddEntry(h_theta_Jet3_Jet4_Nom,  "W2 Jets- Nom", "l");
     leg_theta_reco_jets->AddEntry(h_theta_Jet3_Jet4_CR,   "W2 Jets- CR",   "l");
+    leg_theta_reco_jets->AddEntry(h_theta_Jet3_Jet4_SKI_100,   "W2 Jets- SKI, kl=100",   "l");
     leg_theta_reco_jets->Draw();
 
     // Ratio plot
@@ -1238,9 +1273,15 @@ void plot() {
     r_theta_Jet1_Jet2_CR->SetLineColor(kBlack);
     r_theta_Jet1_Jet2_CR->Draw("HIST");
     r_theta_Jet1_Jet2_CR->SetLineWidth(3);
+    r_theta_Jet1_Jet2_SKI_100->SetLineColor(kBlue);
+    r_theta_Jet1_Jet2_SKI_100->Draw("HIST");
+    r_theta_Jet1_Jet2_SKI_100->SetLineWidth(3);
     r_theta_Jet3_Jet4_CR->SetLineColor(kRed);
     r_theta_Jet3_Jet4_CR->Draw("HIST SAME");
     r_theta_Jet3_Jet4_CR->SetLineWidth(3);
+    r_theta_Jet3_Jet4_SKI_100->SetLineColor(kViolet+1);
+    r_theta_Jet3_Jet4_SKI_100->Draw("HIST SAME");
+    r_theta_Jet3_Jet4_SKI_100->SetLineWidth(3);
 
     r_theta_Jet1_Jet2_CR->GetXaxis()->SetTitle("#theta (radians)"); // Axis titles
     r_theta_Jet1_Jet2_CR->GetYaxis()->SetTitle("ratio");
@@ -1255,8 +1296,10 @@ void plot() {
     r_theta_Jet1_Jet2_CR->GetYaxis()->SetTitleOffset(0.55);
 
     auto leg_ratio_theta_reco_jets = new TLegend(0.15, 0.73, 0.35, 0.88);
-    leg_ratio_theta_reco_jets->AddEntry(r_theta_Jet1_Jet2_CR,  "#theta W1 Jets", "l");
-    leg_ratio_theta_reco_jets->AddEntry(r_theta_Jet3_Jet4_CR,   "#theta W2 Jets",   "l");
+    leg_ratio_theta_reco_jets->AddEntry(r_theta_Jet1_Jet2_CR,  "W1 Jets- CR", "l");
+    leg_ratio_theta_reco_jets->AddEntry(r_theta_Jet1_Jet2_SKI_100,  "W1 Jets- SKI, kl=100", "l");
+    leg_ratio_theta_reco_jets->AddEntry(r_theta_Jet3_Jet4_CR,   "W2 Jets- CR",   "l");
+    leg_ratio_theta_reco_jets->AddEntry(r_theta_Jet3_Jet4_SKI_100,   "W2 Jets- SKI, kl=100",   "l");
     leg_ratio_theta_reco_jets->Draw();
 
 
@@ -1289,19 +1332,26 @@ void plot() {
 
     h_phi_Jet1_Jet2_Nom->SetLineColor(kBlack); h_phi_Jet1_Jet2_Nom->SetLineWidth(3);
     h_phi_Jet1_Jet2_CR->SetLineColor(kRed); h_phi_Jet1_Jet2_CR->SetLineWidth(3);
+    h_phi_Jet1_Jet2_SKI_100->SetLineColor(kViolet+1); h_phi_Jet1_Jet2_SKI_100->SetLineWidth(3);
+
     h_phi_Jet3_Jet4_Nom->SetLineColor(kBlue); h_phi_Jet3_Jet4_Nom->SetLineWidth(3);
     h_phi_Jet3_Jet4_CR->SetLineColor(kGreen); h_phi_Jet3_Jet4_CR->SetLineWidth(3);
+    h_phi_Jet3_Jet4_SKI_100->SetLineColor(kPink-8); h_phi_Jet3_Jet4_SKI_100->SetLineWidth(3);
 
     h_phi_Jet1_Jet2_Nom->Draw("HIST");
     h_phi_Jet1_Jet2_CR->Draw("HIST SAME");
+    h_phi_Jet1_Jet2_SKI_100->Draw("HIST SAME");
     h_phi_Jet3_Jet4_Nom->Draw("HIST SAME");
     h_phi_Jet3_Jet4_CR->Draw("HIST SAME");
+    h_phi_Jet3_Jet4_SKI_100->Draw("HIST SAME");
 
     auto leg_phi_reco_jets = new TLegend(0.15, 0.73, 0.35, 0.88);
     leg_phi_reco_jets->AddEntry(h_phi_Jet1_Jet2_Nom,  "W1 Jets- Nom", "l");
     leg_phi_reco_jets->AddEntry(h_phi_Jet1_Jet2_CR,   "W1 Jets- CR",   "l");
+    leg_phi_reco_jets->AddEntry(h_phi_Jet1_Jet2_SKI_100,   "W1 Jets- SKI, kl=100",   "l");
     leg_phi_reco_jets->AddEntry(h_phi_Jet3_Jet4_Nom,  "W2 Jets- Nom", "l");
     leg_phi_reco_jets->AddEntry(h_phi_Jet3_Jet4_CR,   "W2 Jets- CR",   "l");
+    leg_phi_reco_jets->AddEntry(h_phi_Jet3_Jet4_SKI_100,   "W2 Jets- SKI, kl=100",   "l");
     leg_phi_reco_jets->Draw();
 
     // Ratio plot
@@ -1311,9 +1361,15 @@ void plot() {
     r_phi_Jet1_Jet2_CR->SetLineColor(kBlack);
     r_phi_Jet1_Jet2_CR->Draw("HIST");
     r_phi_Jet1_Jet2_CR->SetLineWidth(3);
+    r_phi_Jet1_Jet2_SKI_100->SetLineColor(kBlue);
+    r_phi_Jet1_Jet2_SKI_100->Draw("HIST");
+    r_phi_Jet1_Jet2_SKI_100->SetLineWidth(3);
     r_phi_Jet3_Jet4_CR->SetLineColor(kRed);
     r_phi_Jet3_Jet4_CR->Draw("HIST SAME");
     r_phi_Jet3_Jet4_CR->SetLineWidth(3);
+    r_phi_Jet3_Jet4_SKI_100->SetLineColor(kViolet+1);
+    r_phi_Jet3_Jet4_SKI_100->Draw("HIST SAME");
+    r_phi_Jet3_Jet4_SKI_100->SetLineWidth(3);
 
     r_phi_Jet1_Jet2_CR->GetXaxis()->SetTitle("#phi (radians)"); // Axis titles
     r_phi_Jet1_Jet2_CR->GetYaxis()->SetTitle("ratio");
@@ -1328,8 +1384,10 @@ void plot() {
     r_phi_Jet1_Jet2_CR->GetYaxis()->SetTitleOffset(0.55);
 
     auto leg_ratio_phi_reco_jets = new TLegend(0.725, 0.73, 0.88, 0.88);
-    leg_ratio_phi_reco_jets->AddEntry(r_phi_Jet1_Jet2_CR,  "#phi W1 Jets", "l");
-    leg_ratio_phi_reco_jets->AddEntry(r_phi_Jet3_Jet4_CR,   "#phi W2 Jets",   "l");
+    leg_ratio_phi_reco_jets->AddEntry(r_phi_Jet1_Jet2_CR,   "W1 Jets- CR",   "l");
+    leg_ratio_phi_reco_jets->AddEntry(r_phi_Jet1_Jet2_SKI_100,   "W1 Jets- SKI, kl=100",   "l");
+    leg_ratio_phi_reco_jets->AddEntry(r_phi_Jet3_Jet4_CR,   "W2 Jets- CR",   "l");
+    leg_ratio_phi_reco_jets->AddEntry(r_phi_Jet3_Jet4_SKI_100,   "W2 Jets- SKI, kl=100",   "l");
     leg_ratio_phi_reco_jets->Draw();
 
 
@@ -1362,19 +1420,26 @@ void plot() {
 
     h_chi_Jet1_Jet2_Nom->SetLineColor(kBlack); h_chi_Jet1_Jet2_Nom->SetLineWidth(3);
     h_chi_Jet1_Jet2_CR->SetLineColor(kRed); h_chi_Jet1_Jet2_CR->SetLineWidth(3);
+    h_chi_Jet1_Jet2_SKI_100->SetLineColor(kViolet+1); h_chi_Jet1_Jet2_SKI_100->SetLineWidth(3);
+
     h_chi_Jet3_Jet4_Nom->SetLineColor(kBlue); h_chi_Jet3_Jet4_Nom->SetLineWidth(3);
     h_chi_Jet3_Jet4_CR->SetLineColor(kGreen); h_chi_Jet3_Jet4_CR->SetLineWidth(3);
+    h_chi_Jet3_Jet4_SKI_100->SetLineColor(kPink-8); h_chi_Jet3_Jet4_SKI_100->SetLineWidth(3);
 
     h_chi_Jet1_Jet2_Nom->Draw("HIST");
     h_chi_Jet1_Jet2_CR->Draw("HIST SAME");
+    h_chi_Jet1_Jet2_SKI_100->Draw("HIST SAME");
     h_chi_Jet3_Jet4_Nom->Draw("HIST SAME");
     h_chi_Jet3_Jet4_CR->Draw("HIST SAME");
+    h_chi_Jet3_Jet4_SKI_100->Draw("HIST SAME");
 
-    auto leg_chi_reco_jets = new TLegend(0.15, 0.7, 0.35, 0.88);
-    leg_chi_reco_jets->AddEntry(h_chi_Jet1_Jet2_Nom,  "#chi W1 Jets- Nom", "l");
-    leg_chi_reco_jets->AddEntry(h_chi_Jet1_Jet2_CR,   "#chi W1 Jets- no CR", "l");
-    leg_chi_reco_jets->AddEntry(h_chi_Jet3_Jet4_Nom,  "#chi W2 Jets- Nom", "l");
-    leg_chi_reco_jets->AddEntry(h_chi_Jet3_Jet4_CR,   "#chi W1 Jets- no CR", "l");
+    auto leg_chi_reco_jets = new TLegend(0.15, 0.73, 0.35, 0.88);
+    leg_chi_reco_jets->AddEntry(h_chi_Jet1_Jet2_Nom,  "W1 Jets- Nom", "l");
+    leg_chi_reco_jets->AddEntry(h_chi_Jet1_Jet2_CR,   "W1 Jets- CR",   "l");
+    leg_chi_reco_jets->AddEntry(h_chi_Jet1_Jet2_SKI_100,   "W1 Jets- SKI, kl=100",   "l");
+    leg_chi_reco_jets->AddEntry(h_chi_Jet3_Jet4_Nom,  "W2 Jets- Nom", "l");
+    leg_chi_reco_jets->AddEntry(h_chi_Jet3_Jet4_CR,   "W2 Jets- CR",   "l");
+    leg_chi_reco_jets->AddEntry(h_chi_Jet3_Jet4_SKI_100,   "W2 Jets- SKI, kl=100",   "l");
     leg_chi_reco_jets->Draw();
 
     // Ratio plot
@@ -1384,9 +1449,15 @@ void plot() {
     r_chi_Jet1_Jet2_CR->SetLineColor(kBlack);
     r_chi_Jet1_Jet2_CR->Draw("HIST");
     r_chi_Jet1_Jet2_CR->SetLineWidth(3);
+    r_chi_Jet1_Jet2_SKI_100->SetLineColor(kBlue);
+    r_chi_Jet1_Jet2_SKI_100->Draw("HIST");
+    r_chi_Jet1_Jet2_SKI_100->SetLineWidth(3);
     r_chi_Jet3_Jet4_CR->SetLineColor(kRed);
     r_chi_Jet3_Jet4_CR->Draw("HIST SAME");
     r_chi_Jet3_Jet4_CR->SetLineWidth(3);
+    r_chi_Jet3_Jet4_SKI_100->SetLineColor(kViolet+1);
+    r_chi_Jet3_Jet4_SKI_100->Draw("HIST SAME");
+    r_chi_Jet3_Jet4_SKI_100->SetLineWidth(3);
 
     r_chi_Jet1_Jet2_CR->GetXaxis()->SetTitle("#chi (radians)"); // Axis titles
     r_chi_Jet1_Jet2_CR->GetYaxis()->SetTitle("ratio");
@@ -1401,8 +1472,10 @@ void plot() {
     r_chi_Jet1_Jet2_CR->GetYaxis()->SetTitleOffset(0.55);
 
     auto leg_ratio_chi_reco_jets = new TLegend(0.15, 0.75, 0.3, 0.9);
-    leg_ratio_chi_reco_jets->AddEntry(r_chi_Jet1_Jet2_CR, "ratio- #chi W1 Jets", "l");
-    leg_ratio_chi_reco_jets->AddEntry(r_chi_Jet3_Jet4_CR, "ratio- #chi W2 Jets", "l");
+    leg_ratio_chi_reco_jets->AddEntry(r_chi_Jet1_Jet2_CR,   "W1 Jets- CR",   "l");
+    leg_ratio_chi_reco_jets->AddEntry(r_chi_Jet1_Jet2_SKI_100,   "W1 Jets- SKI, kl=100",   "l");
+    leg_ratio_chi_reco_jets->AddEntry(r_chi_Jet3_Jet4_CR,   "W2 Jets- CR",   "l");
+    leg_ratio_chi_reco_jets->AddEntry(r_chi_Jet3_Jet4_SKI_100,   "W2 Jets- SKI, kl=100",   "l");
     leg_ratio_chi_reco_jets->Draw();
 
 
