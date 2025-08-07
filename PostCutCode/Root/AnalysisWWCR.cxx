@@ -166,7 +166,7 @@ void AnalysisWWCR::run() {
     my_tree->Branch("b_theta_corr", &theta_corr);
     my_tree->Branch("b_phi_corr", &phi_corr);
     my_tree->Branch("b_chi_corr", &chi_corr);
-    // my_tree->Branch("b_delR_corr", &delR_corr);
+    my_tree->Branch("b_delR_corr", &delR_corr);
 
     my_tree->Branch("b_p_reco_Jet1", &p_reco_Jet1);
     my_tree->Branch("b_p_reco_Jet2", &p_reco_Jet2);
@@ -174,10 +174,22 @@ void AnalysisWWCR::run() {
     my_tree->Branch("b_p_reco_Jet4", &p_reco_Jet4);
     my_tree->Branch("b_theta_Jet1_Jet2", &theta_Jet1_Jet2);
     my_tree->Branch("b_theta_Jet3_Jet4", &theta_Jet3_Jet4);
+    my_tree->Branch("b_theta_Jet1_Jet3", &theta_Jet1_Jet3);
+    my_tree->Branch("b_theta_Jet2_Jet4", &theta_Jet2_Jet4);
+    my_tree->Branch("b_theta_Jet1_Jet4", &theta_Jet1_Jet2);
+    my_tree->Branch("b_theta_Jet2_Jet3", &theta_Jet3_Jet4);
     my_tree->Branch("b_phi_Jet1_Jet2", &phi_Jet1_Jet2);
     my_tree->Branch("b_phi_Jet3_Jet4", &phi_Jet3_Jet4);
+    my_tree->Branch("b_phi_Jet1_Jet3", &phi_Jet1_Jet3);
+    my_tree->Branch("b_phi_Jet2_Jet4", &phi_Jet2_Jet4);
+    my_tree->Branch("b_phi_Jet1_Jet4", &phi_Jet1_Jet2);
+    my_tree->Branch("b_phi_Jet2_Jet3", &phi_Jet3_Jet4);
     my_tree->Branch("b_chi_Jet1_Jet2", &chi_Jet1_Jet2);
     my_tree->Branch("b_chi_Jet3_Jet4", &chi_Jet3_Jet4);
+    my_tree->Branch("b_chi_Jet1_Jet3", &chi_Jet1_Jet3);
+    my_tree->Branch("b_chi_Jet2_Jet4", &chi_Jet2_Jet4);
+    my_tree->Branch("b_chi_Jet1_Jet4", &chi_Jet1_Jet2);
+    my_tree->Branch("b_chi_Jet2_Jet3", &chi_Jet3_Jet4);
 
     my_tree->Branch("b_mass_W1", &mass_W1);
     my_tree->Branch("b_mass_W2", &mass_W2);
@@ -270,23 +282,23 @@ void AnalysisWWCR::run() {
 
         if(i % 10000 == 0) std::cout<<"Done i: "<<i<<" out of "<<nEntries<<std::endl;
 
-        if (do_debug && nPrinted < maxPrint) {
-            std::cout << "========== Event " << eventNum << " ==========\n";
+        // if (do_debug && nPrinted < maxPrint) {
+        //     std::cout << "========== Event " << eventNum << " ==========\n";
 
-            for (size_t i = 0; i < Wm_jet_truth->size(); ++i) {
-                int pdg_code = Wm_jet_truth->at(i);
-                std::cout << "W_1 daughter " << i << " PDG code: " << pdg_code << std::endl;
-            }
+        //     for (size_t i = 0; i < Wm_jet_truth->size(); ++i) {
+        //         int pdg_code = Wm_jet_truth->at(i);
+        //         std::cout << "W_1 daughter " << i << " PDG code: " << pdg_code << std::endl;
+        //     }
 
-            for (size_t i = 0; i < Wp_jet_truth->size(); ++i) {
-                int pdg_code = Wp_jet_truth->at(i);
-                std::cout << "W_2 daughter " << i << " PDG code: " << pdg_code << std::endl;
-            }
+        //     for (size_t i = 0; i < Wp_jet_truth->size(); ++i) {
+        //         int pdg_code = Wp_jet_truth->at(i);
+        //         std::cout << "W_2 daughter " << i << " PDG code: " << pdg_code << std::endl;
+        //     }
 
-            std::cout << "  " << std::endl;
+        //     std::cout << "  " << std::endl;
 
-            nPrinted++;
-        }
+        //     nPrinted++;
+        // }
 
         eventNum++;
 
@@ -333,7 +345,7 @@ void AnalysisWWCR::run() {
         std::vector<double> vec_theta_corr;
         std::vector<double> vec_phi_corr;
         std::vector<double> vec_chi_corr;
-        // std::vector<double> vec_delR_corr;
+        std::vector<double> vec_delR_corr;
         std::vector<double> vec_ee_corr;
 
         std::vector<double> vec_p_reco_Jet1;
@@ -342,10 +354,22 @@ void AnalysisWWCR::run() {
         std::vector<double> vec_p_reco_Jet4;
         std::vector<double> vec_theta_Jet1_Jet2;
         std::vector<double> vec_theta_Jet3_Jet4;
+        std::vector<double> vec_theta_Jet1_Jet3;
+        std::vector<double> vec_theta_Jet2_Jet4;
+        std::vector<double> vec_theta_Jet1_Jet4;
+        std::vector<double> vec_theta_Jet2_Jet3;
         std::vector<double> vec_phi_Jet1_Jet2;
         std::vector<double> vec_phi_Jet3_Jet4;
+        std::vector<double> vec_phi_Jet1_Jet3;
+        std::vector<double> vec_phi_Jet2_Jet4;
+        std::vector<double> vec_phi_Jet1_Jet4;
+        std::vector<double> vec_phi_Jet2_Jet3;
         std::vector<double> vec_chi_Jet1_Jet2;
         std::vector<double> vec_chi_Jet3_Jet4;
+        std::vector<double> vec_chi_Jet1_Jet3;
+        std::vector<double> vec_chi_Jet2_Jet4;
+        std::vector<double> vec_chi_Jet1_Jet4;
+        std::vector<double> vec_chi_Jet2_Jet3;
         
         std::vector<double> vec_mass_W1;
         std::vector<double> vec_mass_W2;
@@ -416,21 +440,21 @@ void AnalysisWWCR::run() {
 
         std::vector<std::string> flavLabels = {"b", "c", "s", "l", "g", "tau"};
 
-        if (do_debug && nPrinted < maxPrint) {
-            for (const auto& [jetIdx, flavVec] : jetFlavScores) {
-                std::cout << "Jet " << jetIdx << " flavor scores:\n";
-                for (size_t i = 0; i < flavVec.size(); ++i) {
-                    std::cout << "  " << flavLabels[i] << ": ";
-                    if (std::abs(flavVec[i]) < 1e-6) {
-                        std::cout << std::scientific << std::setprecision(2) << flavVec[i];
-                    } else {
-                        std::cout << std::fixed << std::setprecision(6) << flavVec[i];
-                    }
-                    std::cout << "\n";
-                }
-                std::cout << std::endl;
-            }
-        }
+        // if (do_debug && nPrinted < maxPrint) {
+        //     for (const auto& [jetIdx, flavVec] : jetFlavScores) {
+        //         std::cout << "Jet " << jetIdx << " flavor scores:\n";
+        //         for (size_t i = 0; i < flavVec.size(); ++i) {
+        //             std::cout << "  " << flavLabels[i] << ": ";
+        //             if (std::abs(flavVec[i]) < 1e-6) {
+        //                 std::cout << std::scientific << std::setprecision(2) << flavVec[i];
+        //             } else {
+        //                 std::cout << std::fixed << std::setprecision(6) << flavVec[i];
+        //             }
+        //             std::cout << "\n";
+        //         }
+        //         std::cout << std::endl;
+        //     }
+        // }
 
         // Get the max flavor scores
         auto j0_MaxScoreIt = std::max_element(j0_flav.begin(), j0_flav.end());
@@ -443,24 +467,24 @@ void AnalysisWWCR::run() {
         int j2_maxScoreIdx = std::distance(j2_flav.begin(), j2_MaxScoreIt);
         int j3_maxScoreIdx = std::distance(j3_flav.begin(), j3_MaxScoreIt);
 
-        if (do_debug && nPrinted < maxPrint) {
-            std::cout << "Jet 0: " << flavLabels[j0_maxScoreIdx] << " = " << *j0_MaxScoreIt << "\n";
-            std::cout << "Jet 1: " << flavLabels[j1_maxScoreIdx] << " = " << *j1_MaxScoreIt << "\n";
-            std::cout << "Jet 2: " << flavLabels[j2_maxScoreIdx] << " = " << *j2_MaxScoreIt << "\n";
-            std::cout << "Jet 3: " << flavLabels[j3_maxScoreIdx] << " = " << *j3_MaxScoreIt << "\n";
-            std::cout << "      " << std::endl;
-        }
+        // if (do_debug && nPrinted < maxPrint) {
+        //     std::cout << "Jet 0: " << flavLabels[j0_maxScoreIdx] << " = " << *j0_MaxScoreIt << "\n";
+        //     std::cout << "Jet 1: " << flavLabels[j1_maxScoreIdx] << " = " << *j1_MaxScoreIt << "\n";
+        //     std::cout << "Jet 2: " << flavLabels[j2_maxScoreIdx] << " = " << *j2_MaxScoreIt << "\n";
+        //     std::cout << "Jet 3: " << flavLabels[j3_maxScoreIdx] << " = " << *j3_MaxScoreIt << "\n";
+        //     std::cout << "      " << std::endl;
+        // }
 
         std::array<int, 4> maxScoreIdx {j0_maxScoreIdx,j1_maxScoreIdx,j2_maxScoreIdx,j3_maxScoreIdx};
 
-       if (nPrinted < maxPrint) {
-            std::cout << "maxScoreIdx: ";
-            for (int ScoreIdx : maxScoreIdx) {
-                std::cout << ScoreIdx << " ";
-            }
-            std::cout << std::endl;
-            std::cout << "      " << std::endl;
-        }
+    //    if (nPrinted < maxPrint) {
+    //         std::cout << "maxScoreIdx: ";
+    //         for (int ScoreIdx : maxScoreIdx) {
+    //             std::cout << ScoreIdx << " ";
+    //         }
+    //         std::cout << std::endl;
+    //         std::cout << "      " << std::endl;
+    //     }
 
         std::map<int,std::vector<int>> jetFlavMaxScore;
         for (std::size_t i = 0; i < maxScoreIdx.size(); ++i){
@@ -558,14 +582,14 @@ void AnalysisWWCR::run() {
                 double jetSub_cos_phi_4 = cos(jetSub_phi_4);
                 double eec_jetSub_phi_4 = 0.5 * (1 - jetSub_cos_phi_4);
 
-                // double jetSub_delR = sqrt(jetSub_eta_3 * jetSub_eta_3 + jetSub_phi_4 * jetSub_phi_4);
+                double jetSub_delR = sqrt(jetSub_eta_3 * jetSub_eta_3 + jetSub_phi_4 * jetSub_phi_4);
 
                 vec_p_jet_const_1.push_back(subJet_1.P());
                 vec_p_jet_const_2.push_back(subJet_2.P());
                 vec_theta_corr.push_back(jetSub_theta_2);
                 vec_phi_corr.push_back(jetSub_phi_4);
                 vec_chi_corr.push_back(jetSub_chi_1);
-                // vec_delR_corr.push_back(jetSub_delR);
+                vec_delR_corr.push_back(jetSub_delR);
                 vec_ee_corr.push_back(eec_jetSub_theta_2);
 
                 h_chi_subjet->Fill(jetSub_chi_1);
@@ -864,6 +888,10 @@ void AnalysisWWCR::run() {
 
         double chi_c_l0 = W1_j1.Angle(W1_j2.Vect());
         double chi_l1_l2 = W2_j1.Angle(W2_j2.Vect());
+        double chi_c_l1 = W1_j1.Angle(W2_j1.Vect());
+        double chi_l0_l2 = W1_j2.Angle(W2_j2.Vect());
+        double chi_c_l2 = W1_j1.Angle(W2_j2.Vect());
+        double chi_l0_l1 = W1_j2.Angle(W2_j1.Vect());
         // double cos_chi_c_l0 = cos(chi_c_l0);
         // double cos_chi_l1_l2 = cos(chi_l1_l2);
         // double ee_correlation_chi_c_l0 = 0.5 * (1 - cos_chi_c_l0);
@@ -871,6 +899,10 @@ void AnalysisWWCR::run() {
 
         double theta_c_l0 = std::fabs(W1_j1.Theta() - W1_j2.Theta());
         double theta_l1_l2 = std::fabs(W2_j1.Theta() - W2_j2.Theta());
+        double theta_c_l1 = std::fabs(W1_j1.Theta() - W2_j1.Theta());
+        double theta_l0_l2 = std::fabs(W1_j2.Theta() - W2_j2.Theta());
+        double theta_c_l2 = std::fabs(W1_j1.Theta() - W2_j2.Theta());
+        double theta_l0_l1 = std::fabs(W1_j2.Theta() - W2_j1.Theta());
         // double cos_theta_c_l0 = cos(theta_c_l0);
         // double cos_theta_l1_l2 = cos(theta_l1_l2);
         // double ee_correlation_theta_c_l0 = 0.5 * (1 - cos_theta_c_l0);
@@ -881,6 +913,10 @@ void AnalysisWWCR::run() {
         
         double phi_c_l0 = W1_j1.Phi() - W1_j2.Phi();
         double phi_l1_l2 = W2_j1.Phi() - W2_j2.Phi();
+        double phi_c_l1 = W1_j1.Phi() - W2_j1.Phi();
+        double phi_l0_l2 = W1_j2.Phi() - W2_j2.Phi();
+        double phi_c_l2 = W1_j1.Phi() - W2_j2.Phi();
+        double phi_l0_l1 = W1_j2.Phi() - W2_j1.Phi();
         // double cos_phi_c_l0 = cos(phi_c_l0);
         // double cos_phi_l1_l2 = cos(phi_l1_l2);
         // double ee_correlation_phi_c_l0 = 0.5 * (1 - cos_phi_c_l0);
@@ -888,30 +924,65 @@ void AnalysisWWCR::run() {
 
         vec_theta_Jet1_Jet2.push_back(theta_c_l0);
         vec_theta_Jet3_Jet4.push_back(theta_l1_l2);
+        vec_theta_Jet1_Jet3.push_back(theta_c_l1);
+        vec_theta_Jet2_Jet4.push_back(theta_l0_l2);
+        vec_theta_Jet1_Jet4.push_back(theta_c_l2);
+        vec_theta_Jet2_Jet3.push_back(theta_l0_l1);
+
         vec_phi_Jet1_Jet2.push_back(phi_c_l0);
         vec_phi_Jet3_Jet4.push_back(phi_l1_l2);
+        vec_phi_Jet1_Jet3.push_back(phi_c_l1);
+        vec_phi_Jet2_Jet4.push_back(phi_l0_l2);
+        vec_phi_Jet1_Jet4.push_back(phi_c_l2);
+        vec_phi_Jet2_Jet3.push_back(phi_l0_l1);
+
         vec_chi_Jet1_Jet2.push_back(chi_c_l0);
         vec_chi_Jet3_Jet4.push_back(chi_l1_l2);
+        vec_chi_Jet1_Jet3.push_back(chi_c_l1);
+        vec_chi_Jet2_Jet4.push_back(chi_l0_l2);
+        vec_chi_Jet1_Jet4.push_back(chi_c_l2);
+        vec_phi_Jet2_Jet3.push_back(chi_l0_l1);
 
         mc_weight = norm_weight;
         ee_corr = vec_ee_corr;
         p_jet_const_1 = vec_p_jet_const_1;
         p_jet_const_2 = vec_p_jet_const_2;
         theta_corr = vec_theta_corr;
-        phi_corr= vec_phi_corr;
-        chi_corr=vec_chi_corr;
-        // delR_corr = vec_delR_corr;
+        phi_corr = vec_phi_corr;
+        chi_corr = vec_chi_corr;
+        delR_corr = vec_delR_corr;
+
+        // if (!vec_delR_corr.empty()) {
+        //     std::cout << "vec_delR_corr[0] = " << vec_delR_corr[0] << std::endl;
+        // }
+
+        // std::cout << "Assigned delR_corr, size: " << delR_corr.size() << std::endl;
 
         p_reco_Jet1 = vec_p_reco_Jet1;
         p_reco_Jet2 = vec_p_reco_Jet2;
         p_reco_Jet3 = vec_p_reco_Jet3;
         p_reco_Jet4 = vec_p_reco_Jet4;
+
         theta_Jet1_Jet2 = vec_theta_Jet1_Jet2;
         theta_Jet3_Jet4 = vec_theta_Jet3_Jet4;
+        theta_Jet1_Jet3 = vec_theta_Jet1_Jet3;
+        theta_Jet2_Jet4 = vec_theta_Jet2_Jet4;
+        theta_Jet1_Jet4 = vec_theta_Jet1_Jet4;
+        theta_Jet2_Jet3 = vec_theta_Jet2_Jet3;
+
         phi_Jet1_Jet2 = vec_phi_Jet1_Jet2;
         phi_Jet3_Jet4 = vec_phi_Jet3_Jet4;
+        phi_Jet1_Jet3 = vec_phi_Jet1_Jet3;
+        phi_Jet2_Jet4 = vec_phi_Jet2_Jet4;
+        phi_Jet1_Jet4 = vec_phi_Jet1_Jet4;
+        phi_Jet2_Jet3 = vec_phi_Jet2_Jet3;
+
         chi_Jet1_Jet2 = vec_chi_Jet1_Jet2;
         chi_Jet3_Jet4 = vec_chi_Jet3_Jet4;
+        chi_Jet1_Jet3 = vec_chi_Jet1_Jet3;
+        chi_Jet2_Jet4 = vec_chi_Jet2_Jet4;
+        chi_Jet1_Jet4 = vec_chi_Jet1_Jet4;
+        chi_Jet2_Jet3 = vec_chi_Jet2_Jet3;
 
         mass_W1 = vec_mass_W1;
         mass_W2 = vec_mass_W2;
