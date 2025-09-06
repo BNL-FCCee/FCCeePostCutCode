@@ -183,18 +183,18 @@ void AnalysisZHAllHad::run()
     auto tree = treeCont->getTree();
 
     //Define ttree for analysis
-    TTree* t = new TTree("analysis","my analysis tree");
-    my_tree = (TTree*) t;
-    //define the output branches 
-    my_tree->Branch("b_mH_jj",&mH_jj);
-    my_tree->Branch("b_mZ_jj",&mZ_jj);
-    my_tree->Branch("b_Hscore",&Hscore);
-    my_tree->Branch("b_Zscore",&Zscore);
-    my_tree->Branch("b_Hflav",&Hflav);
-    my_tree->Branch("b_Zflav",&Zflav);
-    my_tree->Branch("b_ChiH",&ChiH);
-    my_tree->Branch("b_ChiZ",&ChiZ);
-    my_tree->Branch("b_w",&mc_weight);
+    // TTree* t = new TTree("analysis","my analysis tree");
+    // my_tree = (TTree*) t;
+    // //define the output branches 
+    // my_tree->Branch("b_mH_jj",&mH_jj);
+    // my_tree->Branch("b_mZ_jj",&mZ_jj);
+    // my_tree->Branch("b_Hscore",&Hscore);
+    // my_tree->Branch("b_Zscore",&Zscore);
+    // my_tree->Branch("b_Hflav",&Hflav);
+    // my_tree->Branch("b_Zflav",&Zflav);
+    // my_tree->Branch("b_ChiH",&ChiH);
+    // my_tree->Branch("b_ChiZ",&ChiZ);
+    // my_tree->Branch("b_w",&mc_weight);
 
   
     // assuming you have vectors as input (should also save option to run w/o vectors)

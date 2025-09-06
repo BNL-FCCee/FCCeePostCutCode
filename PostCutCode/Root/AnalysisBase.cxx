@@ -29,7 +29,7 @@ void AnalysisBase::writeHistogram()
     auto outFile = TFile::Open(MDC::GetInstance()->getOutputFileName().c_str(), "recreate");
     // get all the hist
     auto histList = m_histContainer->getHistList();
-    // my_tree->Write();
+    my_tree->Write();
     outFile->mkdir("Nominal");
     outFile->cd("Nominal");
     for(const auto& h: histList)
